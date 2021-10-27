@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Авторизация</title>
+</head>
+<body>
+
+<form th:action="@{/contract/login}" method="post">
+    <div style="margin: 0 auto; text-align: center; padding-bottom: 10px;">
+        <div th:if="${param.error}">
+            Неверное имя пользователя или пароль.
+        </div>
+        <div th:if="${param.logout}">
+            Вы вышли из системы.
+        </div>
+    </div>
+    <div style="margin: 0 auto; text-align: center;">
+        <div style="padding-bottom: 5px;"><label> Логин : <input type="text" name="username"/> </label></div>
+        <div style="padding-bottom: 5px;"><label> Пароль : <input type="password" name="password"/> </label></div>
+        <div><input type="submit" value="Войти"/></div>
+    </div>
+</form>
+
+</body>
+</html>

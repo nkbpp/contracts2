@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<body>
+
+<div class="row" id="contractAdd" th:fragment="contractAdd">
+    <div class="col s3"></div>
+    <form enctype="multipart/form-data" method="post" id="formContracts">
+    <div class="col s6">
+        <div class="row">
+            <div class="col s12 row">
+                <div class="col s6">Дата поступления</div>
+                <div class="col s6">
+                    <input type="date" id="receipt_date" name="receipt_date">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col s12 row">
+                <div class="col s6">Контрагент</div>
+                <div class="col s6">
+                    <input type="text" id="name_koltr" name="name_koltr">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col s12 row">
+                <div class="col s6">Номер ГК</div>
+                <div class="col s6">
+                    <input type="text" id="nomGK" name="nomGK">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col s12 row">
+                <div class="col s6">Дата ГК</div>
+                <div class="col s6">
+                    <input type="date" id="dateGK" name="dateGK">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col s12 row">
+                <div class="col s6">Краткое содержание</div>
+                <div class="col s6">
+                    <input type="text" id="predmet_contract" name="predmet_contract">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col s12 row">
+                <div class="col s6">Вид обеспечения</div>
+                <div class="col s6">
+                    <div class="input-field col s12">
+                        <select id="vidObesp" name="vidObesp">
+                            <option th:each="v : ${vidObesp}" th:text="${v.name}"
+                                    th:value="${v.id}"></option>
+                        </select>
+                        <!--<label>Вид обеспечения</label>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col s12 row">
+                <div class="col s6">Сумма</div>
+                <div class="col s6">
+                    <input type="number" id="sum" name="sum"
+                           onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col s12 row">
+                <div class="col s6">Дата исполнения ГК</div>
+                <div class="col s6">
+                    <input type="date" id="date_ispolnenija_GK" name="date_ispolnenija_GK">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col s12 row">
+                <div class="col s6">Количество дней от исполнения</div>
+                <div class="col s6">
+                    <input type="number" id="col_days" name="col_days"
+                           onkeypress="return (event.charCode >= 48 && event.charCode <= 57 && /^\d*$/.test(this.value));">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col s12 row">
+                <div class="col s6">Ответственные</div>
+                <div class="col s6">
+                    <div class="input-field col s12 row" id="notifications">
+                    </div>
+                    <div class="input-field col s12" id="containerNotification">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col s12 row">
+                <div class="col s6">Загрузка файлов</div>
+                <div class="col s6">
+                    <input type="file" multiple  id="myDocuments" name="myDocuments">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12 row">
+                <div class="col s6"></div>
+                <div class="col s6" id="documentsViev">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col s12 row">
+                <div class="col s6">Отметка об исполнении</div>
+                <div class="col s6">
+                    <label>
+                        <input type="checkbox" class="filled-in"
+                               th:id="checkboxAddUpdate"/>
+                        <span class="marginonospan"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col s12 row">
+                <div class="col s6"></div>
+                <div class="col s6">
+                    <a class="waves-effect waves-light btn" id="addContracts">Добавить</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    </form>
+</div>
+
+<div class="row" th:fragment="notifications">
+    <div class="col s10">
+        <select id="notificationsSelect">
+            <option th:each="u : ${users}" th:text="${u.login}"
+                    th:value="${u.id}"></option>
+            <label>Добавить</label>
+        </select>
+    </div>
+    <div class="col s2">
+        <a class="waves-effect waves-light btn" id="notificationsVibor">+</a>
+    </div>
+</div>
+
+
+
+</body>
+</html>

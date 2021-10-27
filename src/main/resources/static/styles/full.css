@@ -1,0 +1,141 @@
+#tableContract, #tableContract td, #tableContract th{
+    border-collapse: collapse;
+    /*убираем пустые промежутки между ячейками*/
+    border: 2px solid gray;
+    /*устанавливаем для таблицы внешнюю границу серого цвета толщиной 1px*/
+    text-align: center;
+    padding: 2px;
+}
+
+#tableContract th{
+    color: gray;
+}
+
+
+/*#tableContract td, #tableContract th{
+    max-width: 1000px;
+    min-width: 200px;
+    width: 200px;
+}*/
+
+#tableContract table, #tableContract table td, #tableContract table th{
+    border: none;
+}
+
+
+
+
+
+#contractAdd .row{
+    margin-bottom: 3px;
+}
+#contractAdd input{
+    height: 25px;
+    border: 1px outset #dfe2e5;
+}
+
+#notifications a, #containerNotification a, #documentsViev a{
+    height: 23px;
+    line-height: 23px;
+    width: 23px;
+    padding: 0;
+}
+
+#contractAdd .row .col.s12.row .col.s6{
+    text-align: center;
+}
+
+[type="checkbox"]+span.marginonospan:not(.lever) {
+    padding-left: 20px;
+    height: 20px;
+}
+/*#menu-back {
+    padding-right: 10px;
+}*/
+
+/*input[type="text"], input[type="date"] {
+    min-width: 200px;
+    max-width: 200px;
+    width: 200px;
+    min-height: 20px;
+    max-height: 20px;
+    height: 20px;
+    border: 1px solid black;
+    margin-top: 1px;
+    margin-bottom: 1px;
+}*/
+
+/*input.name {
+    min-width: 950px;
+    max-width: 950px;
+    width: 950px;
+}*/
+
+/*.popup td {
+    padding: 0;
+}
+
+.popup table {
+    margin-top: 15px;
+}
+
+table[name="file"] td, table[name="file"] th {
+    border: 1px solid black;
+    padding: 1px;
+}
+
+.input-field {
+    max-width: 200px;
+}*/
+
+/*.adisabled {
+    pointer-events: none; !* делаем ссылку некликабельной *!
+    cursor: default;  !* устанавливаем курсор в виде стрелки *!
+    color: #999; !* цвет текста для нективной ссылки *!
+}*/
+
+/*[type="checkbox"]+span.marginonospan:not(.lever) {
+    padding-left: 20px;
+    height: 20px;
+}
+
+.selectray {
+    width: 50px;
+}
+
+.selectray .select-wrapper input.select-dropdown {
+    min-width: 48px;
+    max-width: 48px;
+    width: 48px;
+}
+
+table.findraytable, .findraytable tr, .findraytable td {
+    min-width: 0px;
+    margin: 0;
+    padding: 0;
+
+}
+
+table.findraytable  {
+    min-width: 0px;
+    width: 10px;
+}
+
+.findraytable td.tds1 {
+    min-width: 0px;
+    width: 10px;
+    border: 0;
+}
+
+.findraytable td.tds2 {
+    min-width: 0px;
+    width: 10px;
+    border: 0;
+}
+
+.tds {
+    min-width: 0px;
+    width: 10px;
+}*/
+
+

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<div th:fragment="vievTable">
+    <div id="tableContainer"></div>
+    <div id="pagination" th:include="fragment/pagination :: pagination"></div>
+</div>
+
+<table border="1" id="tableContract" th:fragment="table(contracts)">
+    <tr>
+        <th>Номер п/п</th>
+        <th>Дата поступления</th>
+        <th>Контрагент</th>
+        <th>Номер ГК</th>
+        <th>Дата ГК</th>
+        <th>Краткое содержание</th>
+        <th>Вид обеспечения</th>
+        <th>Сумма</th>
+        <th>Дата исполнения ГК</th>
+        <!--<th>Условия возврата ГК</th>-->
+        <th>Расчетная дата</th>
+        <th>Ответственные</th>
+        <th>Отметка об исполнении</th>
+        <th>Прикрепленные файлы</th>
+        <th>Действие</th>
+    </tr>
+    <tr th:each="c,iterStat  : ${contracts}" th:id="${c.id}">
+        <td align="center" th:text="${iterStat.count} + ${paramstart}"></td>
+        <td align="center" th:text="${c.getReceipt_dateRu()}"></td>
+        <td align="center" th:text="${c.name_koltr}"></td>
+        <td align="center" th:text="${c.nomGK}"></td>
+        <td align="center" th:text="${c.getDateGKRu()}"></td>
+        <td align="center" th:text="${c.predmet_contract}"></td>
+        <td align="center">
+            <table>
+                <tr th:each="v : ${c.vidObesp}">
+                    <td th:text="${v.name}"></td>
+                </tr>
+            </table>
+        </td> <!--вид обеспечения-->
+        <td align="center" th:text="${c.getSumOk()}"></td>
+        <td align="center" th:text="${c.getDate_ispolnenija_GKRu()}"></td>
+        <!--<td align="center" th:text="${c.col_days}"></td>-->
+        <td align="center" th:text="${c.getRaschet_dateRu()}"></td>
+        <td align="center" >
+        </td> <!--Ответственные!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+        <td align="center" ><!--th:text="${c.ispolneno}"-->
+            <label>
+                <input type="checkbox" class="filled-in"
+                       th:name="${c.getId()}" th:id="checkboxIspolneno"
+                       th:checked="${c.ispolneno}"/>
+                <span class="marginonospan"></span>
+            </label>
+        </td>
+        <td align="center">
+            <table>
+                <tr th:each="d : ${c.myDocuments}">
+                    <td>
+                        <a th:href="@{/contract/main/download(id=${d.id})}"
+                           th:text="${d.nameFile}"></a>
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td align="center">
+            <a th:name="${c.id}" id="updateContract" href="#">Изменить</a>
+            <a th:name="${c.id}" id="deleteContract" href="#">Удалить</a>
+        </td>
+    </tr>
+</table>
+
+</html>

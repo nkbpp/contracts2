@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<body>
+
+<div th:fragment="pagination">
+    <ul class="pagination row">
+        <li class="disabled col s2"><a>Назад</a></li>
+        <li class="waves-effect active col s1"><a>1</a></li>
+        <li class="waves-effect col s1"><a>2</a></li>
+        <li class="waves-effect col s1"><a>3</a></li>
+        <li class="waves-effect col s1"><a>4</a></li>
+        <li class="waves-effect col s1"><a>5</a></li>
+        <li class="waves-effect col s2"><a>Далее</a></li>
+    </ul>
+</div>
+
+<!--    <div th:fragment="pagination">
+        <ul class="pagination row">
+            <li class="waves-effect col s2"><a>Назад</a></li>
+            <li th:each="p : ${params}"
+                th:class="${activeparam==p}? 'waves-effect col s1 active' : 'waves-effect col s1'">
+                <a th:href="@{/contract/main/viev(id=${p})}"
+                   th:text="${p}"></a>
+            </li>
+            <li class="waves-effect col s2"><a>Далее</a></li>
+        </ul>
+    </div>-->
+
+</body>
+</html>
