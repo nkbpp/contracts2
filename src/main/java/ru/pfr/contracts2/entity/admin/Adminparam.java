@@ -25,4 +25,9 @@ public class Adminparam {
 
     private Long block;
 
+    public Adminparam(Long kolpopitok, Long koefpopitok, Long block) {
+        this.kolpopitok = kolpopitok;
+        this.koefpopitok = koefpopitok;
+        this.block = block;
+    }
 }

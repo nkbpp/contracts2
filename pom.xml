@@ -123,12 +123,24 @@
 			<artifactId>materialize-css</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+
+		<!--Spring mail-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+
+		<!--JsonObject-->
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20210307</version>
+		</dependency>
 	</dependencies>
 
 	<build>
 		<plugins>
 			<plugin>
-
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>

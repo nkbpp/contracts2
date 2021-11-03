@@ -9,6 +9,7 @@ import ru.pfr.contracts2.global.ConverterDate;
 import ru.pfr.contracts2.global.MyNumbers;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -24,7 +25,12 @@ public class Contract {
 
     private Date receipt_date; //дата поступления
 
-    private String name_koltr; //наименование контрагента ???
+    private String plat_post; //Платежное поручение
+
+    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+    private Kontragent kontragent;
+
+    //private String name_koltr; //наименование контрагента ???
 
     private String nomGK; //номер ГК
 
@@ -43,13 +49,18 @@ public class Contract {
 
     private Date raschet_date; //Расчетная дата (дата исполнения ГК + кол дней по условиям возврата + 1 день)
 
-    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Notification> notifications;//кого оповестить
+    //@OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "contract", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Notification> notifications = new ArrayList<>();//кого оповестить
 
     private Boolean ispolneno; //Отметка об исполнении
 
-    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<MyDocuments> myDocuments;
+    private String nomerZajavkiNaVozvrat; //Номер заявки на возврат
+
+    //@OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "contract", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MyDocuments> myDocuments = new ArrayList<>();
+    ;
 
     @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     private User user; //кто создал контракт
@@ -69,6 +80,7 @@ public class Contract {
     public String getDateGKRu() {
         return ConverterDate.datetostring_ddMMyyyy(dateGK);
     }
+
     public String getDateGKEn() {
         return ConverterDate.datetostring_yyyyMMdd(dateGK);
     }
@@ -76,6 +88,7 @@ public class Contract {
     public String getDate_ispolnenija_GKRu() {
         return ConverterDate.datetostring_ddMMyyyy(date_ispolnenija_GK);
     }
+
     public String getDate_ispolnenija_GKEn() {
         return ConverterDate.datetostring_yyyyMMdd(date_ispolnenija_GK);
     }
@@ -83,6 +96,7 @@ public class Contract {
     public String getRaschet_dateRu() {
         return ConverterDate.datetostring_ddMMyyyy(raschet_date);
     }
+
     public String getRaschet_dateEn() {
         return ConverterDate.datetostring_yyyyMMdd(raschet_date);
     }
@@ -92,9 +106,14 @@ public class Contract {
         return MyNumbers.okrug(sum);
     }
 
-    public Contract(Date receipt_date, String name_koltr, String nomGK, Date dateGK, String predmet_contract, VidObesp vidObesp, Float sum, Date date_ispolnenija_GK, Integer col_days, List<Notification> notifications, Boolean ispolneno, List<MyDocuments> myDocuments, User user) {
+    public Contract(Date receipt_date, String plat_post, Kontragent kontragent/*String name_koltr*/, String nomGK,
+                    Date dateGK, String predmet_contract, VidObesp vidObesp, Float sum,
+                    Date date_ispolnenija_GK, Integer col_days, List<Notification> notifications,
+                    Boolean ispolneno, List<MyDocuments> myDocuments, String nomerZajavkiNaVozvrat, User user) {
         this.receipt_date = receipt_date;
-        this.name_koltr = name_koltr;
+        this.plat_post = plat_post;
+        //this.name_koltr = name_koltr;
+        this.kontragent = kontragent;
         this.nomGK = nomGK;
         this.dateGK = dateGK;
         this.predmet_contract = predmet_contract;
@@ -103,11 +122,54 @@ public class Contract {
         this.date_ispolnenija_GK = date_ispolnenija_GK;
         this.col_days = col_days;
 
-        this.notifications = notifications;
+
         this.ispolneno = ispolneno;
-        this.myDocuments = myDocuments;
+        this.nomerZajavkiNaVozvrat = nomerZajavkiNaVozvrat;
+
+        setAllNotification(notifications);
+        setAllDocuments(myDocuments);
         this.user = user;
 
         date_create = new Date();
     }
+
+    public void addDocuments(MyDocuments myDoc) {
+        this.myDocuments.add(myDoc);
+        myDoc.setContract(this);
+    }
+
+    public void setAllDocuments(List<MyDocuments> myDocs) {
+        for (MyDocuments d :
+                myDocs) {
+            addDocuments(d);
+        }
+    }
+
+    public void removeDocuments(MyDocuments myDoc) {
+        this.myDocuments.remove(myDoc);
+        myDoc.setContract(null);
+    }
+
+    public void addNotification(Notification notif) {
+        this.notifications.add(notif);
+        notif.setContract(this);
+    }
+
+    public void setAllNotification(List<Notification> notif) {
+        while (notifications.size()>0){
+            removeNotification(notifications.get(0));
+        }
+
+
+        for (Notification n :
+                notif) {
+            addNotification(n);
+        }
+    }
+
+    public void removeNotification(Notification notif) {
+        this.notifications.remove(notif);
+        notif.setContract(null);
+    }
+
 }

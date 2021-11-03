@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.pfr.contracts2.entity.contracts.Contract;
-import ru.pfr.contracts2.entity.contracts.VidObesp;
 import ru.pfr.contracts2.entity.user.User;
 import ru.pfr.contracts2.service.contracts.ContractService;
+import ru.pfr.contracts2.service.contracts.KontragentService;
 import ru.pfr.contracts2.service.contracts.VidObespService;
-import ru.pfr.contracts2.service.user.UserService;
+import ru.pfr.contracts2.service.zir.ZirServise;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,9 +24,10 @@ public class ContractController {
 
     private final ContractService contractService;
     private final VidObespService vidObespService;
-    private final UserService userService;
+    private final KontragentService kontragentService;
+    private final ZirServise zirServise;
 
-    @GetMapping("/getTable")
+    @GetMapping("/getTable")  //Перелистывания TODO в зависимости от пользователя и отдела
     public String getTable(
             @RequestParam(defaultValue = "") Integer param,
             @AuthenticationPrincipal User user,
@@ -36,18 +37,35 @@ public class ContractController {
         List<Contract> contracts = contractService.findAll(param);
         model.addAttribute("contracts", contracts);
         model.addAttribute("paramstart", (param-1) * contractService.getCOL());
-/*         model.addAttribute("activeparam", param);
-        int params[] = new int[5];
-        if(param<=3){
-            for (int i = 1; i <= params.length; i++) {
-                params[i-1]=i;
-            }
+        return "fragment/table :: table";
+    }
+
+    @GetMapping("/findTable") //TODO в зависимости от пользователя и отдела
+    public String findTable(
+            @RequestParam(defaultValue = "") String poleFindByNomGK,
+            @RequestParam(defaultValue = "") String poleFindByINN,
+            @RequestParam(defaultValue = "") Boolean poleFindByIspolneno,
+            @RequestParam(defaultValue = "") Boolean poleFindByNotIspolneno,
+            @AuthenticationPrincipal User user,
+            Model model){
+        List<Contract> contracts;
+        if(poleFindByNomGK.equals("") && poleFindByINN.equals("")){
+            contracts = contractService.findAll();
         } else {
-            for (int i = param - 3; i < param - 3 + params.length; i++) {
-                params[i-1]=i;
-            }
+            contracts = contractService.findByfindByNomGK(poleFindByNomGK, poleFindByINN); //TODO добавить ИНН
         }
-        model.addAttribute("params", params);*/
+        List<Contract> contracts2  = new ArrayList<>();
+        contracts.forEach(contract -> {
+            if(poleFindByIspolneno==false && poleFindByNotIspolneno==false) {
+            } else if(contract.getIspolneno()==poleFindByIspolneno){
+                contracts2.add(contract);
+            } else if(contract.getIspolneno()==!poleFindByNotIspolneno){
+                contracts2.add(contract);
+            }
+        });
+
+        model.addAttribute("contracts", contracts2);
+        model.addAttribute("paramstart", 0);
         return "fragment/table :: table";
     }
 
@@ -60,10 +78,13 @@ public class ContractController {
     public String add(@AuthenticationPrincipal User user,
                        Model model){
 
-        List<VidObesp> vidObesps = new ArrayList<>();
-        vidObesps.add(new VidObesp(0L,""));
-        vidObesps.addAll(vidObespService.findAll());
-        model.addAttribute("vidObesp", vidObesps);
+        model.addAttribute("kontragent", kontragentService.findAllwithPusto());
+        model.addAttribute("vidObesp", vidObespService.findAllwithPusto());
+
+        model.addAttribute("nameBoss",
+                zirServise.getNameBossById(Integer.valueOf(String.valueOf(user.getId_user_zir()))));
+        /*model.addAttribute("idBoss",
+                zirServise.getIdBossByIdUser(Integer.valueOf(String.valueOf(user.getId_user_zir()))));*/
 
         return "fragment/contractAdd :: contractAdd";
     }
@@ -74,10 +95,11 @@ public class ContractController {
             @AuthenticationPrincipal User user,
                       Model model){
 
-        List<VidObesp> vidObesps = new ArrayList<>();
-        vidObesps.add(new VidObesp(0L,""));
-        vidObesps.addAll(vidObespService.findAll());
-        model.addAttribute("vidObesp", vidObesps);
+        //тест почты
+        //mailSender.send("0831@041.pfr.ru","тест","mytest");
+
+        model.addAttribute("kontragent", kontragentService.findAllwithPusto());
+        model.addAttribute("vidObesp", vidObespService.findAllwithPusto());
 
         model.addAttribute("contract", contractService.findById(id));
 
@@ -89,7 +111,11 @@ public class ContractController {
                       Model model){
 
         List<User> users = new ArrayList<>();
-        users.addAll(userService.findAll());
+
+        //users.addAll(userService.findAll());
+
+        users.addAll(zirServise.getFindAllOtdelByIdAddPusto(user.getId_user_zir()));
+
         model.addAttribute("users", users);
 
         return "fragment/contractAdd :: notifications";

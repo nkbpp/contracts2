@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<body>
+
+<div th:fragment="spisokfrag">
+
+    <div class="row">
+        <div class="col s6 row">
+            <div class="col s6">Значение</div>
+            <div class="col s3">
+                <input type="text" id="addznachspisok">
+            </div>
+            <div class="col s3">
+                <a class="waves-effect waves-light btn" id="buttonaddspisok" th:value="${type}">Добавить</a>
+            </div>
+        </div>
+    </div>
+
+    <table>
+        <tr>
+            <th align="center">№ п/п</th>
+            <th align="center">Данные</th>
+            <th align="center">Удалить</th>
+        </tr>
+        <tr th:each="v : ${vidObesps}">
+            <td  th:text="${v.getId()}">
+            </td>
+            <td  th:text="${v.getName()}">
+            </td>
+            <td>
+                <a name="delSpisok" th:id="${v.getId()}" th:value="${type}"
+                   class="red waves-effect waves-light btn">X</a>
+            </td>
+        </tr>
+    </table>
+</div>
+
+</body>
+</html>

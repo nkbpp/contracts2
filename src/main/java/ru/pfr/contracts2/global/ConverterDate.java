@@ -60,4 +60,9 @@ public class ConverterDate {
         return calendar.getTime();
     }
 
+    public static int differenceInDays(Date minuend, Date subtrahend ){
+        long milliseconds = minuend.getTime() - subtrahend.getTime();
+        return (int) (milliseconds / (24 * 60 * 60 * 1000));
+    }
+
 }

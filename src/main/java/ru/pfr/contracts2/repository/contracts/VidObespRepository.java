@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface VidObespRepository extends JpaRepository<VidObesp, Long> {
 
-    public Optional<VidObesp> findById(Long l);
+    Optional<VidObesp> findById(Long l);
 
 }

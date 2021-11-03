@@ -14,14 +14,20 @@ import javax.persistence.Id;
 @NoArgsConstructor // создания пустого конструктора
 @AllArgsConstructor // конструктора включающего все возможные поля
 @Entity
-public class VidObesp {
+public class Kontragent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
+    private String inn;
 
-    public VidObesp(String name) {
+    public Kontragent(String name, String inn) {
         this.name = name;
+        this.inn = inn;
+    }
+
+    public String getNameInn() {
+        return name + " " + inn;
     }
 }

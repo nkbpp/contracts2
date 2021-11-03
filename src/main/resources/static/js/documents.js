@@ -3,8 +3,6 @@ $(document).ready(function () {
     $("body").on('click', 'a', function () {
         if ($(this).attr('id') == "addContracts") {
 
-
-
             // Get form
             let form = $('#formContracts')[0];
             // Create an FormData object
@@ -13,8 +11,6 @@ $(document).ready(function () {
             data.append('ispolneno', $('#checkboxAddUpdate').prop("checked"));
             data.append('id', $('#addContracts').attr("data-id-contract"));
 
-
-            //data.append('notifications', ["Яблоко", "Апельсин", "Слива"]);
             for(let [name, value] of data) {
                 console.log(`${name} = ${value}`); // key1=value1, потом key2=value2
             }

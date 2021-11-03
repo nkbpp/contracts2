@@ -3,10 +3,14 @@ package ru.pfr.contracts2.authconfig;
 import jodd.http.HttpUtil;
 import jodd.http.HttpValuesMap;
 import lombok.RequiredArgsConstructor;
+import org.apache.http.Header;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,12 +20,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.apache.http.Header;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.client.methods.RequestBuilder;
-
 import org.springframework.stereotype.Component;
 import ru.pfr.contracts2.entity.admin.Adminparam;
 import ru.pfr.contracts2.entity.log.Logi;
@@ -32,7 +30,6 @@ import ru.pfr.contracts2.service.admin.AdminparamService;
 import ru.pfr.contracts2.service.log.LogiService;
 import ru.pfr.contracts2.service.user.RayonService;
 import ru.pfr.contracts2.service.user.UserService;
-
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
@@ -144,7 +141,7 @@ public class AuthProvider implements AuthenticationProvider {
         HttpValuesMap<Object> authData = HttpUtil.parseQuery(authQueryString.group(1), true);
         Collection<GrantedAuthority> roleList = new HashSet<>();
         Object[] rights = authData.get("right");
-        String userId = (String) authData.get("id")[0];
+        String userId = (String) authData.get("idzir")[0];
         StringBuilder upfrCode = new StringBuilder( (String) authData.get("upfr")[0]);
         String idpod = (String) authData.get("idpod")[0];
         /*byte[] decodedBytes = Base64.getUrlDecoder().decode((String) authData.get("namepod")[0]);
@@ -196,6 +193,7 @@ public class AuthProvider implements AuthenticationProvider {
                 us.getLogin(),
                 "Пользователь " + us.getLogin() + " авторизован  AuthProvider authenticate()"));
         /*logger.info("Пользователь " + us.getLogin() + " авторизован  AuthProvider authenticate()end");*/
+
         return a;
     }
 
@@ -231,5 +229,9 @@ public class AuthProvider implements AuthenticationProvider {
             return null;
         }
     }
+
+
+
+
 
 }

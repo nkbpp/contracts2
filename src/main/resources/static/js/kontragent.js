@@ -1,64 +1,56 @@
-function vievVidObesp (){
-    $("#mainContainer").load("/contract/main/vidObespSpisokViev", "", function () {
+function vievKontragent (){
+    $("#mainContainer").load("/contract/main/kontragent/kontragentViev", "", function () {
     });
 }
 
 $(document).ready(function () {
     $("body").on('click', 'a', function () {
-        if ($(this).attr('id') == "vidObespSpisokViev") {  //список вид обесп
-            vievVidObesp();
+        if ($(this).attr('id') == "kontragentSpisokViev") {  //список контрагент
+            vievKontragent();
             return false;
         }
-        if ($(this).attr('id') == "buttonaddspisok") {
-            let param = "name=" + $("#addznachspisok").val();
-            switch ($(this).attr('value')) {
-                case "vidObesp": {
+        if ($(this).attr('id') == "buttonaddKontragent") {
+            let param = "name=" + $("#addNameKontragent").val() +
+                "&inn=" + $("#addINNKontragent").val();
+
                     let token = $('#_csrf').attr('content');
                     let header = $('#_csrf_header').attr('content');
                     $.ajax({
-                        url: '/contract/main/vidobesp/add',
+                        url: '/contract/main/kontragent/add',
                         method: 'post',
                         data: param,
                         beforeSend: function (xhr) {
                             xhr.setRequestHeader(header, token);
                         },
                         success: function (data) {
-                            vievVidObesp();
+                            vievKontragent();
                         },
                         error: function (textStatus) {
                             alert("Ошибка !!! " + textStatus);
                             console.log('ОШИБКИ AJAX запроса: ' + textStatus);
                         }
                     });
-                }
-                    break;
-            }
             return false;
         }
-        if ($(this).attr('name') == "delSpisok") {
+        if ($(this).attr('name') == "delSpisokKontragent") {
             let param = "id=" + $(this).attr('id');
-            switch ($(this).attr('value')) {
-                case "vidObesp": {
                     let token = $('#_csrf').attr('content');
                     let header = $('#_csrf_header').attr('content');
                     $.ajax({
-                        url: '/contract/main/vidobesp/delette',
+                        url: '/contract/main/kontragent/delette',
                         method: 'post',
                         data: param,
                         beforeSend: function (xhr) {
                             xhr.setRequestHeader(header, token);
                         },
                         success: function (data) {
-                            vievVidObesp();
+                            vievKontragent();
                         },
                         error: function (textStatus) {
                             alert("Ошибка !!! " + textStatus);
                             console.log('ОШИБКИ AJAX запроса: ' + textStatus);
                         }
                     });
-                }
-                    break;
-            }
             return false;
         }
     });

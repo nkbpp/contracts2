@@ -1,5 +1,6 @@
 package ru.pfr.contracts2.entity.contracts;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,9 +22,17 @@ public class MyDocuments {
     private byte[] dokument;
     @Column(name = "namefile", nullable = true/*, length = 400*/)
     private String nameFile;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "contract_id")
+    private Contract contract;
 
     public MyDocuments(byte[] dokument, String nameFile) {
         this.dokument = dokument;
         this.nameFile = nameFile;
+    }
+
+    @JsonIgnore
+    public Contract getContract() {
+        return contract;
     }
 }

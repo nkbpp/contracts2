@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<body>
+
+<div id="ttt" th:fragment="tables(logi)">
+    <table id="tab">
+        <thead>
+        <tr>
+            <td align="center">Дата</td>
+            <td align="center">Пользователь</td>
+            <td align="center">Тип</td>
+            <td align="center">Текст</td>
+        </tr>
+        </thead>
+        <tr th:each="l : ${logi}">
+            <td th:text="${l.date}">
+            </td>
+            <td th:text="${l.user}">
+            </td>
+            <td th:text="${l.type}">
+            </td>
+            <td th:text="${l.text}">
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="aaa" th:fragment="blocks(logerrs)">
+    <table id="block">
+        <thead>
+        <tr>
+            <td align="center">ID</td>
+            <td align="center">Пользователь</td>
+            <td align="center">Попытки</td>
+            <td align="center">Последняя попытка</td>
+            <td align="center">Разблокировать</td>
+            <td align="center">Заблокировать</td>
+        </tr>
+        </thead>
+        <tr th:each="l : ${logerrs}">
+            <td th:text="${l.id}">
+            </td>
+            <td th:text="${l.login}">
+            </td>
+            <td th:text="${l.active}">
+            </td>
+            <td th:text="${l.date}">
+            </td>
+            <td>
+                <a class="waves-effect waves-light btn" th:value="${l.id}" name="clear">Разблокировать</a>
+            </td>
+            <td>
+                <a class="waves-effect waves-light btn" th:value="${l.id}" name="zablock">Заблокировать</a>
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+</body>
+</html>

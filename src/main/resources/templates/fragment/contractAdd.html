@@ -14,6 +14,29 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col s12 row">
+                <div class="col s6">Номер платежного поручения</div>
+                <div class="col s6">
+                    <input type="text" id="plat_post" name="plat_post">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col s12 row">
+                <div class="col s6">Контрагент</div>
+                <div class="col s6">
+                    <div class="input-field col s12">
+                        <select id="kontragent" name="kontragent">
+                            <option th:each="v : ${kontragent}" th:text="${v.getNameInn()}"
+                                    th:value="${v.id}"></option>
+                        </select>
+                        <!--<label>Вид обеспечения</label>-->
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="row">
             <div class="col s12 row">
@@ -100,6 +123,10 @@
                 <div class="col s6">Ответственные</div>
                 <div class="col s6">
                     <div class="input-field col s12 row" id="notifications">
+                        <!--<div th:data-id-notif='${idBoss}' th:utext="${nameBoss} + ' (Начальник отдела)'">-->
+                        <div th:utext="${nameBoss}">
+                             <!--th:utext="${nameBoss} + ' <a class=\'red waves-effect waves-light btn minusNotif\' data-id-notif=' + ${idBoss} + ' data-name-notif=\'delNotif\'>X</a>'">-->
+                        </div>
                     </div>
                     <div class="input-field col s12" id="containerNotification">
                     </div>
@@ -138,6 +165,15 @@
 
         <div class="row">
             <div class="col s12 row">
+                <div class="col s6">Номер заявки на возврат</div>
+                <div class="col s6">
+                    <input type="text" id="nomerZajavkiNaVozvrat" name="nomerZajavkiNaVozvrat">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col s12 row">
                 <div class="col s6"></div>
                 <div class="col s6">
                     <a class="waves-effect waves-light btn" id="addContracts">Добавить</a>
@@ -148,11 +184,12 @@
     </form>
 </div>
 
+
 <div class="row" th:fragment="notifications">
     <div class="col s10">
         <select id="notificationsSelect">
             <option th:each="u : ${users}" th:text="${u.login}"
-                    th:value="${u.id}"></option>
+                    th:value="${u.id_user_zir}"></option>
             <label>Добавить</label>
         </select>
     </div>

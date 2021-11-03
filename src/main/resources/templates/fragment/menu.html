@@ -8,13 +8,14 @@
 
 
 <div id="ttt" th:fragment="menu">
-    <!--<ul id="dropdown1" class="dropdown-content">
-        <li><a th:href="@{/main}">Делопроизводство</a></li>
+    <ul id="dropdown1" class="dropdown-content">
+        <li><a href="#" id="vidObespSpisokViev">Вид обеспечения</a></li>
         <li class="divider"></li>
-        <li><a th:href="@{/main}">Обращение граждан</a></li>
+        <li><a href="#" id="kontragentSpisokViev">Контрагент</a></li>
+        <li class="divider"></li>
     </ul>
 
-    <ul id="dropdown2" class="dropdown-content">
+    <!--<ul id="dropdown2" class="dropdown-content">
         <li><a th:href="@{/main}">Болгария</a></li>
         <li class="divider"></li>
         <li><a th:href="@{/main}">Правопреемники</a></li>
@@ -65,29 +66,34 @@
                     <!--<a th:href="@{/contract/viev}">Просмотр</a>-->
                     <a href="#" id="menuViev">Просмотр</a>
                 </li>
-<!--                <li class="col s2 center center-align">
+                <li class="col s2 center center-align">
                     <a class="dropdown-trigger" href="#!" data-target="dropdown1">
-                        Письма ПЭД</a>
+                        Справочники</a>
                 </li>
-                <li class="col s2 center center-align">
-                    <a class="dropdown-trigger" href="#!" data-target="dropdown2">
-                        Письма не ПЭД</a>
-                </li>
-                <li class="col s2 center center-align">
-                    <a class="dropdown-trigger" href="#!" data-target="dropdown3">
-                        Реестры и отчеты</a>
-                </li>
-                <li class="col s3 center center-align">
-                    <a class="dropdown-trigger" href="#!" data-target="dropdown4">
-                        Справочная информация</a>
-                </li>
-                <li class="col s2 center center-align">
-                    <a class="dropdown-trigger" href="#!" data-target="dropdown5">
-                        История</a>
-                </li>-->
+                <!--               <li class="col s2 center center-align">
+                                   <a class="dropdown-trigger" href="#!" data-target="dropdown2">
+                                       Письма не ПЭД</a>
+                               </li>
+                               <li class="col s2 center center-align">
+                                   <a class="dropdown-trigger" href="#!" data-target="dropdown3">
+                                       Реестры и отчеты</a>
+                               </li>
+                               <li class="col s3 center center-align">
+                                   <a class="dropdown-trigger" href="#!" data-target="dropdown4">
+                                       Справочная информация</a>
+                               </li>
+                               <li class="col s2 center center-align">
+                                   <a class="dropdown-trigger" href="#!" data-target="dropdown5">
+                                       История</a>
+                               </li>-->
             </ul>
         </div>
     </nav>
+    <script>
+        $(document).ready(function () {
+            $(".dropdown-trigger").dropdown(); //чтобы меню хренячило
+        });
+    </script>
 </div>
 
 
