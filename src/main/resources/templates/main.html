@@ -13,6 +13,21 @@
 
         $(document).ready(function () {
             let body = $("body");
+            body.on('keyup', 'input', function() {
+                let param = "name=" + $("#nameModalKontragent").val() +
+                    "&inn=" + $("#innModalKontragent").val();
+                console.log(param);
+                console.log($(this).attr('id'));
+                if ($(this).attr('id') === "nameModalKontragent") {
+                    $("#dliazamenyKontragentTable").load("/contract/main/kontragent/findKontragent", param, function () {
+                    });
+                }
+                if ($(this).attr('id') === "innModalKontragent") {
+                    $("#dliazamenyKontragentTable").load("/contract/main/kontragent/findKontragent", param, function () {
+                    });
+                }
+            });
+
             body.on('click', 'button', function () {
                 if ($(this).attr('name') === "findContract") { //поиск
                     let param = "poleFindByNomGK=" + $("[data-name=poleFindByNomGK]").val() +
@@ -20,27 +35,71 @@
                         "&poleFindByIspolneno=" + $('[data-name=poleFindByIspolneno]').prop("checked") +
                         "&poleFindByNotIspolneno=" + $('[data-name=poleFindByNotIspolneno]').prop("checked");
                     $("#tableContainer").load("/contract/main/findTable", param, function () {
-                        clearPagination();
+                        clearPagination1();
                     });
                     return false;
                 }
             });
 
+
             body.on('click', 'a', function () {
+
+                if ($(this).attr('href')==="#modalDopContainer") {
+                    let param = "id="+$(this).attr('name');
+                    $("#modalDopContainerContent").load("/contract/main/dopTable", param, function () {
+                    });
+                    return false;
+                }
+
+                /*кнопка выбрать в модальной форме*/
+                if (typeof $(this).attr('data-id-modal-kontragent') !== 'undefined' &&
+                    $(this).attr('data-id-modal-kontragent') !== false) {
+                    let id = $(this).attr('data-id-modal-kontragent');
+                    $('#kontragent').val(id); $('select').formSelect();
+                    $('#modalKontragent').modal('close');
+                    return false;
+                }
 
                 if ($(this).attr('id') === "menuViev") {
                     $("#mainContainer").load("/contract/main/vievTable", "", function () {
                         $("#tableContainer").load("/contract/main/getTable", "", function () {
+                            $('#modalDopContainer').modal();
                         });
                     });
                     return false;
                 }
 
                 if ($(this).attr('id') === "menuAdd") {
-                    $("#mainContainer").load("/contract/main/add", "", function (data) {
-                        $("#containerNotification").load("/contract/main/getnotification", "", function (data) {
+                    $("#mainContainer").load("/contract/main/add", "", function () {
+                        $("#containerNotification").load("/contract/main/getnotification", "", function () {
                             $('select').formSelect();//селекты
                         });
+
+                        let token = $('#_csrf').attr('content');
+                        let header = $('#_csrf_header').attr('content');
+                        $.ajax({
+                            url: '/contract/main/dopnotification',
+                            method: 'post',
+                            beforeSend: function(xhr) {
+                                xhr.setRequestHeader(header, token);
+                            },
+                            success: function(data) {
+                                if(!$.isEmptyObject(data)) {
+                                    for (let notif of data.notifications) {
+                                        let dv = $("#notifications");
+                                        dv.html(
+                                            dv.html() + getDopNotifHtml(notif.name, notif.id_user)
+                                        );
+                                    }
+                                }
+                            },
+                            error: function(textStatus){
+                                alert("Ошибка при удалении!!! " + textStatus);
+                                console.log('ОШИБКИ AJAX запроса при удалении документа: ' + textStatus);
+                            }
+                        });
+
+                        $('#modalKontragent').modal();
                     });
                     return false;
                 }
@@ -49,7 +108,7 @@
                     console.log("update");
                     let param = "id="+$(this).attr('name');
 
-                    $("#mainContainer").load("/contract/main/add", "", function () {
+                    $("#mainContainer").load("/contract/main/updateViev", param, function () {
                         $("#containerNotification").load("/contract/main/getnotification", "", function () {
 
                             let token = $('#_csrf').attr('content');
@@ -62,8 +121,11 @@
                                     xhr.setRequestHeader(header, token);
                                 },
                                 success: function(data){
+                                    //logObj(data);
+                                    //logObj(data.contract);
                                     $("#addContracts").attr("data-id-contract",data.contract.id)
                                     $('input[name=receipt_date]').val(data.contract.receipt_date);
+                                    //console.log("data.contract.plat_post = ",data.contract.plat_post);
                                     $('input[name=plat_post]').val(data.contract.plat_post);
                                     //$('input[name=name_koltr]').val(data.contract.name_koltr);
                                     $('input[name=nomGK]').val(data.contract.nomGK);
@@ -82,6 +144,7 @@
                                     $('input[name=date_ispolnenija_GK]').val(data.contract.date_ispolnenija_GK);
                                     $('input[name=col_days]').val(data.contract.col_days);
                                     $('input[name=nomerZajavkiNaVozvrat]').val(data.contract.nomerZajavkiNaVozvrat);
+                                    $('input[name=dateZajavkiNaVozvrat]').val(data.contract.dateZajavkiNaVozvrat);
                                     $('#checkboxAddUpdate').prop("checked", data.contract.ispolneno==="true");
 
                                     $('#addContracts').text("Изменить");
@@ -89,11 +152,7 @@
                                     for (let notif of data.notifications) {
                                         let dv = $("#notifications");
                                         dv.html(
-                                            dv.html() +
-                                            "<div id='" + notif.id_user + "'>" + notif.name + " " +
-                                            "<a class='red waves-effect waves-light btn minusNotif' " +
-                                            "name='" + notif.id_user + "'>X</a>" +
-                                            "</div>"
+                                            dv.html() + getDopNotifHtml(notif.name, notif.id_user)
                                         );
                                     }
 
@@ -101,12 +160,14 @@
                                         let dv = $("#documentsViev");
                                         dv.html(
                                             dv.html() +
-                                            "<div data-id-doc='" + doc.id + "'>"+doc.nameFile + " " +
+                                            "<div align='left' data-id-doc='" + doc.id + "'>"+doc.nameFile + " " +
                                             "<a class='red waves-effect waves-light btn minusNotif' " +
                                             "data-id-doc='" + doc.id + "' data-name-doc='delDoc'>X</a>" +
                                             "</div>"
                                         );
                                     }
+
+                                    $('#modalKontragent').modal();
                                 },
                                 error: function(textStatus){
                                     alert("Ошибка !!! " + textStatus);
@@ -161,6 +222,7 @@
                             success: function(){
                                 param = "param=" + activeList();
                                 $("#tableContainer").load("/contract/main/getTable", param, function () {
+                                    $('#modalDopContainer').modal();
                                 });
                             },
                             error: function(textStatus){
@@ -201,7 +263,7 @@
                     let list;
                     //кнопка назад
                     if ($(this).text() === "Назад") {
-                        clearPagination();
+                        clearPagination1();
                         list = 1;
                     } else //кнопка далее
                     if ($(this).text() === "Далее") {
@@ -227,6 +289,7 @@
                     let param = "param=" + list;
 
                     $("#tableContainer").load("/contract/main/getTable", param, function () {
+                        $('#modalDopContainer').modal();
                     });
                 }
 
@@ -262,8 +325,11 @@
             });
         });
         //переключатели страниц
-        function clearPagination() { // определяем функцию и ее механизм выполнения
-            let pag = $("#pagination a");
+        function clearPagination1() { // определяем функцию и ее механизм выполнения
+            clearPagination($("#pagination a"));
+        }
+
+        function clearPagination(pag) {
             pag.first().parent().removeClass("disabled").addClass("disabled");
             pag.eq(1).text("1").parent().removeClass("active").addClass("active");
             pag.eq(2).text("2").parent().removeClass("active");
@@ -287,6 +353,24 @@
             return list;
         }
 
+
+        function getDopNotifHtml(name, id) {
+            let html = "<div id='" + id + "'>" + name + " " +
+                "<a class='red waves-effect waves-light btn minusNotif' " +
+                "name='" + id + "'>X</a>" +
+                "</div>";
+            return html;
+        }
+
+
+        function logObj(obj) {
+            let str = "";
+            for(k in obj) {
+                str += k+": "+ obj[k]+"\r\n";
+            }
+            console.log(str);
+        }
+
     </script>
 
     <script type="text/javascript" th:src="@{/js/documents.js}"></script>
@@ -296,9 +380,14 @@
 </head>
 <body>
 
+<div th:insert="fragment/logout :: logout(${user})"></div>
+
 <div th:insert="fragment/menu :: menu"></div>
 
 <div id="mainContainer"></div>
+
+
+
 
 <script type="text/javascript" src="/webjars/materialize/1.0.0-rc.2/dist/js/materialize.min.js"></script>
 </body>

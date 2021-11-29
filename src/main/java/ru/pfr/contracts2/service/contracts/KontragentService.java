@@ -9,7 +9,6 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Service
 @RequiredArgsConstructor // создать конструктор для финализируемых полей
 public class KontragentService {
@@ -18,6 +17,13 @@ public class KontragentService {
 
     public List<Kontragent> findAll() {
         return kontragentRepository.findAll();
+    }
+
+    public List<Kontragent> findByNameAndInn(String name, String inn) {
+        if((name==null || name.equals("")) && (inn==null || inn.equals(""))){
+            return kontragentRepository.findAll();
+        }
+        return kontragentRepository.findByNameAndInn(name, inn);
     }
 
     public List<Kontragent> findAllwithPusto() {

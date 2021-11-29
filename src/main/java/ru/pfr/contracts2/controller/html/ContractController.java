@@ -16,6 +16,7 @@ import ru.pfr.contracts2.service.zir.ZirServise;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -40,6 +41,17 @@ public class ContractController {
         return "fragment/table :: table";
     }
 
+    @GetMapping("/dopTable")  //дополнительная информация
+    public String dopTable(
+            @RequestParam(defaultValue = "") Long id,
+            @AuthenticationPrincipal User user,
+            Model model){
+
+        Contract contract = contractService.findById(id);
+        model.addAttribute("contract", contract);
+        return "fragment/modalKontragent :: tableContractDop";
+    }
+
     @GetMapping("/findTable") //TODO в зависимости от пользователя и отдела
     public String findTable(
             @RequestParam(defaultValue = "") String poleFindByNomGK,
@@ -56,7 +68,7 @@ public class ContractController {
         }
         List<Contract> contracts2  = new ArrayList<>();
         contracts.forEach(contract -> {
-            if(poleFindByIspolneno==false && poleFindByNotIspolneno==false) {
+            if(!poleFindByIspolneno && !poleFindByNotIspolneno) {
             } else if(contract.getIspolneno()==poleFindByIspolneno){
                 contracts2.add(contract);
             } else if(contract.getIspolneno()==!poleFindByNotIspolneno){
@@ -79,12 +91,11 @@ public class ContractController {
                        Model model){
 
         model.addAttribute("kontragent", kontragentService.findAllwithPusto());
+        model.addAttribute("kontragent2", kontragentService.findAll());
         model.addAttribute("vidObesp", vidObespService.findAllwithPusto());
 
         model.addAttribute("nameBoss",
-                zirServise.getNameBossById(Integer.valueOf(String.valueOf(user.getId_user_zir()))));
-        /*model.addAttribute("idBoss",
-                zirServise.getIdBossByIdUser(Integer.valueOf(String.valueOf(user.getId_user_zir()))));*/
+                zirServise.getNameBossById(Integer.parseInt(String.valueOf(user.getId_user_zir()))));
 
         return "fragment/contractAdd :: contractAdd";
     }
@@ -95,12 +106,9 @@ public class ContractController {
             @AuthenticationPrincipal User user,
                       Model model){
 
-        //тест почты
-        //mailSender.send("0831@041.pfr.ru","тест","mytest");
-
         model.addAttribute("kontragent", kontragentService.findAllwithPusto());
+        model.addAttribute("kontragent2", kontragentService.findAll());
         model.addAttribute("vidObesp", vidObespService.findAllwithPusto());
-
         model.addAttribute("contract", contractService.findById(id));
 
         return "fragment/contractAdd :: contractAdd";
@@ -110,13 +118,13 @@ public class ContractController {
     public String getnotification(@AuthenticationPrincipal User user,
                       Model model){
 
-        List<User> users = new ArrayList<>();
+        List<User> users = new ArrayList<>(zirServise.getFindAllOtdelByIdAddPusto(user.getId_user_zir()));
 
-        //users.addAll(userService.findAll());
-
-        users.addAll(zirServise.getFindAllOtdelByIdAddPusto(user.getId_user_zir()));
+        //Map<String,String> otdel =  zirServise.getFindAllOtdel();
+        //model.addAttribute("otdel", otdel);
 
         model.addAttribute("users", users);
+
 
         return "fragment/contractAdd :: notifications";
     }

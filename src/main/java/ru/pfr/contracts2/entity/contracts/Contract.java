@@ -57,6 +57,8 @@ public class Contract {
 
     private String nomerZajavkiNaVozvrat; //Номер заявки на возврат
 
+    private Date dateZajavkiNaVozvrat; //Номер заявки на возврат
+
     //@OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     @OneToMany(mappedBy = "contract", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MyDocuments> myDocuments = new ArrayList<>();
@@ -69,36 +71,44 @@ public class Contract {
 
     private Date date_create;
 
+    public String getDateZajavkiNaVozvratRu() {
+        return dateZajavkiNaVozvrat==null?"":ConverterDate.datetostring_ddMMyyyy(dateZajavkiNaVozvrat);
+    }
+
+    public String getDateZajavkiNaVozvratEn() {
+        return dateZajavkiNaVozvrat==null?"":ConverterDate.datetostring_yyyyMMdd(dateZajavkiNaVozvrat);
+    }
+
     public String getReceipt_dateRu() {
-        return ConverterDate.datetostring_ddMMyyyy(receipt_date);
+        return receipt_date==null?"":ConverterDate.datetostring_ddMMyyyy(receipt_date);
     }
 
     public String getReceipt_dateEn() {
-        return ConverterDate.datetostring_yyyyMMdd(receipt_date);
+        return receipt_date==null?"":ConverterDate.datetostring_yyyyMMdd(receipt_date);
     }
 
     public String getDateGKRu() {
-        return ConverterDate.datetostring_ddMMyyyy(dateGK);
+        return dateGK==null?"":ConverterDate.datetostring_ddMMyyyy(dateGK);
     }
 
     public String getDateGKEn() {
-        return ConverterDate.datetostring_yyyyMMdd(dateGK);
+        return dateGK==null?"":ConverterDate.datetostring_yyyyMMdd(dateGK);
     }
 
     public String getDate_ispolnenija_GKRu() {
-        return ConverterDate.datetostring_ddMMyyyy(date_ispolnenija_GK);
+        return date_ispolnenija_GK==null?"":ConverterDate.datetostring_ddMMyyyy(date_ispolnenija_GK);
     }
 
     public String getDate_ispolnenija_GKEn() {
-        return ConverterDate.datetostring_yyyyMMdd(date_ispolnenija_GK);
+        return date_ispolnenija_GK==null?"":ConverterDate.datetostring_yyyyMMdd(date_ispolnenija_GK);
     }
 
     public String getRaschet_dateRu() {
-        return ConverterDate.datetostring_ddMMyyyy(raschet_date);
+        return raschet_date==null?"":ConverterDate.datetostring_ddMMyyyy(raschet_date);
     }
 
     public String getRaschet_dateEn() {
-        return ConverterDate.datetostring_yyyyMMdd(raschet_date);
+        return raschet_date==null?"":ConverterDate.datetostring_yyyyMMdd(raschet_date);
     }
 
 
@@ -109,7 +119,8 @@ public class Contract {
     public Contract(Date receipt_date, String plat_post, Kontragent kontragent/*String name_koltr*/, String nomGK,
                     Date dateGK, String predmet_contract, VidObesp vidObesp, Float sum,
                     Date date_ispolnenija_GK, Integer col_days, List<Notification> notifications,
-                    Boolean ispolneno, List<MyDocuments> myDocuments, String nomerZajavkiNaVozvrat, User user) {
+                    Boolean ispolneno, List<MyDocuments> myDocuments, String nomerZajavkiNaVozvrat,
+                    Date dateZajavkiNaVozvrat, User user) {
         this.receipt_date = receipt_date;
         this.plat_post = plat_post;
         //this.name_koltr = name_koltr;
@@ -125,6 +136,7 @@ public class Contract {
 
         this.ispolneno = ispolneno;
         this.nomerZajavkiNaVozvrat = nomerZajavkiNaVozvrat;
+        this.dateZajavkiNaVozvrat = dateZajavkiNaVozvrat;
 
         setAllNotification(notifications);
         setAllDocuments(myDocuments);
@@ -171,5 +183,7 @@ public class Contract {
         this.notifications.remove(notif);
         notif.setContract(null);
     }
+
+
 
 }

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<body>
+
+<div th:fragment="modalKontragent(kontragent2)">
+    <div class="modal-content">
+        <h4>Контрагент</h4>
+
+        <table align="center">
+            <tr>
+                <td align="center">Наименование контрагента<input id="nameModalKontragent" type="text"></td>
+                <td align="center">ИНН<input id="innModalKontragent" type="text"></td>
+            </tr>
+        </table>
+
+        <div id="dliazamenyKontragentTable" th:include="fragment/modalKontragent :: modalKontragentTable">
+        </div>
+        <!--<div id="pagination4" th:include="fragmentupfr/vvodzayav :: pagination"></div>-->
+    </div>
+</div>
+
+<div th:fragment="modalKontragentTable">
+    <table align="center">
+        <tr>
+            <td align="center">Наименование контрагента</td>
+            <td align="center">ИНН</td>
+            <td align="center">Выбор</td>
+        </tr>
+
+        <tr th:each="k : ${kontragent2}">
+            <td align="center" th:text="${k.name}"></td>
+            <td align="center" th:text="${k.inn}"></td>
+            <td align="center"><a class="vibdoc" th:data-id-modal-kontragent="${k.id}">Выбрать</a></td>
+        </tr>
+
+        <tr th:each="u : ${users}">
+            <td align="center" th:text="${u.login}"></td>
+        </tr>
+    </table>
+</div>
+
+
+<table border="1" th:fragment="tableContractDop">
+    <tr>
+        <th rowspan="2">Дата исполнения контракта</th>
+        <th rowspan="2">Расчетная дата</th>
+        <th colspan="2">Заявка на возврат</th>
+        <th rowspan="2">Ответственные</th>
+        <th rowspan="2">Прикрепленные файлы</th>
+    </tr>
+    <tr>
+        <th>Номер</th>
+        <th>Дата</th>
+    </tr>
+    <tr>
+        <td align="center" th:text="${contract.getDate_ispolnenija_GKRu()}"></td>
+        <td align="center" th:text="${contract.getRaschet_dateRu()}"></td>
+        <td align="center" th:text="${contract.nomerZajavkiNaVozvrat}"></td>
+        <td align="center" th:text="${contract.getDateZajavkiNaVozvratRu()}"></td>
+        <td align="center" >
+            <table>
+                <tr th:each="n : ${contract.notifications}">
+                    <td th:text="${n.name}">
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td align="center">
+            <table>
+                <tr th:each="d : ${contract.myDocuments}">
+                    <td>
+                        <a th:href="@{/contract/main/download(id=${d.id})}"
+                           th:text="${d.nameFile}"></a>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>

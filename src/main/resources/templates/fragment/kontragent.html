@@ -56,11 +56,14 @@
 
     <table>
         <tr>
-            <th align="center">Индекс</th>
+            <th align="center">Номер п/п</th>
             <th align="center">Наименование</th>
             <th align="center">ИНН</th>
+            <th align="center"></th>
         </tr>
-        <tr th:each="k : ${kontragents}">
+        <tr th:each="k,iterStat : ${kontragents}">
+            <td  th:text="${iterStat.count}">
+            </td>
             <td  th:text="${k.getName()}">
             </td>
             <td  th:text="${k.getInn()}">

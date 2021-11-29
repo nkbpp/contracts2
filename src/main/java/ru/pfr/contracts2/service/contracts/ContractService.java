@@ -31,8 +31,12 @@ public class ContractService {
         return contractRepository.findById(id).orElse(null);
     }
 
-    public List<Contract> findByfindByNomGK(String nom, String inn) {
+/*    public List<Contract> findByfindByNomGK(String nom, String inn) {
         return contractRepository.findByNomGKAndKontragentInn(nom, inn);
+    }*/
+
+    public List<Contract> findByfindByNomGK(String name, String inn) {
+        return contractRepository.findByNomGKAndKontragentInnScript(name, inn);
     }
 
     public List<Contract> findAll() {
@@ -40,16 +44,19 @@ public class ContractService {
     }
 
     public List<Contract> findAll(int l) {
-        return cutTheList(contractRepository.findAll(), l, COL);
+        return cutTheList(contractRepository.findAllByOrderByIdDesc(), l, COL);
     }
 
     @Transactional
     public void save(Contract contract) {
         //рассчитываем расчетную дату
-        Calendar calendar = GregorianCalendar.getInstance();
-        calendar.setTime(contract.getDate_ispolnenija_GK());
-        calendar.add(Calendar.DATE,contract.getCol_days());
-        contract.setRaschet_date(calendar.getTime());
+        Date date = contract.getDate_ispolnenija_GK();
+        if(date!=null){
+            Calendar calendar = GregorianCalendar.getInstance();
+            calendar.setTime(date);
+            calendar.add(Calendar.DATE,(contract.getCol_days() + 2) );
+            contract.setRaschet_date(calendar.getTime());
+        }
 
         contract.setDate_update(new Date());
 
@@ -98,33 +105,46 @@ public class ContractService {
         contracts.forEach(contract -> {
             Date ras = contract.getRaschet_date();
             Date tec = ConverterDate.stringToDate(ConverterDate.datetostring_yyyyMMdd(new Date()));
-            int days = ConverterDate.differenceInDays(tec,ras);
+            int days = ConverterDate.differenceInDays(ras,tec);
 
-            String subject = "предупреждение!";
-            String text = "НомерГК " +
-                    contract.getNomGK() +
-                    " дней осталось " + days;
+            String subject = "\"Предупреждение! Возврат обеспечения исполнения контракта!\"!";
+            String text = "Осталось дней: " + days +
+                    "\n Наименование контрагента: " + contract.getKontragent().getName() +
+                    "\n ИНН контрагента: " + contract.getKontragent().getInn() +
+                    "\n Номер контракта: " + contract.getNomGK() +
+                    "\n Дата контракта: " + contract.getDateGKRu() +
+                    "\n Вид обеспечения: " + contract.getVidObesp().getName() +
+                    "\n Сумма: " + contract.getSumOk();
 
+            System.out.println("Дней " + days);
             if(days>=0 && days<=4){
-                //тест почты
-                for (Notification notification:
-                     contract.getNotifications()) {
-                    mailSender.send(zirServise.getEmailUserById(
-                            Integer.valueOf(String.valueOf(notification.getId_user()))),
-                            subject,text);//сообщение остальным
+
+                String emailUser = zirServise.getEmailUserById(Integer.parseInt(String.valueOf(contract.getUser().getId_user_zir())));
+                System.out.println("Создатель " + emailUser);
+                mailSender.send(
+                        zirServise.getEmailUserById(Integer.parseInt(String.valueOf(contract.getUser().getId_user_zir()))),
+                        subject,text); //сообщение создателю
+                String emailBoss  = zirServise.getEmailBossById(Integer.parseInt(String.valueOf(contract.getUser().getId_user_zir())));
+                System.out.println("Босс " + emailBoss);
+                if(!emailUser.equals(emailBoss)) {
+                    mailSender.send(
+                            emailBoss,
+                            subject, text); //сообщение начальнику отдела
                 }
 
-                mailSender.send(
-                        zirServise.getEmailUserById(Integer.valueOf(String.valueOf(contract.getUser().getId_user_zir()))),
-                        subject,text); //сообщение создателю
-                mailSender.send(
-                        zirServise.getEmailBossById(Integer.valueOf(String.valueOf(contract.getUser().getId_user_zir()))),
-                        subject,text); //сообщение начальнику отдела
+                for (Notification notification:
+                        contract.getNotifications()) {
+                    String email = zirServise.getEmailUserById(
+                            Integer.parseInt(String.valueOf(notification.getId_user())));
+                    System.out.println("Кто то " +email);
+                    if(!emailUser.equals(email) && !emailBoss.equals(email)) {
+                        mailSender.send(email,
+                                subject, text);//сообщение остальным
+                    }
+                }
             }
 
-            /*System.out.println("Разница между датами в днях: " + days +
-            " ras = " + ras +
-                    " tec = " + tec);*/
+
         });
 
     }

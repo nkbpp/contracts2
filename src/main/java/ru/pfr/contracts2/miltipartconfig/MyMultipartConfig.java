@@ -13,7 +13,6 @@ import javax.servlet.MultipartConfigElement;
 @ComponentScan // делает возможным автоматический поиск классов с @Controller аннотацией
 @EnableAutoConfiguration //приложение будет также обнаруживать MultipartConfigElement бин и делать его работоспособным для загрузки файла
 public class MyMultipartConfig {
-
     @Bean
     MultipartConfigElement multipartConfigElement() {
         MultipartConfigFactory factory = new MultipartConfigFactory();
@@ -21,5 +20,4 @@ public class MyMultipartConfig {
         factory.setMaxRequestSize(DataSize.parse("40MB"));
         return factory.createMultipartConfig();
     }
-
 }

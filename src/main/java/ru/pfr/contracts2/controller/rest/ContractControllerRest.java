@@ -17,7 +17,6 @@ import ru.pfr.contracts2.service.contracts.ContractService;
 import ru.pfr.contracts2.service.contracts.KontragentService;
 import ru.pfr.contracts2.service.contracts.MyDocumentsService;
 import ru.pfr.contracts2.service.contracts.VidObespService;
-import ru.pfr.contracts2.service.user.UserService;
 import ru.pfr.contracts2.service.zir.ZirServise;
 
 import java.util.*;
@@ -30,7 +29,6 @@ public class ContractControllerRest {
     private final VidObespService vidObespService;
     private final KontragentService kontragentService;
     private final ContractService contractService;
-    private final UserService userService;
     private final MyDocumentsService myDocumentsService;
     private final ZirServise zirServise;
 
@@ -40,17 +38,17 @@ public class ContractControllerRest {
             @RequestParam String receipt_date,
             @RequestParam String plat_post,
             @RequestParam Long kontragent,
-            //@RequestParam String name_koltr,
             @RequestParam String nomGK,
             @RequestParam String dateGK,
             @RequestParam String predmet_contract,
             @RequestParam Long vidObesp,
             @RequestParam Float sum,
             @RequestParam String date_ispolnenija_GK,
-            @RequestParam Integer col_days,
+            @RequestParam(defaultValue = "0") Integer col_days,
             @RequestParam List<String> notifications,
             @RequestParam List<MultipartFile> myDocuments,
             @RequestParam String nomerZajavkiNaVozvrat,
+            @RequestParam String dateZajavkiNaVozvrat,
             @RequestParam Boolean ispolneno,
             @AuthenticationPrincipal User user,
             Model model) {
@@ -90,13 +88,15 @@ public class ContractControllerRest {
 
             Date receipt_date2 = ConverterDate.stringToDate(receipt_date);
             Date dateGK2 = ConverterDate.stringToDate(dateGK);
+            Date dateZajavkiNaVozvrat2 = ConverterDate.stringToDate(dateZajavkiNaVozvrat);
             Date date_ispolnenija_GK2 = ConverterDate.stringToDate(date_ispolnenija_GK);
 
             if(id.equals("undefined")){ // Добавление
                 contract = new Contract(receipt_date2, plat_post, kontragent1, /*name_koltr,*/
                         nomGK, dateGK2, predmet_contract, vidObesp1, sum,
                         date_ispolnenija_GK2, col_days,
-                        notifications1, ispolneno, listDocuments, nomerZajavkiNaVozvrat, user);
+                        notifications1, ispolneno, listDocuments,
+                        nomerZajavkiNaVozvrat, dateZajavkiNaVozvrat2, user);
             }else{ // Изменения
                 contract=contractService.findById(Long.valueOf(id));
                 contract.setPlat_post(plat_post);
@@ -114,8 +114,8 @@ public class ContractControllerRest {
                 contract.setAllNotification(notifications1);
                 contract.setIspolneno(ispolneno);
                 contract.setNomerZajavkiNaVozvrat(nomerZajavkiNaVozvrat);
-                //List<MyDocuments> myDocuments1 = contract.getMyDocuments();
-                //myDocuments1.addAll(listDocuments);
+                contract.setDateZajavkiNaVozvrat(dateZajavkiNaVozvrat2);
+
                 contract.setAllDocuments(listDocuments);
 
             }
@@ -163,9 +163,10 @@ public class ContractControllerRest {
             Contract contract = contractService.findById(id);
             Map<String, Object> map2 = new HashMap<>();
 
-            Map<String, String> map = new HashMap<>();
+            Map<String, String> map = new HashMap<>();//TODO Автоматизировать
             map.put("id", contract.getId().toString());
             map.put("receipt_date", contract.getReceipt_dateEn());
+            map.put("plat_post", contract.getPlat_post());
             //map.put("name_koltr", contract.getName_koltr());
             map.put("kontragent", contract.getKontragent() != null ? contract.getKontragent().getId().toString() : "");
             map.put("nomGK", contract.getNomGK());
@@ -175,10 +176,9 @@ public class ContractControllerRest {
             map.put("sum", contract.getSum().toString());
             map.put("date_ispolnenija_GK", contract.getDate_ispolnenija_GKEn());
             map.put("col_days", contract.getCol_days().toString());
-            //map.put("raschet_date", contract.getRaschet_dateRu());
-            //map.put("notifications", contract.getNotifications());
             map.put("ispolneno", contract.getIspolneno().toString());
-            //map.put("myDocuments", contract.getMyDocuments());
+            map.put("nomerZajavkiNaVozvrat", contract.getNomerZajavkiNaVozvrat());
+            map.put("dateZajavkiNaVozvrat", contract.getDateZajavkiNaVozvratEn());
 
             map2.put("contract",map);
             List<MyDocuments> myDocuments = contract.getMyDocuments();
@@ -220,6 +220,37 @@ public class ContractControllerRest {
         try {
             myDocumentsService.delete(id);
             return ResponseEntity.ok("Данные удалены!");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Ошибка!");
+        }
+    }
+
+
+    @PostMapping("/dopnotification")
+    public ResponseEntity<?> dopnotification(
+            @AuthenticationPrincipal User user,
+            Model model) {
+        try {
+            Map<String, Object> map2 = new HashMap<>();
+            if (user.getId_ondel_zir().longValue() == Long.valueOf("148").longValue()) {//147
+                List<String> notifications = new ArrayList<>();
+                notifications.add("1270");//Нехаева
+                notifications.add("1089");//Бессонова
+                notifications.add("1681");//Алясина
+
+                List<Notification> notifications1 = new ArrayList<>();
+                for (String n:
+                        notifications) {
+                    if(!n.equals("undefined") && !n.equals("")){
+                        notifications1.add(new Notification(Long.valueOf(n),zirServise.getNameUserById(Integer.parseInt(n))));
+                    }
+                }
+                map2.put("notifications",notifications1);
+            } else {
+                //map2.put("notifications",notifications1);
+            }
+
+            return new ResponseEntity<>(map2, HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Ошибка!");
         }

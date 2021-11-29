@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        form#logout div{
+            margin: 0px;
+            padding: 0px;
+        }
+    </style>
+</head>
+<body>
+
+    <form th:fragment="logout (user)" id="logout" name="logout"  th:action="@{/logout}" method="post">
+        <div class="row">
+            <div class="col s9 ">
+                <p style="
+                        font-style: normal;
+                        font-size: 34pt;
+                        font-weight: lighter;
+                        margin: 0;
+                        padding: 0;
+                        padding-left: 15px;">
+                    Обеспечение исполнения контрактов
+                </p>
+            </div>
+            <div class="col s3">
+                <!--<div class="col s9 row" align="right" th:text="${user.login} + '    ' + ${user.rayon.namerayon}">-->
+                <div >
+                    <div align="right"  th:text=" 'Пользователь: ' + ${user.login}"></div>
+                    <div align="right"  th:text=" 'Отдел: ' + ${user.name_ondel_zir}"></div>
+                </div>
+                <div align="right">
+<!--                    <input class="right-align waves-effect waves-light btn"
+                           style="  margin: 0px;
+                                    padding: 0px;"
+                           id="logout2" type="submit" value="Выйти"/>-->
+                    <button class="btn waves-effect waves-light"
+                            style=" margin: 0px 7px;
+                                    padding: 0px 7px;
+                                    height: 26px;
+                                    line-height: 26px;"
+                            type="submit" id="logout2">Выйти
+                    </button>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+        </script>
+    </form>
+
+</body>
+</html>

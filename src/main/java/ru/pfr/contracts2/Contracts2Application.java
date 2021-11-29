@@ -9,7 +9,6 @@ public class Contracts2Application {
 
 	public static void main(String[] args) {
 
-		//new Notification();
 		SpringApplication.run(Contracts2Application.class, args);
 
 	}

@@ -33,8 +33,10 @@ import ru.pfr.contracts2.service.user.UserService;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -65,7 +67,7 @@ public class AuthProvider implements AuthenticationProvider {
         String password = String.valueOf(auth.getCredentials());
         Map<String, String> parameterList = new HashMap<>();
         parameterList.put("adr", "http://127.0.0.0/Autent");
-        parameterList.put("kod", "161"); //код приложения в ЗИРЕ
+        parameterList.put("kod", "171"); //код приложения в ЗИРЕ 161
         parameterList.put("login", username);
         logiService.save(new Logi(username,
                 "Попытка авторизации по логину " + username + " AuthProvider authenticate()"));
@@ -147,21 +149,39 @@ public class AuthProvider implements AuthenticationProvider {
         /*byte[] decodedBytes = Base64.getUrlDecoder().decode((String) authData.get("namepod")[0]);
         String namepod = new String(decodedBytes);*/
 
-        byte[] decoded = DatatypeConverter.parseBase64Binary((String) authData.get("namepod")[0]);
-        String namepod = new String(decoded, StandardCharsets.UTF_8);
+        /*byte[] decoded = DatatypeConverter.parseBase64Binary((String) authData.get("namepod")[0]);
+        String namepod = new String(decoded, StandardCharsets.UTF_8);*/
 
+        String namepod = null;
+        try {
+            namepod = URLDecoder.decode((String) authData.get("namepod")[0],"UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+/*        String ss2 = "";
+        try{
+            ss2 = URLEncoder.encode("Отдел эксплуатации и сопровождения","UTF-8");
+        }catch (Exception e){
+        }
+
+        String ss = "";
+        try{
+            ss = URLDecoder.decode(ss2,"UTF-8");
+        }catch (Exception e){
+        }*/
 
         String email = (String) authData.get("email")[0];
         for (Object right : rights) {
             int rightCode = Integer.parseInt((String) right);
             switch (rightCode) {
-                case 3000: //не забыть поменять
+                case 86: //не забыть поменять
                     roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_UPDATE.getString()));
                     break;
-                case 3012:
+                /*case 3012:
                     roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_READ.getString()));
-                    break;
-                case 3010:
+                    break;*/
+                case 85:
                     roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_ADMIN.getString()));
                     upfrCode = new StringBuilder("999");
                     break;

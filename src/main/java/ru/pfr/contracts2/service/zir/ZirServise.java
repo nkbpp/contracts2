@@ -12,7 +12,6 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
-import ru.pfr.contracts2.entity.contracts.VidObesp;
 import ru.pfr.contracts2.entity.user.User;
 
 import java.io.IOException;
@@ -20,10 +19,21 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ZirServise {
+
+    public Map<String,String> getFindAllOtdel(){
+        String[][] S = GetSelect("select ID_POD, NAME_POD from podrazd");
+        Map<String,String> map = new HashMap<>();
+        for (String[] strings : S) {
+            map.put(strings[0],strings[1]);
+        }
+        return map;
+    }
 
     public List<User> getFindAllOtdelByIdAddPusto (Long id_zir){
         List<User> users = new ArrayList<>();
@@ -40,11 +50,11 @@ public class ZirServise {
                 "WHERE e.ID_POD_EM = p.ID_POD " +
                 "AND po.ID_POST = e.ID_POST_EM  AND e.ID_POD_EM = (SELECT ID_POD_EM FROM EMPLOYEES WHERE ID_EM=" + id_zir + ")");
         List<User> users = new ArrayList<>();
-        for (int i = 0; i < S.length; i++) {
-                User user = new User();
-                user.setLogin(S[i][1]);
-                user.setId_user_zir(Long.valueOf(S[i][0]));
-                users.add(user);
+        for (String[] strings : S) {
+            User user = new User();
+            user.setLogin(strings[1]);
+            user.setId_user_zir(Long.valueOf(strings[0]));
+            users.add(user);
         }
         return users;
     }
@@ -87,7 +97,7 @@ public class ZirServise {
         return S[0][2];
     }
     public String getNameBossById (int id_zir){
-        String[][] S = new String[0][];
+        String[][] S;
 
              S = GetSelect("SELECT e.ID_EM, " +
                     "CONCAT(CONCAT(CONCAT(e.FAM_EM, CONCAT(' ', SUBSTR(e.NAM_EM, 1, 1))),'.'), CONCAT(SUBSTR(e.OTCH_EM, 1, 1),'.')) as NAME, " +
