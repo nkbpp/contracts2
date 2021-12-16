@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.pfr.contracts2.entity.contracts.*;
+import ru.pfr.contracts2.entity.log.Logi;
 import ru.pfr.contracts2.entity.user.User;
 import ru.pfr.contracts2.global.ConverterDate;
 import ru.pfr.contracts2.global.Translit;
@@ -17,6 +18,7 @@ import ru.pfr.contracts2.service.contracts.ContractService;
 import ru.pfr.contracts2.service.contracts.KontragentService;
 import ru.pfr.contracts2.service.contracts.MyDocumentsService;
 import ru.pfr.contracts2.service.contracts.VidObespService;
+import ru.pfr.contracts2.service.log.LogiService;
 import ru.pfr.contracts2.service.zir.ZirServise;
 
 import java.util.*;
@@ -32,6 +34,8 @@ public class ContractControllerRest {
     private final MyDocumentsService myDocumentsService;
     private final ZirServise zirServise;
 
+    private final LogiService logiService;
+
     @PostMapping("/upload")
     public ResponseEntity upload(
             @RequestParam String id,
@@ -42,7 +46,7 @@ public class ContractControllerRest {
             @RequestParam String dateGK,
             @RequestParam String predmet_contract,
             @RequestParam Long vidObesp,
-            @RequestParam Float sum,
+            @RequestParam Double sum,
             @RequestParam String date_ispolnenija_GK,
             @RequestParam(defaultValue = "0") Integer col_days,
             @RequestParam List<String> notifications,
@@ -92,16 +96,16 @@ public class ContractControllerRest {
             Date date_ispolnenija_GK2 = ConverterDate.stringToDate(date_ispolnenija_GK);
 
             if(id.equals("undefined")){ // Добавление
-                contract = new Contract(receipt_date2, plat_post, kontragent1, /*name_koltr,*/
+                contract = new Contract(receipt_date2, plat_post, kontragent1,
                         nomGK, dateGK2, predmet_contract, vidObesp1, sum,
                         date_ispolnenija_GK2, col_days,
                         notifications1, ispolneno, listDocuments,
                         nomerZajavkiNaVozvrat, dateZajavkiNaVozvrat2, user);
+                logiService.save(new Logi(user.getLogin(),"Add","Добавление контракта"));
             }else{ // Изменения
                 contract=contractService.findById(Long.valueOf(id));
                 contract.setPlat_post(plat_post);
                 contract.setReceipt_date(receipt_date2);
-                //contract.setName_koltr(name_koltr);
                 contract.setKontragent(kontragent1);
                 contract.setNomGK(nomGK);
                 contract.setDateGK(dateGK2);
@@ -111,18 +115,17 @@ public class ContractControllerRest {
 
                 contract.setDate_ispolnenija_GK(date_ispolnenija_GK2);
                 contract.setCol_days(col_days);
-                contract.setAllNotification(notifications1);
+
                 contract.setIspolneno(ispolneno);
                 contract.setNomerZajavkiNaVozvrat(nomerZajavkiNaVozvrat);
                 contract.setDateZajavkiNaVozvrat(dateZajavkiNaVozvrat2);
 
+                contract.setAllNotification(notifications1);
                 contract.setAllDocuments(listDocuments);
-
+                logiService.save(new Logi(user.getLogin(),"Upd","Изменение контракта с id = " + id));
             }
-            contractService.save(contract);//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            HashMap<String, Object> map = new HashMap<>();
-            map.put("text", "Данные добавлены!");
-            return ResponseEntity.ok(map);
+            contractService.save(contract);
+            return ResponseEntity.ok("Данные добавлены!");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Ошибка!");
         }
@@ -135,6 +138,7 @@ public class ContractControllerRest {
             @AuthenticationPrincipal User user,
             Model model) {
         MyDocuments myDocuments = myDocumentsService.findById(id);
+        logiService.save(new Logi(user.getLogin(),"Скачивание документа id = " + id));
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + Translit.cyr2lat(myDocuments.getNameFile()) + "\"")
@@ -148,7 +152,8 @@ public class ContractControllerRest {
             Model model) {
         try {
             contractService.delete(id);
-            return ResponseEntity.ok("Данные удалены!");
+            logiService.save(new Logi(user.getLogin(),"Del","Удаление контракта с id = " + id));
+            return ResponseEntity.ok("Контракт с ID = " + id + " успешно удален!");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Ошибка!");
         }
@@ -204,11 +209,11 @@ public class ContractControllerRest {
             Contract contract = contractService.findById(id);
             contract.setIspolneno(ispolneno);
             contractService.save(contract);
-            HashMap<String, Object> map = new HashMap<>();
-            map.put("text", "Отметка добавлена!");
-            return ResponseEntity.ok(map);
+
+            logiService.save(new Logi(user.getLogin(),"Отметка исполнено установлена в значение ispolneno у контракта с id = " + id));
+            return ResponseEntity.ok("Отметка добавлена!");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Ошибка!");
+            return ResponseEntity.badRequest().body("Ошибка при изменении отметки об исполнении ID = " + id + "!");
         }
     }
 
@@ -218,10 +223,12 @@ public class ContractControllerRest {
             @AuthenticationPrincipal User user,
             Model model) {
         try {
+            String myDocumentsName = myDocumentsService.findById(id).getNameFile();
             myDocumentsService.delete(id);
-            return ResponseEntity.ok("Данные удалены!");
+            logiService.save(new Logi(user.getLogin(),"Del","Удаление документа с id = " + id));
+            return ResponseEntity.ok("Документ с именем " + myDocumentsName + " успешно удален!");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Ошибка!");
+            return ResponseEntity.badRequest().body("Ошибка при удалении файла с ID = " + id + " !");
         }
     }
 
@@ -247,7 +254,6 @@ public class ContractControllerRest {
                 }
                 map2.put("notifications",notifications1);
             } else {
-                //map2.put("notifications",notifications1);
             }
 
             return new ResponseEntity<>(map2, HttpStatus.OK);
@@ -256,4 +262,9 @@ public class ContractControllerRest {
         }
     }
 
+    @PostMapping("/viewBadge")
+    public ResponseEntity<?> viewBadge(@AuthenticationPrincipal User user,
+                            Model model){
+        return ResponseEntity.ok(contractService.getColNotispolnenosrok());
+    }
 }

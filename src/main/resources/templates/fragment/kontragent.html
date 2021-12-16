@@ -4,75 +4,58 @@
 <body>
 
 <div th:fragment="kontragent">
-
-    <div class="row">
-        <div class="row">
-            <div class="col s2 center">
-                Наименование
+    <form id="addKontrForm">
+        <div class="row mb-2 mt-2">
+            <div class="col-3">
+                <label for="addNameKontragent" class="form-label m-0">Наименование</label>
+                <input type="text" class="form-control" id="addNameKontragent" name="name">
             </div>
-            <div class="col s2 center">
-                ИНН
+            <div class="col-3">
+                <label for="addINNKontragent" class="form-label m-0">ИНН</label>
+                <input type="text" class="form-control" id="addINNKontragent" name="inn">
             </div>
-            <div class="col s2">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col s2">
-                <input id="addNameKontragent" type="text">
-            </div>
-            <div class="col s2">
-                <input id="addINNKontragent" type="text">
-            </div>
-            <div class="col s2">
-                <a class="waves-effect waves-light btn" id="buttonaddKontragent">Добавить</a>
+            <div class="col-2 d-flex align-items-end">
+                <a class="btn btn-secondary" id="buttonaddKontragent">Добавить</a>
             </div>
         </div>
+    </form>
 
-        <!--<div class="col s6 row">
-            <div class="col s4 row">
-                <div class="col s6">Значение</div>
-                <div class="col s3">
-                    <input type="text" id="addznachspisok">
-                </div>
-            </div>
-            <div class="col s4 row">
-                <div class="col s6">Значение</div>
-                <div class="col s3">
-                    <input type="text" id="addznachspisok">
-                </div>
-            </div>
-            <div class="col s4 row">
-                <div class="col s12">
-                    <a class="waves-effect waves-light btn" id="buttonaddspisok" th:value="${type}">Добавить</a>
-                </div>
-            </div>
-
-
-            <div class="col s3">
-                <a class="waves-effect waves-light btn" id="buttonaddspisok" th:value="${type}">Добавить</a>
-            </div>
-        </div>-->
-    </div>
-
-    <table>
+    <table class="table table-block table-secondary table-striped table-hover table-bordered text-center caption-top table-sm">
+        <caption>Контрагенты</caption>
+        <thead>
         <tr>
-            <th align="center">Номер п/п</th>
-            <th align="center">Наименование</th>
-            <th align="center">ИНН</th>
-            <th align="center"></th>
+            <th>Номер п.п</th>
+            <th>Наименование</th>
+            <th>ИНН</th>
+            <th>Удалить</th>
         </tr>
+        </thead>
+        <tbody>
         <tr th:each="k,iterStat : ${kontragents}">
-            <td  th:text="${iterStat.count}">
+            <th  th:text="${iterStat.count}">
+            </th>
+            <td>
+                <input class="form-control"
+                       th:data-disabledInputKontragent-id="${k.id}"
+                       th:value="${k.getName()}"
+                       name="disabledInputKontragentName"
+                       type="text"
+                       disabled readonly>
             </td>
-            <td  th:text="${k.getName()}">
-            </td>
-            <td  th:text="${k.getInn()}">
+            <td>
+                <input class="form-control"
+                       th:data-disabledInputKontragent-id="${k.id}"
+                       th:value="${k.getInn()}"
+                       name="disabledInputKontragentInn"
+                       type="text"
+                       disabled readonly>
             </td>
             <td>
                 <a name="delSpisokKontragent" th:id="${k.getId()}"
-                   class="red waves-effect waves-light btn">X</a>
+                   class="btn btn-secondary">X</a>
             </td>
         </tr>
+        </tbody>
     </table>
 </div>
 

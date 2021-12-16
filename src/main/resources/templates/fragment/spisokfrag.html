@@ -5,34 +5,47 @@
 
 <div th:fragment="spisokfrag">
 
-    <div class="row">
-        <div class="col s6 row">
-            <div class="col s6">Значение</div>
-            <div class="col s3">
-                <input type="text" id="addznachspisok">
+    <form id="addVisObespForm">
+    <div class="row mb-2 mt-2">
+        <div class="col-6 row">
+            <div class="col-6">
+                    <label for="addznachspisok" class="form-label m-0">Наименование</label>
+                    <input type="text" class="form-control" id="addznachspisok" name="name">
             </div>
-            <div class="col s3">
-                <a class="waves-effect waves-light btn" id="buttonaddspisok" th:value="${type}">Добавить</a>
+            <div class="col-6 d-flex align-items-end">
+                <a class="btn btn-secondary" id="buttonaddspisok" th:value="${type}">Добавить</a>
             </div>
         </div>
     </div>
+    </form>
 
-    <table>
+    <table class="table table-block table-secondary table-striped table-hover table-bordered text-center caption-top table-sm">
+        <caption>Вид обеспечения</caption>
+        <thead>
         <tr>
-            <th align="center">№ п/п</th>
-            <th align="center">Данные</th>
-            <th align="center">Удалить</th>
+            <th>Номер п.п</th>
+            <th>Данные</th>
+            <th>Действие</th>
         </tr>
-        <tr th:each="v : ${vidObesps}">
-            <td  th:text="${v.getId()}">
-            </td>
-            <td  th:text="${v.getName()}">
+        </thead>
+        <tbody>
+        <tr th:each="v,iterStat : ${vidObesps}">
+            <th  th:text="${iterStat.count}">
+            </th>
+            <td>
+                <input class="form-control"
+                       th:data-disabledInputVidObesps-id="${v.id}"
+                       th:value="${v.getName()}"
+                       name="disabledInputVidObesps"
+                       type="text"
+                       disabled readonly>
             </td>
             <td>
                 <a name="delSpisok" th:id="${v.getId()}" th:value="${type}"
-                   class="red waves-effect waves-light btn">X</a>
+                   class="btn btn-secondary">X</a>
             </td>
         </tr>
+        </tbody>
     </table>
 </div>
 

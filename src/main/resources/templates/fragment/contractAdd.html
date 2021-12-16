@@ -3,186 +3,503 @@
 <body>
 
 <div class="row" id="contractAdd" th:fragment="contractAdd">
-    <div class="col s2"></div>
-    <form enctype="multipart/form-data" method="post" id="formContracts">
-        <div class="col s8">
+    <div class="col-2"></div>
 
-            <div class="row">
-                <div class="col s12 row">
-                    <div class="col s3">Платежное поручение*</div>
-                    <div class="col s3">
-                        <div>Дата</div>
-                        <div><input type="date" id="receipt_date" name="receipt_date"></div>
-                    </div>
-                    <div class="col s3">
-                        <div>Номер</div>
-                        <div><input type="text" id="plat_post" name="plat_post"></div>
-                    </div>
+    <div class="col-8">
+        <form enctype="multipart/form-data" method="post" id="formContracts" >
+        <div class="row  mb-1 mt-2">
+            <div class="col-12 row">
+                <div class="col-3 align-self-center">Платежное поручение*</div>
+                <div class="col-3">
+
+                    <label for="receipt_date" class="form-label m-0">Дата</label>
+                    <input type="date" class="form-control" id="receipt_date" name="receipt_date">
+                </div>
+                <div class="col-3">
+                    <label for="plat_post" class="form-label m-0">Номер</label>
+                    <input type="text" class="form-control" id="plat_post" name="plat_post">
                 </div>
             </div>
+        </div>
 
-            <div class="row">
-                <div class="col s12 row">
-                    <div class="col s3">Вид обеспечения*</div>
-                    <div class="col s3">
-                        <div>Наименование</div>
-                        <div class="input-field">
-                            <select id="vidObesp" name="vidObesp">
-                                <option th:each="v : ${vidObesp}" th:text="${v.name}"
-                                        th:value="${v.id}"></option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col s3">
-                        <div>Сумма</div>
-                        <div>
-                            <input type="number" id="sum" name="sum"
-                                   onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));">
-                        </div>
+        <hr class="m-0">
+
+        <div class="row mb-2">
+            <div class="col-12 row ">
+                <div class="col-3 align-self-center">Вид обеспечения*</div>
+                <div class="col-3">
+
+                    <div class="input-field">
+                        <label for="vidObesp" class="form-label m-0">Наименование</label>
+                        <select id="vidObesp" name="vidObesp" class="form-select">
+                            <option
+                                    th:each="v : ${vidObesp}"
+                                    th:text="${v.name}"
+                                    th:value="${v.id}"
+                            ></option>
+                        </select>
                     </div>
                 </div>
-            </div>
+                <div class="col-3">
+                    <label for="sum" class="form-label m-0">Сумма</label>
+                    <input
+                            class="form-control"
+                            type="number"
+                            id="sum"
+                            name="sum"
+                            min="0" step="1" data-bind="value:replyNumber"
+                            onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
+                    />
 
-            <div class="row">
-                <div class="col s12 row">
-                    <div class="col s3">Контрагент*</div>
-                    <div class="col s3">
-                        <div class="input-field">
-                            <select id="kontragent" name="kontragent">
-                                <option th:each="v : ${kontragent}" th:text="${v.getNameInn()}"
-                                        th:value="${v.id}"></option>
-                            </select>
-                            <!--<label>Вид обеспечения</label>-->
-                        </div>
-                    </div>
-                    <div class="col s3">
-                        <a class="waves-effect waves-light btn modal-trigger"
-                           href="#modalKontragent">
-                            Выбрать
-                        </a>
-                    </div>
                 </div>
             </div>
+        </div>
 
-            <div class="row">
-                <div class="col s12 row">
-                    <div class="col s3">ГК</div>
-                    <div class="col s3">
-                        <div>Номер</div>
-                        <div>
-                            <input type="text" id="nomGK" name="nomGK">
-                        </div>
-                    </div>
-                    <div class="col s3">
-                        <div>Дата</div>
-                        <div>
-                            <input type="date" id="dateGK" name="dateGK">
-                        </div>
-                    </div>
-                    <div class="col s3">
-                        <div>Краткое содержание</div>
-                        <div>
-                            <input type="text" id="predmet_contract" name="predmet_contract">
-                        </div>
+        <hr class="m-0">
+
+        <div class="row mb-1 mt-1 ">
+            <div class="col-12 row ">
+                <div class="col-3 align-self-center">Контрагент*</div>
+                <div class="col-3">
+                    <div class="input-field">
+                        <select id="kontragent" name="kontragent" class="form-select">
+                            <option
+                                    th:each="v : ${kontragent}"
+                                    th:text="${v.getNameInn()}"
+                                    th:value="${v.id}"
+                            ></option>
+                        </select>
+                        <!--<label>Вид обеспечения</label>-->
                     </div>
                 </div>
-            </div>
+                <div class="col-3">
 
-            <div class="row">
-                <div class="col s12 row">
-                    <div class="col s3">Дата исполнения ГК</div>
-                    <div class="col s3">
-                        <input type="date" id="date_ispolnenija_GK" name="date_ispolnenija_GK">
-                    </div>
+                    <button class="btn btn-secondary" data-bs-toggle="modal"
+                            data-bs-target="#modalKontragent" type="button">Выбрать</button>
+                    <!-- <a
+                      class="waves-effect waves-light btn modal-trigger"
+                      href="#modalKontragent"
+                    >
+                      Выбрать
+                    </a> -->
                 </div>
             </div>
+        </div>
 
-            <div class="row">
-                <div class="col s12 row">
-                    <div class="col s3">Количество дней от исполнения</div>
-                    <div class="col s3">
-                        <input type="number" id="col_days" name="col_days"
-                               onkeypress="return (event.charCode >= 48 && event.charCode <= 57 && /^\d*$/.test(this.value));">
-                    </div>
+        <hr class="m-0">
+
+        <div class="row mb-1 mt-1 ">
+            <div class="col-12 row ">
+                <div class="col-3 align-self-center">ГК</div>
+                <div class="col-3">
+                    <label for="nomGK" class="form-label m-0">Номер</label>
+                    <input type="text" class="form-control" id="nomGK" name="nomGK">
+                </div>
+                <div class="col-3">
+                    <label for="dateGK" class="form-label m-0">Дата</label>
+                    <input type="date" class="form-control" id="dateGK" name="dateGK">
+                </div>
+                <div class="col-3">
+                    <label for="predmet_contract" class="form-label m-0">Краткое содержание</label>
+                    <textarea class="form-control" id="predmet_contract"
+                              name="predmet_contract" rows="1"></textarea>
                 </div>
             </div>
+        </div>
 
-            <div class="row">
-                <div class="col s12 row">
-                    <div class="col s3">Ответственные</div>
-                    <div class="col s3">
-                        <div class="input-field col s12 row" id="notifications">
-                            <div th:utext="${nameBoss}" >
-                            </div>
-                        </div>
-                        <div class="input-field col s12" id="containerNotification">
-                        </div>
-                    </div>
+        <hr class="m-0">
+
+        <div class="row mb-1 mt-1 ">
+            <div class="col-12 row ">
+                <div class="col-3 align-self-center">Дата исполнения ГК</div>
+                <div class="col-3">
+                    <!-- <label for="date_ispolnenija_GK" class="form-label m-0">Дата исполнения ГК</label> -->
+                    <input type="date" class="form-control" id="date_ispolnenija_GK"
+                           name="date_ispolnenija_GK">
                 </div>
             </div>
+        </div>
 
-            <div class="row">
-                <div class="col s12 row">
-                    <div class="col s3">Загрузка файлов</div>
-                    <div class="col s3">
-                        <input type="file" multiple  id="myDocuments" name="myDocuments">
-                    </div>
+        <hr class="m-0">
+
+        <div class="row mb-1 mt-1 ">
+            <div class="col-12 row ">
+                <div class="col-3 align-self-center">Количество дней от исполнения</div>
+                <div class="col-3">
+                    <!-- <label for="col_days" class="form-label m-0">Количество дней от исполнения</label> -->
+                    <input
+                            class="form-control"
+                            type="number"
+                            id="col_days"
+                            name="col_days"
+                            min="0" step="1" data-bind="value:replyNumber"
+                            onkeypress="return (event.charCode >= 48 && event.charCode <= 57 && /^\d*$/.test(this.value));"
+                    />
                 </div>
             </div>
-            <div class="row">
-                <div class="col s12 row">
-                    <div class="col s3"></div>
-                    <div class="col s6" id="documentsViev">
+        </div>
+
+        <hr class="m-0">
+
+        <div class="row mb-1 mt-1 ">
+            <div class="col-12 row ">
+                <div class="col-3 align-self-center">Ответственные</div>
+                <div class="col-3">
+                    <div
+                            class=" col-12"
+                            id="containerNotification"
+                    ></div>
+                    <div class=" col-12 row fst-italic" id="notifications">
+                        <div th:if="${nameBoss}" th:utext="${nameBoss}"></div>
                     </div>
                 </div>
-            </div>
-
-            <div class="row">
-                <div class="col s12 row">
-                    <div class="col s3">Заявка на возврат</div>
-                    <div class="col s3">
-                        <div>Номер</div>
-                        <div>
-                            <input type="text" id="nomerZajavkiNaVozvrat" name="nomerZajavkiNaVozvrat">
-                        </div>
-                    </div>
-                    <div class="col s3">
-                        <div>Дата</div>
-                        <div>
-                            <input type="date" id="dateZajavkiNaVozvrat" name="dateZajavkiNaVozvrat">
-                        </div>
-                    </div>
+                <div class="col-3">
+                    <a class="btn btn-secondary" id="notificationsVibor">+</a>
                 </div>
             </div>
+        </div>
 
-            <div class="row">
-                <div class="col s12 row">
-                    <div class="col s3">Отметка об исполнении</div>
-                    <div class="col s3">
-                        <label>
-                            <input type="checkbox" class="filled-in"
-                                   th:id="checkboxAddUpdate"/>
-                            <span class="marginonospan"></span>
-                        </label>
-                    </div>
+        <hr class="m-0">
+
+        <div class="row mb-1 mt-1 ">
+            <div class="col-12 row ">
+                <div class="col-3 align-self-center">Загрузка файлов</div>
+                <div class="col-6">
+                    <input class="form-control" type="file"
+                           multiple
+                           id="myDocuments"
+                           name="myDocuments">
                 </div>
             </div>
+        </div>
+        <div class="row mb-1 mt-1">
+            <div class="col-12 row">
+                <div class="col-3"></div>
+                <div class="col-6 fst-italic" id="documentsViev"></div>
+            </div>
+        </div>
 
-            <div class="row">
-                <div class="col s12 row">
-                    <div class="col s3"></div>
-                    <div class="col s3">
-                        <a class="waves-effect waves-light btn" id="addContracts">Добавить</a>
+        <hr class="m-0">
+
+        <div class="row mb-1 mt-1 ">
+            <div class="col-12 row ">
+                <div class="col-3 align-self-center">Заявка на возврат</div>
+                <div class="col-3">
+                    <label for="nomerZajavkiNaVozvrat" class="form-label m-0">Номер</label>
+                    <input type="text" class="form-control" id="nomerZajavkiNaVozvrat"
+                           name="nomerZajavkiNaVozvrat">
+
+                </div>
+                <div class="col-3">
+
+                    <label for="dateZajavkiNaVozvrat" class="form-label m-0">Дата</label>
+                    <input type="date" class="form-control" id="dateZajavkiNaVozvrat"
+                           name="dateZajavkiNaVozvrat">
+                </div>
+            </div>
+        </div>
+
+        <hr class="m-0">
+
+        <div class="row mb-1 mt-1 ">
+            <div class="col-12 row justify-content-center">
+                <div class="col-4 form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="checkboxAddUpdate"
+                    >
+                    <label class="form-check-label" for="checkboxAddUpdate">
+                        Отметка об исполнении
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <hr class="m-0">
+
+        <div class="row mt-1 ">
+            <div class="col-12 row justify-content-center">
+                <div class="col-4 row">
+                    <button class="btn btn-dark btn-block" id="addContracts">Добавить</button>
+                </div>
+            </div>
+        </div>
+        </form>
+    </div>
+
+
+    <div
+            class="modal fade"
+            id="modalKontragent"
+            tabindex="-1"
+            aria-labelledby="modalKontragentLabel"
+            aria-hidden="true"
+
+    >
+        <div class="modal-dialog modal-lg" th:fragment="modalKontragent(kontragent2)">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalKontragentLabel">Контрагент</h5>
+                    <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                    ></button>
+                </div>
+                <div class="modal-body" th:include="fragment/modalKontragent :: modalKontragent(${kontragent2})">
+                </div>
+                <div class="modal-footer">
+                    <button
+                            type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal"
+                    >
+                        Закрыть
+                    </button>
+                    <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row" th:fragment="notifications">
+    <div class="col-12">
+        <select id="notificationsSelect"  class="form-select">
+            <option th:each="u : ${users}" th:text="${u.login}"
+                    th:value="${u.id_user_zir}"></option>
+            <label>Добавить</label>
+        </select>
+    </div>
+</div>
+
+<!--<div class="row" id="contractAdd" th:fragment="contractAdd">
+    <div class="col-2"></div>
+
+    <div class="col-8">
+        <form enctype="multipart/form-data" method="post" id="formContracts"></form>
+        <div class="row  mb-2 mt-2">
+            <div class="col-12 row">
+                <div class="col-3">Платежное поручение*</div>
+                <div class="col-3">
+                    <div>Дата</div>
+                    <div>
+                        <input type="date" id="receipt_date" name="receipt_date" />
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div>Номер</div>
+                    <div><input type="text" id="plat_post" name="plat_post" /></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-12 row">
+                <div class="col-3">Вид обеспечения*</div>
+                <div class="col-3">
+                    <div>Наименование</div>
+                    <div class="input-field">
+                        <select id="vidObesp" name="vidObesp" class="form-select">
+                            <option
+                                    th:each="v : ${vidObesp}"
+                                    th:text="${v.name}"
+                                    th:value="${v.id}"
+                            ></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div>Сумма</div>
+                    <div>
+                        <input
+                                type="number"
+                                id="sum"
+                                name="sum"
+                                onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
+                        />
                     </div>
                 </div>
             </div>
         </div>
-    </form>
 
-    <div id="modalKontragent" class="modal"
-         th:include="fragment/modalKontragent :: modalKontragent(${kontragent2})">
+        <div class="row mb-2">
+            <div class="col-12 row">
+                <div class="col-3">Контрагент*</div>
+                <div class="col-3">
+                    <div class="input-field">
+                        <select id="kontragent" name="kontragent" class="form-select">
+                            <option
+                                    th:each="v : ${kontragent}"
+                                    th:text="${v.getNameInn()}"
+                                    th:value="${v.id}"
+                            ></option>
+                        </select>
+                        &lt;!&ndash;<label>Вид обеспечения</label>&ndash;&gt;
+                    </div>
+                </div>
+                <div class="col-3">
+
+                    <button class="btn btn-secondary">Выбрать</button>
+                    &lt;!&ndash; <a
+                      class="waves-effect waves-light btn modal-trigger"
+                      href="#modalKontragent"
+                    >
+                      Выбрать
+                    </a> &ndash;&gt;
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-12 row">
+                <div class="col-3">ГК</div>
+                <div class="col-3">
+                    <div>Номер</div>
+                    <div>
+                        <input type="text" id="nomGK" name="nomGK" />
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div>Дата</div>
+                    <div>
+                        <input type="date" id="dateGK" name="dateGK" />
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div>Краткое содержание</div>
+                    <div>
+                        <input
+                                type="text"
+                                id="predmet_contract"
+                                name="predmet_contract"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-12 row">
+                <div class="col-3">Дата исполнения ГК</div>
+                <div class="col-3">
+                    <input
+                            type="date"
+                            id="date_ispolnenija_GK"
+                            name="date_ispolnenija_GK"
+                    />
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-12 row">
+                <div class="col-3">Количество дней от исполнения</div>
+                <div class="col-3">
+                    <input
+                            type="number"
+                            id="col_days"
+                            name="col_days"
+                            onkeypress="return (event.charCode >= 48 && event.charCode <= 57 && /^\d*$/.test(this.value));"
+                    />
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-12 row">
+                <div class="col-3">Ответственные</div>
+                <div class="col-3">
+                    <div class="input-field col-12 row" id="notifications">
+                        <div th:utext="${nameBoss}"></div>
+                    </div>
+                    <div
+                            class="input-field col-12"
+                            id="containerNotification"
+                    ></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-12 row">
+                <div class="col-3">Загрузка файлов</div>
+                <div class="col-3">
+                    <input
+                            type="file"
+                            multiple
+                            id="myDocuments"
+                            name="myDocuments"
+                    />
+                </div>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-12 row">
+                <div class="col-3"></div>
+                <div class="col-6" id="documentsViev"></div>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-12 row">
+                <div class="col-3">Заявка на возврат</div>
+                <div class="col-3">
+                    <div>Номер</div>
+                    <div>
+                        <input
+                                type="text"
+                                id="nomerZajavkiNaVozvrat"
+                                name="nomerZajavkiNaVozvrat"
+                        />
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div>Дата</div>
+                    <div>
+                        <input
+                                type="date"
+                                id="dateZajavkiNaVozvrat"
+                                name="dateZajavkiNaVozvrat"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-12 row">
+                <div class="col-3">Отметка об исполнении</div>
+                <div class="col-3">
+                    <label>
+                        <input
+                                type="checkbox"
+                                class="filled-in"
+                                th:id="checkboxAddUpdate"
+                        />
+                        <span class="marginonospan"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-12 row">
+                <div class="col-3"></div>
+                <div class="col-3">
+                    <button class="btn btn-dark" id="addContracts">Добавить</button>
+                </div>
+            </div>
+        </div>
+        </form>
     </div>
 
+
+    <div
+            id="modalKontragent"
+            class="modal"
+            th:include="fragment/modalKontragent :: modalKontragent(${kontragent2})"
+    ></div>
 </div>
 
 
@@ -194,10 +511,10 @@
             <label>Добавить</label>
         </select>
     </div>
-    <div class="col s2">
+    <div class="col s2 ">
         <a class="waves-effect waves-light btn" id="notificationsVibor">+</a>
     </div>
-</div>
+</div>-->
 
 
 

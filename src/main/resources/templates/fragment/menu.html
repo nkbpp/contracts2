@@ -1,101 +1,126 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+                xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
 <body>
 
 
-<div id="ttt" th:fragment="menu">
-    <ul id="dropdown1" class="dropdown-content">
-        <li><a href="#" id="vidObespSpisokViev">Вид обеспечения</a></li>
-        <li class="divider"></li>
-        <li><a href="#" id="kontragentSpisokViev">Контрагент</a></li>
-        <li class="divider"></li>
-    </ul>
+<nav th:fragment="menu" class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" th:href="@{/contract/main}">Главная</a>
+            <button
+                    class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
+            >
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li sec:authorize="hasRole('ROLE_UPDATE')"
+                        class="nav-item">
+                        <a class="nav-link" aria-current="page" href="#" id="menuAdd">Добавить</a>
+                    </li>
+                    <li sec:authorize="hasRole('ROLE_UPDATE')" class="nav-item">
+                        <a class="nav-link position-relative" href="#" id="menuViev">Просмотр
+                            <!--<span id="viewBadge" th:class="'position-absolute top-25 start-100 translate-middle badge rounded-pill bg-danger ' + (${notispolnenosrok<=4 && notispolnenosrok>=0}? '':' fade')">-->
+                            <span id="viewBadge" class="position-absolute top-25 start-100
+                            translate-middle badge rounded-pill bg-danger fade">
+                            </span>
+                        </a>
+                    </li>
+                    <li sec:authorize="hasRole('ROLE_UPDATE')" class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Справочники
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="#" id="vidObespSpisokViev">Вид обеспечения</a></li>
+                            <li><a class="dropdown-item" href="#" id="kontragentSpisokViev">Контрагент</a></li>
+                        </ul>
+                    </li>
 
-    <!--<ul id="dropdown2" class="dropdown-content">
-        <li><a th:href="@{/main}">Болгария</a></li>
-        <li class="divider"></li>
-        <li><a th:href="@{/main}">Правопреемники</a></li>
-        <li class="divider"></li>
-        <li><a th:href="@{/main}">Иное</a></li>
-    </ul>
+                    <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
+                        <a class="nav-link" th:href="@{/contract/admin/admin}">Админка</a>
+                    </li>
+                    <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
+                        <a class="nav-link" th:href="@{/contract/admin/juraudit}">Журнал аудита</a>
+                    </li>
+            </span>
+                </ul>
+                <form
+                        class="d-flex"
+                        id="logout"
+                        name="logout"
+                        th:action="@{/logout}"
+                        method="post"
+                >
+                    <div class="text-center text-success align-self-center mx-2">Пользователь:
+                        <span sec:authorize="isAuthenticated()"  sec:authentication="principal.login"></span>
+                        <!--<a class="btn btn-link dropdown-toggle"
+                           href="#" role="button"
+                           id="dropdownMenuLink"
+                           data-bs-toggle="dropdown"
+                           aria-expanded="false"
+                           sec:authorize="isAuthenticated()"  sec:authentication="principal.login"
+                        ></a>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            fgsdgfsdgsdfgsdg
+                        </ul>-->
+                    </div>
+                    <button class="btn btn-outline-success" type="submit">Выйти</button>
 
-    <ul id="dropdown3" class="dropdown-content">
-        <li><a th:href="@{/main}">Реестр №1</a></li>
-        <li class="divider"></li>
-        <li><a th:href="@{/main}">Реестр №2</a></li>
-        <li class="divider"></li>
-        <li><a th:href="@{/main}">Отчет по конвертам</a></li>
-        <li class="divider"></li>
-        <li><a th:href="@{/main}">Отчет марки и конверты</a></li>
-        <li class="divider"></li>
-        <li><a th:href="@{/main}">Авансовый отчет</a></li>
-    </ul>
+                    <!--<span sec:authorize="isAuthenticated()">
+                        Logged user: <span sec:authentication="name"></span>
+                        Roles: <span sec:authentication="principal.authorities"></span>
+                        Отображение: <span sec:authorize="hasRole('ROLE_UPDATE')">Увидят только пользователи с ролью ROLE_UPDATE</span>
+                    </span>--><!--Для примера-->
 
-    <ul id="dropdown4" class="dropdown-content">
-        <li><a th:href="@{/umik/main/spravkonv}">Справочник конвертов</a></li>
-        <li class="divider"></li>
-        <li><a th:href="@{/umik/main/vidanykonv}">Выданы конверты</a></li>
-        <li class="divider"></li>
-        <li><a th:href="@{/umik/main/prihod}">Приход конверты</a></li>
-        <li class="divider"></li>
-        <li><a th:href="@{/umik/main/prihodmarki}">Приход марки</a></li>
-        <li class="divider"></li>
-    </ul>
-
-    <ul id="dropdown5" class="dropdown-content">
-        <li><a th:href="@{/umik/main/history}">История отчетов</a></li>
-        <li class="divider"></li>
-    </ul>-->
-
-    <nav>
-        <div class="nav-wrapper row">
-            <ul class="left hide-on-med-and-down col s12 row">
-                <li class="col s2 center center-align">
-                    <a th:href="@{/contract/main}">
-                        Главная</a>
-                </li>
-                <li class="col s2 center center-align">
-                    <!--<a th:href="@{/contract/add}">Добавить</a>-->
-                    <a href="#" id="menuAdd">Добавить</a>
-                </li>
-                <li class="col s2 center center-align">
-                    <!--<a th:href="@{/contract/viev}">Просмотр</a>-->
-                    <a href="#" id="menuViev">Просмотр</a>
-                </li>
-                <li class="col s2 center center-align">
-                    <a class="dropdown-trigger" href="#!" data-target="dropdown1">
-                        Справочники</a>
-                </li>
-                <!--               <li class="col s2 center center-align">
-                                   <a class="dropdown-trigger" href="#!" data-target="dropdown2">
-                                       Письма не ПЭД</a>
-                               </li>
-                               <li class="col s2 center center-align">
-                                   <a class="dropdown-trigger" href="#!" data-target="dropdown3">
-                                       Реестры и отчеты</a>
-                               </li>
-                               <li class="col s3 center center-align">
-                                   <a class="dropdown-trigger" href="#!" data-target="dropdown4">
-                                       Справочная информация</a>
-                               </li>
-                               <li class="col s2 center center-align">
-                                   <a class="dropdown-trigger" href="#!" data-target="dropdown5">
-                                       История</a>
-                               </li>-->
-            </ul>
+                </form>
+            </div>
         </div>
-    </nav>
-    <script>
-        $(document).ready(function () {
-            $(".dropdown-trigger").dropdown(); //чтобы меню хренячило
-        });
-    </script>
-</div>
+    <script sec:authorize="hasRole('ROLE_UPDATE')">
+        viewBadgeFade();
 
+        function viewBadgeFade(){
+
+            let token = $('#_csrf').attr('content');
+            let header = $('#_csrf_header').attr('content');
+            $.ajax({
+                url: "/contract/main/viewBadge",
+                type: 'POST',
+                cache: false,
+                //dataType: 'json',
+                //dataType: 'text',
+                processData: false, // Не обрабатываем файлы (Don't process the files)
+                contentType: false, // Так jQuery скажет серверу что это строковой запрос
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token);
+                },
+                success: function (data) {
+                    console.log("timer ",data)
+                    if(data>0){
+                        $("#viewBadge").removeClass('fade');
+                    } else {
+                        $("#viewBadge").addClass('fade');
+                    }
+                    $("#viewBadge").text(data);
+                },
+                error: function (jqXHR, textStatus) {
+                    console.log("ошибка в таймере");
+                    //initialToats("Ошибка при добавлении!!!",jqXHR.responseText,"err").show();
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            setInterval(() => viewBadgeFade(), 4000);
+        })
+    </script>
+    </nav>
 
 </body>
 </html>

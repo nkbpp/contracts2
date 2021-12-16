@@ -31,13 +31,11 @@ import ru.pfr.contracts2.service.log.LogiService;
 import ru.pfr.contracts2.service.user.RayonService;
 import ru.pfr.contracts2.service.user.UserService;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -54,13 +52,9 @@ public class AuthProvider implements AuthenticationProvider {
 
     private final LogiService logiService;
 
-    /*private static final Logger logger = LogManager.getLogger(Application.class);*/
-
-
 
     @Override
     public Authentication authenticate(Authentication a) throws AuthenticationException {
-        /*logger.info("AuthProvider authenticate()");*/
         SecurityContext context = SecurityContextHolder.getContext();
         UsernamePasswordAuthenticationToken auth = (UsernamePasswordAuthenticationToken) a;
         String username = String.valueOf(auth.getPrincipal());
@@ -71,7 +65,6 @@ public class AuthProvider implements AuthenticationProvider {
         parameterList.put("login", username);
         logiService.save(new Logi(username,
                 "Попытка авторизации по логину " + username + " AuthProvider authenticate()"));
-        /*logger.info("Попытка авторизации по логину " + username + " AuthProvider authenticate()");*/
         parameterList.put("pass", password);
         CloseableHttpResponse httpResponse = getHTTPResponse("http://10.41.0.247:322/ACS/AutentAll",
                 parameterList);
@@ -95,19 +88,14 @@ public class AuthProvider implements AuthenticationProvider {
                 logerr.setDate_last_entry(new Date(datenow));
                 userService.save(logerr);
                 logiService.save(new Logi(username,
-                        "Попытка авторизации превышен лимит попыток количество попыток"
+                        "Попытка авторизации превышен лимит попыток. Количество попыток"
                                 + logerr.getActive() + " AuthProvider authenticate()"));
-                /*logger.info("Попытка авторизации по логину " + username + " Превышен лимит попыток " +
-                        "  Количество попыток " + logerr.getActive() + " AuthProvider authenticate()");*/
-
                 throw new BadCredentialsException("Превышен лимит попыток");
             }
             if (logerr.getActive() >= adminparam.getBlock()) {
                 logiService.save(new Logi(username,
-                        "Попытка авторизации пользователь заблокирован количество попыток"
+                        "Попытка авторизации пользователь заблокирован. Количество попыток"
                                 + logerr.getActive() + " AuthProvider authenticate()"));
-                /*logger.info("Попытка авторизации по логину " + username + " Пользователь заблокирован" +
-                        " Количество попыток " + logerr.getActive() + "  AuthProvider authenticate()");*/
                 throw new BadCredentialsException("Пользователь заблокирован");
             }
             if (headers.length == 0) {
@@ -123,102 +111,95 @@ public class AuthProvider implements AuthenticationProvider {
                 logerr.setActive(0L);
                 logerr.setDate_last_entry(new Date(datenow));
                 userService.save(logerr);
+
+                String response = headers[0].getValue();
+                Matcher authQueryString = Pattern
+                        .compile("^http://127\\.0\\.0\\.0/Autent\\?([^\\r\\n]++)$")
+                        .matcher(response);
+                if (!authQueryString.find()) {
+                    throw new BadCredentialsException("Пароль неверен");
+                }
+                HttpValuesMap<Object> authData = HttpUtil.parseQuery(authQueryString.group(1), true);
+                Collection<GrantedAuthority> roleList = new HashSet<>();
+                Object[] rights = authData.get("right");
+                String userId = (String) authData.get("idzir")[0];
+                StringBuilder upfrCode = new StringBuilder((String) authData.get("upfr")[0]);
+                String idpod = (String) authData.get("idpod")[0];
+                /*byte[] decodedBytes = Base64.getUrlDecoder().decode((String) authData.get("namepod")[0]);
+                String namepod = new String(decodedBytes);*/
+
+                /*byte[] decoded = DatatypeConverter.parseBase64Binary((String) authData.get("namepod")[0]);
+                String namepod = new String(decoded, StandardCharsets.UTF_8);*/
+
+                String namepod = null;
+                try {
+                    namepod = URLDecoder.decode((String) authData.get("namepod")[0], "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+/*              String ss2 = "";
+                try{
+                    ss2 = URLEncoder.encode("Отдел эксплуатации и сопровождения","UTF-8");
+                }catch (Exception e){}
+
+                String ss = "";
+                try{
+                    ss = URLDecoder.decode(ss2,"UTF-8");
+                }catch (Exception e){}*/
+
+                String email = (String) authData.get("email")[0];
+                for (Object right : rights) {
+                    int rightCode = Integer.parseInt((String) right);
+                    switch (rightCode) {
+                        case 14: //не забыть поменять
+                            roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_UPDATE.getString()));
+                            break;
+//                      case 3012:
+//                          roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_READ.getString()));
+//                          break;
+                        case 13:
+                            roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_ADMIN.getString()));
+                            upfrCode = new StringBuilder("999");
+                            break;
+                    }
+                }
+
+                //roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_ADMIN.getString()));//TODO УБРАТЬ
+
+                while (upfrCode.length() < 3) {
+                    upfrCode.insert(0, "0");
+                }
+
+                User user = userService.findByLoginuser(username);
+                if (user == null) {
+                    Rayon r = rayonService.findByKod(upfrCode.toString()); //пользователя небыло
+                    user = new User(username, r);
+                }
+
+                user.setActive(1L);
+
+                user.setId_user_zir(Long.parseLong(userId));
+                user.setId_ondel_zir(Long.parseLong(idpod));
+                user.setName_ondel_zir(namepod);
+                user.setEmail(email);
+                user.setRayon(rayonService.findByKod(upfrCode.toString()));
+                userService.save(user);
+
+                a = new UsernamePasswordAuthenticationToken(user, "", roleList);
+                context.setAuthentication(a);
+                logiService.save(new Logi(
+                        user.getLogin(),
+                        "Пользователь " + user.getLogin() + " авторизован  AuthProvider authenticate()"));
             }
             //-----------------------------
-
-
         } catch (Exception e) {
-            /*Rayon r = rayonService.findByKod("1000").get(); //пользователя небыло
-            logerr = new User(username, r);
-            userService.save(logerr);*/
+            System.out.println("MES=" + e.getMessage());
+            throw new BadCredentialsException(e.getMessage());
         }
-
-        String response = headers[0].getValue();
-        Matcher authQueryString = Pattern
-                .compile("^http://127\\.0\\.0\\.0/Autent\\?([^\\r\\n]++)$")
-                .matcher(response);
-        if (!authQueryString.find()) {
-            throw new BadCredentialsException("Пароль неверен");
-        }
-        HttpValuesMap<Object> authData = HttpUtil.parseQuery(authQueryString.group(1), true);
-        Collection<GrantedAuthority> roleList = new HashSet<>();
-        Object[] rights = authData.get("right");
-        String userId = (String) authData.get("idzir")[0];
-        StringBuilder upfrCode = new StringBuilder( (String) authData.get("upfr")[0]);
-        String idpod = (String) authData.get("idpod")[0];
-        /*byte[] decodedBytes = Base64.getUrlDecoder().decode((String) authData.get("namepod")[0]);
-        String namepod = new String(decodedBytes);*/
-
-        /*byte[] decoded = DatatypeConverter.parseBase64Binary((String) authData.get("namepod")[0]);
-        String namepod = new String(decoded, StandardCharsets.UTF_8);*/
-
-        String namepod = null;
-        try {
-            namepod = URLDecoder.decode((String) authData.get("namepod")[0],"UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-/*        String ss2 = "";
-        try{
-            ss2 = URLEncoder.encode("Отдел эксплуатации и сопровождения","UTF-8");
-        }catch (Exception e){
-        }
-
-        String ss = "";
-        try{
-            ss = URLDecoder.decode(ss2,"UTF-8");
-        }catch (Exception e){
-        }*/
-
-        String email = (String) authData.get("email")[0];
-        for (Object right : rights) {
-            int rightCode = Integer.parseInt((String) right);
-            switch (rightCode) {
-                case 86: //не забыть поменять
-                    roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_UPDATE.getString()));
-                    break;
-                /*case 3012:
-                    roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_READ.getString()));
-                    break;*/
-                case 85:
-                    roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_ADMIN.getString()));
-                    upfrCode = new StringBuilder("999");
-                    break;
-            }
-        }
-
-        while (upfrCode.length() < 3) {
-            upfrCode.insert( 0,"0");
-        }
-
-        User us = userService.findByLoginuser(username);
-            if(us == null){
-                Rayon r = rayonService.findByKod(upfrCode.toString()); //пользователя небыло
-                us = new User(username,r);
-            }
-
-        us.setActive(1L);
-
-        us.setId_user_zir(Long.parseLong(userId));
-        us.setId_ondel_zir(Long.parseLong(idpod));
-        us.setName_ondel_zir(namepod);
-        us.setEmail(email);
-        us.setRayon(rayonService.findByKod(upfrCode.toString()));
-        userService.save(us);
-
-        a = new UsernamePasswordAuthenticationToken(us, "", roleList);
-        context.setAuthentication(a);
-        logiService.save(new Logi(
-                us.getLogin(),
-                "Пользователь " + us.getLogin() + " авторизован  AuthProvider authenticate()"));
-        /*logger.info("Пользователь " + us.getLogin() + " авторизован  AuthProvider authenticate()end");*/
 
         return a;
     }
-
-
-
 
     @Override
     public boolean supports(Class<?> type) {
@@ -249,9 +230,4 @@ public class AuthProvider implements AuthenticationProvider {
             return null;
         }
     }
-
-
-
-
-
 }

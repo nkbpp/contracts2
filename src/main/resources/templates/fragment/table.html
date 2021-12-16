@@ -3,42 +3,72 @@
 <body>
 
 <div th:fragment="vievTable">
-
-    <div>
-        <div class="row">
-            <div class="col s2 center">
-                Номер ГК
-            </div>
-            <div class="col s2 center">
-                ИНН
-            </div>
-            <div class="col s2">
-            </div>
-            <div class="col s2">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col s2">
-                <input data-name="poleFindByNomGK" type="text">
-            </div>
-            <div class="col s2">
-                <input data-name="poleFindByINN" type="text">
-            </div>
-            <div class="col s2">
-                <label>
-                    <input type="checkbox" class="filled-in"
-                           data-name="poleFindByIspolneno" checked="checked"/>
-                    <span class="">Исполнено</span>
-                </label>
-                <label>
-                <input type="checkbox" class="filled-in"
-                       data-name="poleFindByNotIspolneno" checked="checked"/>
-                <span class="">Не исполнено</span>
-            </label>
-            </div>
-            <div class="col s2">
-                <button class="btn waves-effect waves-light" type="submit" name="findContract">Найти
-                </button>
+    <p>
+        <button
+                class="btn btn-outline-secondary m-2"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseExample"
+                aria-expanded="false"
+                aria-controls="collapseExample"
+        >
+            Поиск
+        </button>
+    </p>
+    <div class="collapse" id="collapseExample">
+        <div class="card card-body">
+            <div class="row">
+                <div class="col-2">
+                    <input
+                            class="form-control m-1"
+                            type="text"
+                            data-name="poleFindByNomGK"
+                            placeholder="Номер ГК"
+                    />
+                    <input
+                            class="form-control m-1"
+                            type="text"
+                            data-name="poleFindByINN"
+                            placeholder="ИНН"
+                    />
+                </div>
+                <div class="col-2 text-center align-self-center">
+                    <div class="form-check">
+                        <input
+                                class="form-check-input"
+                                type="checkbox"
+                                value=""
+                                data-name="poleFindByIspolneno"
+                                id="poleFindByIspolneno"
+                                checked
+                        />
+                        <label class="form-check-label" for="poleFindByIspolneno">
+                            Исполнено
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input
+                                class="form-check-input"
+                                type="checkbox"
+                                value=""
+                                id="poleFindByNotIspolneno"
+                                data-name="poleFindByNotIspolneno"
+                                checked
+                        />
+                        <label class="form-check-label" for="poleFindByNotIspolneno">
+                            Не исполнено
+                        </label>
+                    </div>
+                </div>
+                <div class="col-2 text-center align-self-center">
+                    <button
+                            class="btn btn-dark"
+                            type="button"
+                            aria-expanded="false"
+                            name="findContract">
+                    Найти
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -47,21 +77,46 @@
 
     <div id="pagination" th:include="fragment/pagination :: pagination"></div>
 
-    <div id="modalDopContainer" class="modal">
-        <div class="modal-content" id="modalDopContainerContent">
-
+    <!-- Modal -->
+    <div
+            class="modal fade"
+            id="modalDopContainer"
+            tabindex="-1"
+            aria-hidden="true"
+    >
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Дополнительная информация</h5>
+                    <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                    ></button>
+                </div>
+                <div class="modal-body" id="modalDopContainerContent"></div>
+                <div class="modal-footer">
+                    <button
+                            type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal"
+                    >
+                        Закрыть
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
 </div>
 
-
-
-
-
-<table border="1" id="tableContract" th:fragment="table(contracts)">
+<table class="table table-block table-secondary table-striped table-hover table-bordered text-center caption-top table-sm"
+       id="tableContract" th:fragment="table(contracts)">
+    <caption>Таблица контрактов</caption>
+    <thead>
     <tr>
-        <th rowspan="2">Номер п/п</th>
+        <th rowspan="2">№</th>
         <th colspan="2">Платежное поручение</th>
         <th rowspan="2">Контрагент</th>
         <th colspan="3">Государственный контракт</th>
@@ -70,6 +125,7 @@
         <th rowspan="2">Отметка об исполнении</th>
         <th rowspan="2">Действие</th>
     </tr>
+
     <tr>
         <th>Номер</th>
         <th>Дата</th>
@@ -78,40 +134,53 @@
         <th>Дата</th>
         <th>Краткое содержание</th>
     </tr>
+    </thead>
+    <tbody>
     <tr th:each="c,iterStat  : ${contracts}" th:id="${c.id}">
-        <td align="center" th:text="${iterStat.count} + ${paramstart}"></td>
-        <td align="center" th:text="${c.plat_post}"></td>
-        <td align="center" th:text="${c.getReceipt_dateRu()}"></td>
-        <!--<td align="center" th:text="${c.name_koltr}"></td>-->
-        <td align="center">
-            <table>
+        <th scope="row" align="center" th:text="${iterStat.count} + ${paramstart}"></th>
+        <td th:text="${c.plat_post}"></td>
+        <td th:text="${c.getReceipt_dateRu()}"></td>
+        <td>
+            <table class="text-center table table-block table-sm table-borderless">
                 <tr th:each="k : ${c.kontragent}">
-                    <td th:text="${k.getNameInn()}"></td>
+                    <td     th:text="${k.getNameInn()}"></td>
                 </tr>
             </table>
         </td> <!--вид обеспечения-->
-        <td align="center" th:text="${c.nomGK}"></td>
-        <td align="center" th:text="${c.getDateGKRu()}"></td>
-        <td align="center" th:text="${c.predmet_contract}"></td>
-        <td align="center">
-            <table>
+        <td th:text="${c.nomGK}"></td>
+        <td th:text="${c.getDateGKRu()}"></td>
+        <td th:text="${c.predmet_contract}"></td>
+        <td>
+            <table class="text-center table table-block table-sm table-borderless">
                 <tr th:each="v : ${c.vidObesp}">
                     <td th:text="${v.name}"></td>
                 </tr>
             </table>
         </td> <!--вид обеспечения-->
-        <td align="center" th:text="${c.getSumOk()}"></td>
-        <td align="center" ><!--th:text="${c.ispolneno}"-->
+        <td th:text="${c.getSumOk()}"></td>
+        <td>
             <label>
-                <input type="checkbox" class="filled-in"
+                <input type="checkbox" class="form-check-input"
                        th:name="${c.getId()}" th:id="checkboxIspolneno"
                        th:checked="${c.ispolneno}"/>
                 <span class="marginonospan"></span>
             </label>
+
+
+            <div th:data-progress-id="${c.getId()}"> <!--sdfsfasdfasdfasdfasfaaaaaaaaaaaaaaaaaaaaaaaaaaafadsfasfasfasfasf-->
+                <div th:insert="fragment/table :: progress (${c})"></div>
+            </div>
+
+            <!--<div th:text="${c.getDaysOst()}"></div>
+            <div th:text="${c.getDayVsego()}"></div>
+            <div th:text="${c.getProcent()}"></div>-->
         </td>
-        <td align="center">
-            <div><a class="waves-effect waves-light modal-trigger"
-                    href="#modalDopContainer" th:name="${c.id}">
+        <td>
+            <div><a data-bs-toggle="modal"
+                    data-bs-target="#modalDopContainer"
+                    href="#!"
+                    data-a-dop-modal="dataADopModal"
+                    th:name="${c.id}">
                 Доп.информация
             </a></div>
             <div><a th:name="${c.id}" id="updateContract" href="#">Изменить</a></div>
@@ -119,7 +188,27 @@
         </td>
 
     </tr>
+    </tbody>
 </table>
+
+<div th:fragment="progress(c)" class="progress" th:title="'Осталось ' + ${c.getDaysOst()} + ' дней'">
+    <div th:class=" 'progress-bar ' +
+                (${c.ispolneno}? 'bg-success' :
+                (${c.getProcent()>=75}? 'bg-danger' :
+                (${c.getProcent()>=50}? 'bg-warning':
+                (${c.getProcent()>=25}? 'bg-info'
+                ))))"
+
+         role="progressbar"
+         th:style="'width: ' + (${c.ispolneno}? '100' : ${c.getProcent()}) + '%'"
+         th:aria-valuenow="(${c.ispolneno}? '100' : ${c.getProcent()})"
+         aria-valuemin="0"
+         aria-valuemax="100"
+         th:text="${c.getDaysOst()}"
+    ></div>
+    <!--th:style="'width: ' + (${contract.ispolneno}? '100' : ${contract.getProcent()}) + '%'"
+    th:aria-valuenow="(${contract.ispolneno}? '100' : ${contract.getProcent()})"-->
+</div>
 
 </body>
 </html>

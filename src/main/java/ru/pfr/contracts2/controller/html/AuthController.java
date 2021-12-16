@@ -1,11 +1,14 @@
 package ru.pfr.contracts2.controller.html;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.pfr.contracts2.entity.log.Logi;
+import ru.pfr.contracts2.entity.user.ROLE_ENUM;
 import ru.pfr.contracts2.entity.user.User;
 import ru.pfr.contracts2.service.log.LogiService;
 
@@ -20,9 +23,25 @@ public class AuthController {
     @RequestMapping
     public String mains(
             @AuthenticationPrincipal User user,
+            Authentication authentication,
             Model model) {
         logiService.save(new Logi(user.getLogin(),"Авторизация прошла успешно MainController mains()"));
-        if (user.getRayon().getKod().equals("000"))
+
+        boolean update = false;
+        boolean admin = false;
+        for (GrantedAuthority g:
+                authentication.getAuthorities()) {
+            if(g.getAuthority().equals(ROLE_ENUM.ROLE_UPDATE.getString()))update=true;
+            if(g.getAuthority().equals(ROLE_ENUM.ROLE_ADMIN.getString()))admin=true;
+        }
+
+        if (admin) return "redirect:/contract/admin/admin";
+
+        else return "redirect:/contract/main";
+
+
+
+/*        if (user.getRayon().getKod().equals("000"))
             return "redirect:/contract/main";
         else if (user.getRayon().getKod().equals("999"))
             return "redirect:/contract/admin";
@@ -50,6 +69,6 @@ public class AuthController {
                 user.getRayon().getKod().equals("026") ||
                 user.getRayon().getKod().equals("027"))
             return "redirect:/contract/main";
-        return "/contract/error";
+        return "/contract/error";*/
     }
 }

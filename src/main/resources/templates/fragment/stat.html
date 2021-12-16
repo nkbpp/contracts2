@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<body>
+
+<div class="p-2" th:fragment="stat">
+    <h3>Обеспечение исполнения контрактов</h3>
+    <h6>Всего контрактов: <a class="link" href="#!" id="statAll">[[${size}]]</a></h6>
+    <h6>Исполнено контрактов: <a class="link" href="#!" id="statIspolneno">[[${ispolneno}]]</a></h6>
+    <h6>Не исполнено контрактов: <a class="link" href="#!" id="statNotIspolneno">[[${notispolneno}]]</a></h6>
+    <h6>Приближается срок исполнения контрактов: <a class="link" href="#!" id="statNotIspolnenoSrok">[[${notispolnenosrok}]]</a></h6>
+    <h6>Не задан срок исполнения контракта: <a class="link" href="#!" id="statNodate">[[${nodate}]]</a></h6>
+    <h6>Просрочено контрактов: <a class="link" href="#!" id="statProsrocheno">[[${prosrocheno}]]</a></h6>
+</div>
+
+
+</body>
+</html>

@@ -4,15 +4,18 @@
 <body>
 
 <div id="ttt" th:fragment="tables(logi)">
-    <table id="tab">
+    <table class="table table-block table-secondary table-striped table-hover table-bordered text-center caption-top table-sm"
+           id="tab">
+        <caption>Логи</caption>
         <thead>
         <tr>
-            <td align="center">Дата</td>
-            <td align="center">Пользователь</td>
-            <td align="center">Тип</td>
-            <td align="center">Текст</td>
+            <th>Дата</th>
+            <th>Пользователь</th>
+            <th>Тип</th>
+            <th>Текст</th>
         </tr>
         </thead>
+        <tbody>
         <tr th:each="l : ${logi}">
             <td th:text="${l.date}">
             </td>
@@ -23,37 +26,42 @@
             <td th:text="${l.text}">
             </td>
         </tr>
+        </tbody>
     </table>
 </div>
 
 <div id="aaa" th:fragment="blocks(logerrs)">
-    <table id="block">
+    <table class="table table-block table-secondary table-striped table-hover table-bordered text-center caption-top table-sm"
+           id="block">
+        <caption>Управление пользователями</caption>
         <thead>
         <tr>
-            <td align="center">ID</td>
-            <td align="center">Пользователь</td>
-            <td align="center">Попытки</td>
-            <td align="center">Последняя попытка</td>
-            <td align="center">Разблокировать</td>
-            <td align="center">Заблокировать</td>
+            <th>ID</th>
+            <th>Пользователь</th>
+            <th>Попытки</th>
+            <th>Последняя попытка</th>
+            <th>Разблокировать</th>
+            <th>Заблокировать</th>
         </tr>
         </thead>
+        <tbody>
         <tr th:each="l : ${logerrs}">
-            <td th:text="${l.id}">
-            </td>
+            <th th:text="${l.id}">
+            </th>
             <td th:text="${l.login}">
             </td>
             <td th:text="${l.active}">
             </td>
-            <td th:text="${l.date}">
+            <td th:text="${l.date_last_entry}">
             </td>
             <td>
-                <a class="waves-effect waves-light btn" th:value="${l.id}" name="clear">Разблокировать</a>
+                <a class="btn btn-secondary" th:value="${l.id}" name="clear">Разблокировать</a>
             </td>
             <td>
-                <a class="waves-effect waves-light btn" th:value="${l.id}" name="zablock">Заблокировать</a>
+                <a class="btn btn-secondary" th:value="${l.id}" name="zablock">Заблокировать</a>
             </td>
         </tr>
+        </tbody>
     </table>
 </div>
 

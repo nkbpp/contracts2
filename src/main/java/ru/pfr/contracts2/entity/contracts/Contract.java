@@ -9,6 +9,7 @@ import ru.pfr.contracts2.global.ConverterDate;
 import ru.pfr.contracts2.global.MyNumbers;
 
 import javax.persistence.*;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -41,7 +42,7 @@ public class Contract {
     @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     private VidObesp vidObesp; //вид обеспечения
 
-    private Float sum; //сумма
+    private Double sum; //сумма
 
     private Date date_ispolnenija_GK; //дата исполнения ГК
 
@@ -62,7 +63,7 @@ public class Contract {
     //@OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     @OneToMany(mappedBy = "contract", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MyDocuments> myDocuments = new ArrayList<>();
-    ;
+
 
     @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     private User user; //кто создал контракт
@@ -117,13 +118,12 @@ public class Contract {
     }
 
     public Contract(Date receipt_date, String plat_post, Kontragent kontragent/*String name_koltr*/, String nomGK,
-                    Date dateGK, String predmet_contract, VidObesp vidObesp, Float sum,
+                    Date dateGK, String predmet_contract, VidObesp vidObesp, Double sum,
                     Date date_ispolnenija_GK, Integer col_days, List<Notification> notifications,
                     Boolean ispolneno, List<MyDocuments> myDocuments, String nomerZajavkiNaVozvrat,
                     Date dateZajavkiNaVozvrat, User user) {
         this.receipt_date = receipt_date;
         this.plat_post = plat_post;
-        //this.name_koltr = name_koltr;
         this.kontragent = kontragent;
         this.nomGK = nomGK;
         this.dateGK = dateGK;
@@ -151,6 +151,9 @@ public class Contract {
     }
 
     public void setAllDocuments(List<MyDocuments> myDocs) {
+        while (myDocuments.size()>0){
+            removeDocuments(myDocuments.get(0));
+        }
         for (MyDocuments d :
                 myDocs) {
             addDocuments(d);
@@ -171,8 +174,6 @@ public class Contract {
         while (notifications.size()>0){
             removeNotification(notifications.get(0));
         }
-
-
         for (Notification n :
                 notif) {
             addNotification(n);
@@ -182,6 +183,30 @@ public class Contract {
     public void removeNotification(Notification notif) {
         this.notifications.remove(notif);
         notif.setContract(null);
+    }
+
+
+    public int getDaysOst(){ //дней осталось
+        if(raschet_date!=null) {
+            Date ras = raschet_date;
+            Date tec = ConverterDate.stringToDate(ConverterDate.datetostring_yyyyMMdd(new Date()));
+            return ConverterDate.differenceInDays(ras, tec);
+        }
+        return -1;
+    }
+
+    public int getDayVsego(){ //дней всего
+        if(raschet_date!=null && dateGK!=null){
+        Date ras = raschet_date;
+        Date tec = dateGK;
+        return ConverterDate.differenceInDays(ras,tec);
+        }
+        return -1;
+    }
+
+    public int getProcent(){ //дней всего
+
+        return 100*(getDayVsego()-getDaysOst())/getDayVsego();
     }
 
 

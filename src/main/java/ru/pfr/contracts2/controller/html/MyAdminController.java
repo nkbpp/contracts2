@@ -1,8 +1,9 @@
 package ru.pfr.contracts2.controller.html;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.pfr.contracts2.entity.admin.Adminparam;
 import ru.pfr.contracts2.entity.log.Logi;
+import ru.pfr.contracts2.entity.user.ROLE_ENUM;
 import ru.pfr.contracts2.entity.user.User;
 import ru.pfr.contracts2.service.admin.AdminparamService;
 import ru.pfr.contracts2.service.log.LogiService;
@@ -22,7 +24,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping(value = {"/contract/admin"})
-@PreAuthorize("hasRole('ROLE_ADMIN')")
+//@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
 public class MyAdminController {
 
     @Autowired
@@ -37,6 +39,7 @@ public class MyAdminController {
     @GetMapping("/admin")
     public String adminstart(
             @AuthenticationPrincipal User user,
+            Authentication authentication,
             Model model) {
 
         model.addAttribute("user", user);
@@ -47,7 +50,7 @@ public class MyAdminController {
         List<User> logerrs = userService.findAll();
         model.addAttribute("logerrs", logerrs);
 
-        logiService.save(new Logi(user.getLogin(),"Страница администратора"));
+        logiService.save(new Logi(user.getLogin(),"View","Страница администратора"));
         return "admin";
     }
 
@@ -61,7 +64,11 @@ public class MyAdminController {
 
         model.addAttribute("user", user);
 
-        Adminparam adminparam = new Adminparam(kolpopitok, koefpopitok, block);
+        //Adminparam adminparam = new Adminparam(kolpopitok, koefpopitok, block);
+        Adminparam adminparam = adminparamService.findById(1L);
+        adminparam.setKolpopitok(kolpopitok);
+        adminparam.setKoefpopitok(koefpopitok);
+        adminparam.setBlock(block);
         adminparamService.save(adminparam);
 
         model.addAttribute("adminparam", adminparam);
@@ -71,14 +78,16 @@ public class MyAdminController {
 
     @GetMapping("/juraudit")
     public String juraudit(@AuthenticationPrincipal User user,
+                           Authentication authentication,
                            Model model) {
 
         model.addAttribute("user", user);
 
         Iterable<Logi> logi = logiService.findAll();
         model.addAttribute("logi", logi);
+
         logiService.save(new Logi(user.getLogin(),"Вход в журнал"));
-        return "juraudit";
+        return "fragment/juraudit";
     }
 
     @GetMapping("/juraudit/tables")

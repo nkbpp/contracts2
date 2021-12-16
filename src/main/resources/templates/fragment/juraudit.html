@@ -3,6 +3,187 @@
 <head>
     <meta charset="UTF-8">
     <title>Журнал</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link type="text/css" rel="stylesheet" th:href="@{/webjars/bootstrap/5.1.3/dist/css/bootstrap.min.css}"/>
+    <script type="text/javascript" src="/webjars/jquery/3.3.1/jquery.js"></script>
+    <script type="text/javascript">
+        var sortTable = function (n) {
+            var s = n.document;
+            return function (b, t, u, d, n, x) {
+                function p(e, b, d) {
+                    function m(a, g, b) {
+                        var c;
+                        if ("string" === g) return a;
+                        "[object RegExp]" === {}.toString.call(g) ? c = g : "undefined" !== typeof v[g] && (c = v[g]);
+                        b = b ? b : 0;
+                        return (c = a.match(c)) && c[b] ? "word" == g ? c[b] : new Number(c[b]) : a
+                    }
+
+                    function f(a, b) {
+                        return a > b
+                    }
+
+                    function p(a, b) {
+                        return a < b
+                    }
+
+                    function w(b, d, f) {
+                        if (q.dir === d && q.idx === e) return !1;
+                        for (a = 0; a < h.length - 1; a += 1) for (k = a + 1; k < h.length; k += 1) if (b(m(h[a].cells[e].innerText, l[e][0], l[e][1]), m(h[k].cells[e].innerText, l[e][0], l[e][1]))) {
+                            var c = h[a], r = h[k], n = c.nextSibling, p = c.parentNode;
+                            c.swapNode ? c.swapNode(r) : (r.parentNode.replaceChild(c, r), p.insertBefore(r, n))
+                        }
+                        q.dir = d;
+                        q.idx = e;
+                        f && f(q)
+                    }
+
+                    b = s.createElement("SPAN");
+                    d = s.createElement("SPAN");
+                    b.appendChild(t.cloneNode(!0));
+                    d.appendChild(u.cloneNode(!0));
+                    b.onclick = function () {
+                        w(p, "asc", n)
+                    };
+                    d.onclick = function () {
+                        w(f, "desc", x)
+                    };
+                    return {asc: b, desc: d}
+                }
+
+                if (!b || !t || !u) throw Error("sortTabe ERROR: Parameters 1,2,3 - is required!");
+                var h = b.tBodies[0].rows, f = b.rows[0].cells.length, q = {dir: "none", idx: null}, l = d || [],
+                    v = {integer: /\d+/g, number: /(\d+(\.\d+)?)/g, word: /\S+/g, string: "string"}, m, a, k;
+                for (a = 0; a < f; a++) "[object Array]" !== {}.toString.call(l[a]) && (l[a] = ["string", 0]);
+                for (a = 0; a < f; a += 1) m = p(a, b), d = b.rows[0].cells[a], d.appendChild(m.asc), d.appendChild(m.desc)
+            }
+        }(this);
+
+        $(document).ready(function () {
+            $("body").on('click', 'a', function () {
+
+                if ($(this).attr('id') === "filter") {
+                    var param = "d1=" + $("#datedo").val() +
+                        "&d2=" + $("#dateposle").val() +
+                        "&login=" + $("#login").val() +
+                        "&text=" + $("#text").val() +
+                        "&type=" + $("#type").val();
+
+                    $("#ttt").load("/contract/admin/juraudit/tables", param, function () {
+                        // Вешаем сортировку на таблицу:
+                        //console.log($("#tab").get(0));
+                        sortTable($("#tab").get(0), sortAsc1, sortDesc1, sortRules);
+                    });
+                    return false;
+                }
+
+                if ($(this).attr('id') === "clear") {
+
+                    $("#ttt").load("/contract/admin/juraudit/clear", function () {
+                        // Вешаем сортировку на таблицу:
+                        //console.log($("#tab").get(0));
+                        sortTable($("#tab").get(0), sortAsc1, sortDesc1, sortRules);
+                    });
+                    return false;
+                }
+            });
+        });
+    </script>
+</head>
+<body class="bg-dark" style="--bs-bg-opacity: .05;">
+<!--<div th:insert="fragment/logout :: logout(${user})"></div>-->
+<div th:insert="fragment/menu :: menu"></div>
+
+<br>
+<!--<a class="btn btn-secondary" th:href="@{/contract/admin/admin}">
+    Назад
+</a>
+
+<hr>-->
+
+<div class="row">
+
+    <div class="col-2 d-flex align-items-end">
+        <div class="w-100">
+            <label for="datedo" class="form-label m-0">Дата до:</label>
+            <input type="date" class="form-control" id="datedo" name="datedo">
+        </div>
+    </div>
+
+    <div class="col-2 d-flex align-items-end">
+        <div class="w-100">
+            <label for="dateposle" class="form-label m-0">Дата после:</label>
+            <input type="date" class="form-control" id="dateposle" name="dateposle">
+        </div>
+    </div>
+
+    <div class="col-2 d-flex align-items-end">
+        <div class="w-100">
+            <label for="login" class="form-label m-0">Пользователь:</label>
+            <input type="text" class="form-control" id="login" name="login">
+        </div>
+    </div>
+
+    <div class="col-2 d-flex align-items-end">
+        <div class="w-100">
+            <label for="type" class="form-label m-0">Тип:</label>
+            <input type="text" class="form-control" id="type" name="type">
+        </div>
+    </div>
+
+    <div class="col-2 d-flex align-items-end">
+        <div class="w-100">
+            <label for="text" class="form-label m-0">Текст:</label>
+            <input type="text" class="form-control" id="text" name="text">
+        </div>
+    </div>
+
+    <div class="col-2 d-flex align-items-end">
+        <a class="btn btn-secondary" id="filter">Применить фильтр</a>
+    </div>
+
+</div>
+
+<hr>
+
+<div th:insert="fragmentadmin/adminfragment :: tables(${logi})"></div>
+
+<a class="btn btn-secondary" id="clear">Очистить</a>
+<script type="text/javascript">
+    // Значки для сортировки :
+    var sortAsc1 = document.createElement("SPAN"),
+        sortDesc1 = document.createElement("SPAN"),
+        sortRules = [
+            null,
+            null,
+            ["number"],     // Сортировать по первому числу строки (целое или десятичная дробь)
+            null            // Здесь будет использоваться алгоритм по-умолчанию (правило string)
+        ];
+
+    // Значки сортировки для заголовка таблицы:
+    sortAsc1.innerHTML = "&#9660;";
+    sortDesc1.innerHTML = "&#9650;";
+
+    // Вешаем сортировку на таблицу:
+    //console.log($("#tab").get(0));
+
+    sortTable($("#tab").get(0), sortAsc1, sortDesc1, sortRules);
+
+    $( "th span span" ).each(function() {
+        $( this ).addClass( "btn" );
+    });
+</script>
+<script type="text/javascript" src="/webjars/bootstrap/5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+<!--ТАК БЫЛО-->
+<!--
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Журнал</title>
     <script type="text/javascript" src="/webjars/jquery/3.3.1/jquery.js"></script>
     <link type="text/css" rel="stylesheet" href="/webjars/materialize/1.0.0-rc.2/dist/css/materialize.min.css"/>
     <script type="text/javascript">
@@ -151,3 +332,4 @@
 <script type="text/javascript" src="/webjars/materialize/1.0.0-rc.2/dist/js/materialize.min.js"></script>
 </body>
 </html>
+-->

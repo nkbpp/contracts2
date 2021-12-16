@@ -2,6 +2,7 @@ package ru.pfr.contracts2.service.contracts;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.pfr.contracts2.entity.contracts.Contract;
 import ru.pfr.contracts2.entity.contracts.Kontragent;
 import ru.pfr.contracts2.repository.contracts.KontragentRepository;
 
@@ -16,12 +17,30 @@ public class KontragentService {
     final KontragentRepository kontragentRepository;
 
     public List<Kontragent> findAll() {
-        return kontragentRepository.findAll();
+        return kontragentRepository.findAllByOrderByIdDesc();
+    }
+
+    public List<Kontragent> findAll(int l) {
+        return cutTheList(findAll(), l, 12);
+    }
+
+    //для обрезки
+    private List<Kontragent> cutTheList(List<Kontragent> kontragents, int list, int mnoj) {
+        List<Kontragent> kontragents2 = new ArrayList<>();
+
+        int start = mnoj*(list-1);
+        int end = mnoj*(list-1) + mnoj;
+
+        for (int i = start; i < end && i<kontragents.size() ; i++) {
+            kontragents2.add(kontragents.get(i));
+        }
+
+        return kontragents2;
     }
 
     public List<Kontragent> findByNameAndInn(String name, String inn) {
         if((name==null || name.equals("")) && (inn==null || inn.equals(""))){
-            return kontragentRepository.findAll();
+            return findAll();
         }
         return kontragentRepository.findByNameAndInn(name, inn);
     }

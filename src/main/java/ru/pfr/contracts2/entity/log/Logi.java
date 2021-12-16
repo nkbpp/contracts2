@@ -18,8 +18,11 @@ public class Logi {
     private Long id;
 
     private Date date;
+    @Column(length = 255)
     private String user;
+    @Column(length = 255)
     private String type;
+    @Column(columnDefinition = "TEXT")
     private String text;
 
     public Logi(String user, String text) {
@@ -34,5 +37,10 @@ public class Logi {
         this.user = user;
         this.type = type;
         this.text = text;
+    }
+
+    public String getDateStr() {
+        //return "sdf";
+        return date==null?"":date.toString();
     }
 }

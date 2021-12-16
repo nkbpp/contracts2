@@ -20,7 +20,7 @@ public class VidObespService {
     final VidObespRepository vidObespRepository;
 
     public List<VidObesp> findAll() {
-        return vidObespRepository.findAll();
+        return vidObespRepository.findAllByOrderByIdDesc();
     }
 
     public List<VidObesp> findAllwithPusto() {
@@ -43,4 +43,5 @@ public class VidObespService {
     public void delete(Long id) {
         vidObespRepository.deleteById(id);
     }
+
 }

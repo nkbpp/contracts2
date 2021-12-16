@@ -2,77 +2,188 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Главная</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
     <meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
     <meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
-    <link type="text/css" rel="stylesheet" href="/webjars/materialize/1.0.0-rc.2/dist/css/materialize.min.css"/>
+
+    <link type="text/css" rel="stylesheet" th:href="@{/webjars/bootstrap/5.1.3/dist/css/bootstrap.min.css}"/>
     <script type="text/javascript" src="/webjars/jquery/3.3.1/jquery.js"></script>
+
 
     <script type="text/javascript">
 
         $(document).ready(function () {
+            $("#mainContainer").load("/contract/main/stat", "", function () {
+            })
+
             let body = $("body");
+
             body.on('keyup', 'input', function() {
                 let param = "name=" + $("#nameModalKontragent").val() +
                     "&inn=" + $("#innModalKontragent").val();
-                console.log(param);
-                console.log($(this).attr('id'));
                 if ($(this).attr('id') === "nameModalKontragent") {
                     $("#dliazamenyKontragentTable").load("/contract/main/kontragent/findKontragent", param, function () {
+                        clearPaginationMK();
                     });
                 }
                 if ($(this).attr('id') === "innModalKontragent") {
                     $("#dliazamenyKontragentTable").load("/contract/main/kontragent/findKontragent", param, function () {
+                        clearPaginationMK();
                     });
                 }
             });
 
             body.on('click', 'button', function () {
+
+                if ($(this).attr('data-bs-target') === "#modalKontragent") {
+                    let param = "param=1";
+                    $("#dliazamenyKontragentTable").load("/contract/main/kontragent/modalKontragentViev", param, function () {
+                        clearPaginationMK();
+                    });
+                }
+
+                if ($(this).attr('data-name-doc') === "delDoc") {
+                    let id = $(this).attr('data-id-doc');
+                    let param = "id="+id;
+                    let token = $('#_csrf').attr('content');
+                    let header = $('#_csrf_header').attr('content');
+                    $.ajax({
+                        url: '/contract/main/delDoc',
+                        method: 'post',
+                        data: param,
+                        beforeSend: function(xhr) {
+                            xhr.setRequestHeader(header, token);
+                        },
+                        success: function(data){
+                            $("div[data-id-doc="+id+"]").remove();
+                            $("a[data-id-doc="+id+"]").remove();
+                            initialToats("Удаление прошло успешно",data,"success").show();
+                        },
+                        error: function(textStatus){
+                            initialToats("Ошибка при удалении документа!!!",textStatus,"err").show();
+                            console.log('ОШИБКИ AJAX запроса при удалении документа: ' + textStatus);
+                        }
+                    });
+                    return false;
+                }
+
                 if ($(this).attr('name') === "findContract") { //поиск
                     let param = "poleFindByNomGK=" + $("[data-name=poleFindByNomGK]").val() +
                         "&poleFindByINN=" + $("[data-name=poleFindByINN]").val() +
                         "&poleFindByIspolneno=" + $('[data-name=poleFindByIspolneno]').prop("checked") +
                         "&poleFindByNotIspolneno=" + $('[data-name=poleFindByNotIspolneno]').prop("checked");
+                    console.log("findContract param = ", param);
                     $("#tableContainer").load("/contract/main/findTable", param, function () {
                         clearPagination1();
                     });
                     return false;
                 }
-            });
 
+                if ($(this).hasClass('minusNotif')) { //удалить уведомление
+                    $("#notifications #" + $(this).attr('name')).detach();
+                    return false;
+                }
+            });
 
             body.on('click', 'a', function () {
 
-                if ($(this).attr('href')==="#modalDopContainer") {
-                    let param = "id="+$(this).attr('name');
-                    $("#modalDopContainerContent").load("/contract/main/dopTable", param, function () {
-                    });
+                if ($(this).attr('id') === "notificationsVibor") {
+                    console.log("notificationsVibor");
+                    let val = $("#notificationsSelect").val();
+                    if($("#notifications div").is('#' + val)){
+                        alert("Вы уже добавили этого человека!");
+                    } else {
+                        let notif = $("#notifications");
+                        notif.html(notif.html() +
+
+                            "<div class='mb-1' id='" + val + "'>" +
+                            $("#notificationsSelect option:selected").text() +
+                            "<button class='btn btn-secondary btn-sm minusNotif' type='button' " +
+                            "name=" + val + ">X</button></div>")
+                    }
                     return false;
                 }
 
                 /*кнопка выбрать в модальной форме*/
                 if (typeof $(this).attr('data-id-modal-kontragent') !== 'undefined' &&
                     $(this).attr('data-id-modal-kontragent') !== false) {
+                    console.log("кнопка выбрать в модальной форме")
                     let id = $(this).attr('data-id-modal-kontragent');
-                    $('#kontragent').val(id); $('select').formSelect();
-                    $('#modalKontragent').modal('close');
+                    $('#kontragent').val(id);
                     return false;
                 }
 
-                if ($(this).attr('id') === "menuViev") {
-                    $("#mainContainer").load("/contract/main/vievTable", "", function () {
-                        $("#tableContainer").load("/contract/main/getTable", "", function () {
-                            $('#modalDopContainer').modal();
+                if ($(this).attr('id') === "menuViev") { //Кнопка просмотр
+                    loadMenuView();
+                    /*let mainContainer = $("#mainContainer");
+                    mainContainer.html(getSpinner());
+                    mainContainer.load("/contract/main/vievTable", "", function () {
+                        let tableContainer = $("#tableContainer")
+                        tableContainer.html(getSpinner());
+                        tableContainer.load("/contract/main/getTable", "", function () {
                         });
-                    });
+                    });*/
+                    return false;
+                }
+                if ($(this).attr('id') === "statAll") { //Статистика показать все
+                    loadMenuView();
+                    return false;
+                }
+                if ($(this).attr('id') === "statIspolneno") { //Статистика показать исполненые
+                    loadMenuView("statIspolneno=1");
+                    return false;
+                }
+                if ($(this).attr('id') === "statNotIspolneno") { //Статистика показать не исполненые
+                    loadMenuView("statNotIspolneno=1");
                     return false;
                 }
 
-                if ($(this).attr('id') === "menuAdd") {
+                if ($(this).attr('id') === "statNotIspolnenoSrok") { //Статистика показать не исполненые приближается срок исполнения
+                    loadMenuView("statNotIspolnenoSrok=1");
+                    return false;
+                }
+                if ($(this).attr('id') === "statNodate") { //Статистика показать без даты
+                    loadMenuView("statNodate=1");
+                    return false;
+                }
+                if ($(this).attr('id') === "statProsrocheno") { //Статистика показать просроченные
+                    loadMenuView("statProsrocheno=1");
+                    return false;
+                }
+
+                if ($(this).attr('id') === "deleteContract") { //Удалить контракт
+                    if (confirm("Вы точно хотите удалить заявление c порядковым номером = " +
+                        $(this).parents("#" + $(this).attr('name')).children().eq(0).text())){
+
+                        let param = "id="+$(this).attr('name');
+                        let token = $('#_csrf').attr('content');
+                        let header = $('#_csrf_header').attr('content');
+                        $.ajax({
+                            url: '/contract/main/deleteContract',
+                            method: 'post',
+                            data: param,
+                            beforeSend: function(xhr) {
+                                xhr.setRequestHeader(header, token);
+                            },
+                            success: function(data){
+                                param = "param=" + activeList("#pagination");//чтобы при удалении осталась текущая страница
+                                $("#tableContainer").load("/contract/main/getTable", param, function () {
+                                });
+                                initialToats("Удаление прошло успешно",data,"success").show();
+                            },
+                            error: function(textStatus){
+                                initialToats("Ошибка!!!",textStatus,"err").show();
+                                //console.log('ОШИБКИ AJAX запроса: ' + textStatus);
+                            }
+                        });
+                    }
+                    return false;
+                }
+
+                if ($(this).attr('id') === "menuAdd") { //Добавить контракт
                     $("#mainContainer").load("/contract/main/add", "", function () {
                         $("#containerNotification").load("/contract/main/getnotification", "", function () {
-                            $('select').formSelect();//селекты
                         });
 
                         let token = $('#_csrf').attr('content');
@@ -94,12 +205,8 @@
                                 }
                             },
                             error: function(textStatus){
-                                alert("Ошибка при удалении!!! " + textStatus);
-                                console.log('ОШИБКИ AJAX запроса при удалении документа: ' + textStatus);
                             }
                         });
-
-                        $('#modalKontragent').modal();
                     });
                     return false;
                 }
@@ -121,13 +228,9 @@
                                     xhr.setRequestHeader(header, token);
                                 },
                                 success: function(data){
-                                    //logObj(data);
-                                    //logObj(data.contract);
                                     $("#addContracts").attr("data-id-contract",data.contract.id)
                                     $('input[name=receipt_date]').val(data.contract.receipt_date);
-                                    //console.log("data.contract.plat_post = ",data.contract.plat_post);
                                     $('input[name=plat_post]').val(data.contract.plat_post);
-                                    //$('input[name=name_koltr]').val(data.contract.name_koltr);
                                     $('input[name=nomGK]').val(data.contract.nomGK);
                                     $('input[name=dateGK]').val(data.contract.dateGK);
                                     $('input[name=predmet_contract]').val(data.contract.predmet_contract);
@@ -139,7 +242,6 @@
                                     if(vidObesp!==""){
                                         $("#vidObesp option[value="+data.contract.vidObesp+"]").prop("selected","true");
                                     }
-                                    $('select').formSelect();
                                     $('input[name=sum]').val(data.contract.sum);
                                     $('input[name=date_ispolnenija_GK]').val(data.contract.date_ispolnenija_GK);
                                     $('input[name=col_days]').val(data.contract.col_days);
@@ -160,142 +262,49 @@
                                         let dv = $("#documentsViev");
                                         dv.html(
                                             dv.html() +
-                                            "<div align='left' data-id-doc='" + doc.id + "'>"+doc.nameFile + " " +
-                                            "<a class='red waves-effect waves-light btn minusNotif' " +
-                                            "data-id-doc='" + doc.id + "' data-name-doc='delDoc'>X</a>" +
+                                            "<div class='mb-1' data-id-doc='" + doc.id + "'>"+doc.nameFile + " " +
+                                            "<button class='btn btn-secondary btn-sm' " +
+                                            "data-id-doc='" + doc.id + "' data-name-doc='delDoc'>X</button>" +
                                             "</div>"
                                         );
                                     }
-
-                                    $('#modalKontragent').modal();
                                 },
                                 error: function(textStatus){
-                                    alert("Ошибка !!! " + textStatus);
+                                    initialToats("Ошибка!!!",textStatus,"err").show();
                                     console.log('ОШИБКИ AJAX запроса: ' + textStatus);
                                 }
                             });
                         });
                     });
-
-
                     return false;
                 }
 
-                if ($(this).attr('data-name-doc') === "delDoc") {
-                    let id = $(this).attr('data-id-doc');
-                    let param = "id="+id;
-                    let token = $('#_csrf').attr('content');
-                    let header = $('#_csrf_header').attr('content');
-                    $.ajax({
-                        url: '/contract/main/delDoc',
-                        method: 'post',
-                        data: param,
-                        beforeSend: function(xhr) {
-                            xhr.setRequestHeader(header, token);
-                        },
-                        success: function(){
-                            $("div[data-id-doc="+id+"]").remove();
-                            $("a[data-id-doc="+id+"]").remove();
-                        },
-                        error: function(textStatus){
-                            alert("Ошибка при удалении!!! " + textStatus);
-                            console.log('ОШИБКИ AJAX запроса при удалении документа: ' + textStatus);
-                        }
+                if ($(this).attr('data-a-dop-modal')==="dataADopModal") {
+                    let param = "id="+$(this).attr('name');
+                    $("#modalDopContainerContent").load("/contract/main/dopTable", param, function () {
                     });
-                    return false;
-                }
-
-                if ($(this).attr('id') === "deleteContract") {
-                    if (confirm("Вы точно хотите удалить заявление c порядковым номером = " +
-                        $(this).parents("#" + $(this).attr('name')).children().eq(0).text())){
-
-                        let param = "id="+$(this).attr('name');
-                        let token = $('#_csrf').attr('content');
-                        let header = $('#_csrf_header').attr('content');
-                        $.ajax({
-                         url: '/contract/main/deleteContract',
-                            method: 'post',
-                            data: param,
-                            beforeSend: function(xhr) {
-                                xhr.setRequestHeader(header, token);
-                            },
-                            success: function(){
-                                param = "param=" + activeList();
-                                $("#tableContainer").load("/contract/main/getTable", param, function () {
-                                    $('#modalDopContainer').modal();
-                                });
-                            },
-                            error: function(textStatus){
-                                alert("Ошибка !!! " + textStatus);
-                                console.log('ОШИБКИ AJAX запроса: ' + textStatus);
-                            }
-                        });
-                    }
-                    return false;
-                }
-
-                if ($(this).attr('id') === "notificationsVibor") {
-                    let val = $("#notificationsSelect").val();
-                    if($("#notifications div").is('#' + val)){
-                        alert("Вы уже добавили этого человека!");
-                    } else {
-                        let notif = $("#notifications");
-                        notif.html(notif.html() +
-                            "<div " +
-                            "id='" + val + "'>" +
-                            $("#notificationsSelect option:selected").text() +
-                            "      <a class='red waves-effect waves-light btn minusNotif' name=" + val +
-                            ">X</a>" +
-                            "</div>")
-                    }
-                    return false;
-                }
-
-                if ($(this).hasClass('minusNotif')) {
-                    $("#notifications #" + $(this).attr('name')).detach();
                     return false;
                 }
 
                 //переключатели страниц pagination
                 if ($(this).parents("#pagination").attr("id") === "pagination") {
-                    console.log("pagination list = " + activeList());
-                    let pag = $("#pagination a");
-                    let list;
-                    //кнопка назад
-                    if ($(this).text() === "Назад") {
-                        clearPagination1();
-                        list = 1;
-                    } else //кнопка далее
-                    if ($(this).text() === "Далее") {
-
-                        list = +pag.eq(5).text() + 1;
-                        pag.first().parent().removeClass("disabled");
-                        pag.eq(1).text(list).parent().removeClass("active").addClass("active");
-                        pag.eq(2).text(+list + 1).parent().removeClass("active");
-                        pag.eq(3).text(+list + 2).parent().removeClass("active");
-                        pag.eq(4).text(+list + 3).parent().removeClass("active");
-                        pag.eq(5).text(+list + 4).parent().removeClass("active");
-                    } else {
-                        $("#pagination li.active").removeClass("active");
-                        $(this).parent().addClass("active");
-                        list = $(this).text();
-                        if (list === 1) {
-                            pag.first().parent().removeClass("disabled").addClass("disabled");
-                        } else {
-                            $("#pagination li.disabled").removeClass("disabled");
-                        }
-                    }
-
+                    let list = clickPagination($(this),"#pagination");
                     let param = "param=" + list;
-
                     $("#tableContainer").load("/contract/main/getTable", param, function () {
-                        $('#modalDopContainer').modal();
+                    });
+                }
+
+                //переключатели страниц MKpagination
+                if ($(this).parents("#MKpagination").attr("id") === "MKpagination") {
+                    let list = clickPagination($(this),"#MKpagination");
+                    let param = "param=" + list;
+                    $("#dliazamenyKontragentTable").load("/contract/main/kontragent/modalKontragentViev", param, function () {
                     });
                 }
 
             });
 
-            //checkBox
+            //checkBox в таблице
             body.on('click', 'input', function () {
                 if ($(this).attr('id') === "checkboxIspolneno") {
                     let bool = $(this).prop("checked");
@@ -314,56 +323,59 @@
                             xhr.setRequestHeader(header, token);
                         },
                         success: function(data){
-                            console.log(data.text)
+                            param = "id=" + id;
+                            $("[data-progress-id=" + id + "]").load("/contract/main/getProgress", param, function () {
+                            });
+                            initialToats("Изменение статуса прошло успешно",data,"success").show();
                         },
                         error: function(textStatus){
-                            alert("Ошибка в изменении статуса " + textStatus);
+                            initialToats("Ошибка в изменении статуса!!!",textStatus,"err").show();
                             console.log('ОШИБКИ AJAX запроса: ' + textStatus);
                         }
                     });
                 }
             });
+
+
         });
+
         //переключатели страниц
         function clearPagination1() { // определяем функцию и ее механизм выполнения
             clearPagination($("#pagination a"));
         }
 
-        function clearPagination(pag) {
-            pag.first().parent().removeClass("disabled").addClass("disabled");
-            pag.eq(1).text("1").parent().removeClass("active").addClass("active");
-            pag.eq(2).text("2").parent().removeClass("active");
-            pag.eq(3).text("3").parent().removeClass("active");
-            pag.eq(4).text("4").parent().removeClass("active");
-            pag.eq(5).text("5").parent().removeClass("active");
+        function clearPaginationMK() { // определяем функцию и ее механизм выполнения
+            clearPagination($("#MKpagination a"));
         }
-
-        function activeList() {
-            let list;
-            let text = $("#pagination li.active").text();
-            if (text === "Назад") {
-                list = 1;
-            } else //кнопка далее
-            if (text === "Далее") {
-                list = +$("#pagination a").eq(5).text() + 1;
-            } else {
-                list=text
-            }
-            console.log("activeList= " + list);
-            return list;
-        }
-
 
         function getDopNotifHtml(name, id) {
-            let html = "<div id='" + id + "'>" + name + " " +
-                "<a class='red waves-effect waves-light btn minusNotif' " +
-                "name='" + id + "'>X</a>" +
+            return "<div class='mb-1' id='" + id + "'>" + name + " " +
+                "<button class='btn btn-secondary btn-sm minusNotif' " +
+                "name='" + id + "' type='button'>X</button>" +
                 "</div>";
-            return html;
         }
 
+        function getSpinner() {
+            return "<div class='d-flex justify-content-center m-2'>" +
+                "<div class='spinner-border' role='status'>" +
+                "<span class='visually-hidden'>Загрузка...</span>" +
+                "</div>" +
+                "</div>";
+        }
 
-        function logObj(obj) {
+        function loadMenuView(param){
+            console.log('param = ',param);
+            let mainContainer = $("#mainContainer");
+            mainContainer.html(getSpinner());
+            mainContainer.load("/contract/main/vievTable", "", function () {
+                let tableContainer = $("#tableContainer")
+                tableContainer.html(getSpinner());
+                tableContainer.load("/contract/main/getTable", param, function () {
+                });
+            });
+        }
+
+        function logObj(obj) { //для вывода обьектов в лог
             let str = "";
             for(k in obj) {
                 str += k+": "+ obj[k]+"\r\n";
@@ -373,22 +385,100 @@
 
     </script>
 
+    <script type="text/javascript" th:src="@{/js/pagination.js}"></script>
     <script type="text/javascript" th:src="@{/js/documents.js}"></script>
     <script type="text/javascript" th:src="@{/js/spisok.js}"></script>
     <script type="text/javascript" th:src="@{/js/kontragent.js}"></script>
-    <link rel="stylesheet" th:href="@{/styles/full.css}"><!--мои локальные стили-->
+
+    <title>Обеспечение исполнения контрактов</title>
+    <!--<link rel="stylesheet" th:href="@{/styles/full.css}">--><!--мои локальные стили-->
 </head>
-<body>
+<body class="bg-dark" style="--bs-bg-opacity: .05;">
 
-<div th:insert="fragment/logout :: logout(${user})"></div>
+<div class="container-xxl p-0" >
 
-<div th:insert="fragment/menu :: menu"></div>
+    <div th:insert="fragment/menu :: menu"></div>
 
-<div id="mainContainer"></div>
+    <div id="mainContainer"></div>
+
+    <!--TOASTS-->
+    <div class="toast-container position-absolute p-3 bottom-0 end-0">
+    </div>
+
+</div>
 
 
 
+<script type="text/javascript" src="/webjars/bootstrap/5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    let options = {
+        animation : true,
+        autohide : false,
+        delay : 2000,
+    };
 
-<script type="text/javascript" src="/webjars/materialize/1.0.0-rc.2/dist/js/materialize.min.js"></script>
+    function initialToats(header, message, type) {
+        let i = 0;
+        let tcs = $(".toast-container .show");
+        let tc = $(".toast-container");
+        if(tcs.last().attr('id') !== undefined) {
+            i = +(tcs.last().attr('id').slice(-1))+1;
+        } else {
+            tc.html(""); //очистить контейнер
+        }
+        tc.html(tc.html() + getToats(i))
+
+        //console.log("i = ",i);
+
+        let myToast = $("#myToast"+i);
+
+        const date = new Date();
+        $('#myToastTime'+i).text(date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds());
+        $('#myToastHeaderMes'+i).text(header);
+        $('#myToastMessage'+i).text(message);
+
+        switch (type) {
+            case "err":
+                myToast.addClass("bg-danger");
+                $('#myToastHeader'+i).addClass("bg-danger");
+            break;
+            case "success":
+                myToast.addClass("bg-success");
+                $('#myToastHeader'+i).addClass("bg-success");
+            break;
+        }
+
+        let toast = new bootstrap.Toast(myToast, options);
+
+        //myToastHide();
+        myToastHide("#myToast"+i);
+
+        return toast;
+    }
+
+    function myToastHide(myToast){
+        setTimeout( function () {
+            $(myToast).removeClass("show");
+        }, 7000);
+    }
+
+/*    function myToastHide(){
+        setTimeout( function () {
+            $(".toast-container .show").first().removeClass("show");
+        }, 7000);
+    }*/
+
+    function getToats(id) { //для вывода обьектов в лог
+        return "<div id='myToast" + id + "' class='toast hide' role='alert' aria-live='assertive' aria-atomic='true' style='--bs-bg-opacity: .2;'>" +
+            "<div class='toast-header bg-gradient text-white' id='myToastHeader" + id + "'>" +
+            "<strong class='me-auto' id='myToastHeaderMes" + id + "' style='--bs-bg-opacity: .3;'></strong>" +
+            "<small id='myToastTime" + id + "'></small>" +
+            "<button type='button' class='btn-close' data-bs-dismiss='toast' aria-label='Закрыть'></button>" +
+            "</div> " +
+            "<div class='toast-body' id='myToastMessage" + id + "' >" +
+            "</div>" +
+            "</div>";
+    }
+</script>
 </body>
 </html>

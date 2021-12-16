@@ -1,14 +1,19 @@
 package ru.pfr.contracts2.entity.user;
 
 public enum ROLE_ENUM {
-    ROLE_READ ("ROLE_READ"),
-    ROLE_UPDATE ("ROLE_UPDATE"),
-    ROLE_ADMIN ("ROLE_ADMIN");
+    ROLE_READ ("READ"),
+    ROLE_UPDATE ("UPDATE"),
+    ROLE_ADMIN ("ADMIN");
 
     private final String code;
+
     ROLE_ENUM(String code) {
         this.code = code;
     }
 
-    public String getString(){ return code;}
+    //где то роль нужна с ROLE_
+    public String getString(){ return "ROLE_" + code;}
+
+    //где то без
+    public String getStringNoRole(){ return code;}
 }

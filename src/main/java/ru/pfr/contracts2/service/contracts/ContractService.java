@@ -9,12 +9,12 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.pfr.contracts2.entity.contracts.Contract;
 import ru.pfr.contracts2.entity.contracts.MyDocuments;
 import ru.pfr.contracts2.entity.contracts.Notification;
-import ru.pfr.contracts2.global.ConverterDate;
 import ru.pfr.contracts2.repository.contracts.ContractRepository;
 import ru.pfr.contracts2.service.mail.MailSender;
 import ru.pfr.contracts2.service.zir.ZirServise;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @RequiredArgsConstructor
@@ -40,11 +40,11 @@ public class ContractService {
     }
 
     public List<Contract> findAll() {
-        return contractRepository.findAll();
+        return contractRepository.findAllByOrderByIdDesc();
     }
 
     public List<Contract> findAll(int l) {
-        return cutTheList(contractRepository.findAllByOrderByIdDesc(), l, COL);
+        return cutTheList(findAll(), l, COL);
     }
 
     @Transactional
@@ -96,6 +96,120 @@ public class ContractService {
         return contractRepository.findAllByIspolneno(false);
     }
 
+    public List<Contract> findByIspolnenoTrue() {
+        return contractRepository.findAllByIspolneno(true);
+    }
+
+    public List<Contract> findByNotIspolnenoSrok() {
+        List<Contract> contracts = new ArrayList<>();
+        findByIspolnenoFalse().forEach(contract -> {
+            if(contract.getDaysOst()>=0 && contract.getDaysOst()<=4){
+                contracts.add(contract);
+            }
+        });
+        return contracts;
+    }
+
+    public List<Contract> findByNodate() {
+        List<Contract> contracts = new ArrayList<>();
+        findByIspolnenoFalse().forEach(contract -> {
+            if(contract.getRaschet_date()==null){
+                contracts.add(contract);
+            }
+        });
+        return contracts;
+    }
+
+    public List<Contract> findByProsrocheno() {
+        List<Contract> contracts = new ArrayList<>();
+        findByIspolnenoFalse().forEach(contract -> {
+            if(contract.getDaysOst()<0) {
+                if(contract.getRaschet_date()!=null) {
+                    contracts.add(contract);
+                }
+            }
+        });
+        return contracts;
+    }
+
+
+    public int getColSize(){
+        List<Contract> contracts = findAll();
+        return contracts.size();
+    }
+
+    public AtomicInteger getColIspolneno(){
+        List<Contract> contracts = findAll();
+        AtomicInteger ispolneno = new AtomicInteger();
+        contracts.forEach(contract -> {
+            if(contract.getIspolneno()==true){
+                ispolneno.getAndIncrement();
+            }
+        });
+        return ispolneno;
+    }
+
+    public AtomicInteger getColNotispolneno(){
+        List<Contract> contracts = findAll();
+
+        AtomicInteger notispolneno = new AtomicInteger();
+        contracts.forEach(contract -> {
+            if(contract.getIspolneno()!=true){
+                notispolneno.getAndIncrement();
+            }
+        });
+        return notispolneno;
+    }
+
+    public AtomicInteger getColNotispolnenosrok(){
+        List<Contract> contracts = findAll();
+        AtomicInteger notispolnenosrok = new AtomicInteger();
+        contracts.forEach(contract -> {
+            if(contract.getIspolneno()!=true) {
+                if(contract.getDaysOst()<=4) {
+                    if (contract.getDaysOst() >= 0) {
+                        if (contract.getRaschet_date() != null) {
+                            notispolnenosrok.getAndIncrement();
+                        }
+                    }
+                }
+            }
+        });
+        return notispolnenosrok;
+    }
+
+    public AtomicInteger getColNodate(){
+        List<Contract> contracts = findAll();
+        AtomicInteger nodate = new AtomicInteger();
+        contracts.forEach(contract -> {
+            if(contract.getIspolneno()!=true){
+                    if(contract.getDaysOst()<0) {
+                        if(contract.getRaschet_date()==null){
+                            nodate.getAndIncrement();
+                        }
+                    }
+                }
+
+        });
+        return nodate;
+    }
+
+    public AtomicInteger getColProsrocheno(){
+        List<Contract> contracts = findAll();
+        AtomicInteger prosrocheno = new AtomicInteger();
+        contracts.forEach(contract -> {
+            if(contract.getIspolneno()!=true){
+                    if(contract.getDaysOst()<0) {
+                        if(contract.getRaschet_date()!=null){
+                            prosrocheno.getAndIncrement();
+                        }
+
+                }
+            }
+        });
+        return prosrocheno;
+    }
+
     @Scheduled(cron = "0 0 8 * * MON-FRI")
     @Async
     @Transactional
@@ -103,9 +217,8 @@ public class ContractService {
         List<Contract> contracts = this.findByIspolnenoFalse();
         System.out.println("ColList = " + contracts.size());
         contracts.forEach(contract -> {
-            Date ras = contract.getRaschet_date();
-            Date tec = ConverterDate.stringToDate(ConverterDate.datetostring_yyyyMMdd(new Date()));
-            int days = ConverterDate.differenceInDays(ras,tec);
+
+            int days = contract.getDaysOst();
 
             String subject = "\"Предупреждение! Возврат обеспечения исполнения контракта!\"!";
             String text = "Осталось дней: " + days +
@@ -142,6 +255,12 @@ public class ContractService {
                                 subject, text);//сообщение остальным
                     }
                 }
+
+                /*String emailUser = zirServise.getEmailUserById(1997);
+                System.out.println("Создатель " + emailUser);
+                mailSender.send(
+                        zirServise.getEmailUserById(1997),
+                        subject,text); //сообщение мне*/
             }
 
 

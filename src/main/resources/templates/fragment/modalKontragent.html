@@ -2,45 +2,58 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <body>
 
-<div th:fragment="modalKontragent(kontragent2)">
-    <div class="modal-content">
-        <h4>Контрагент</h4>
-
-        <table align="center">
-            <tr>
-                <td align="center">Наименование контрагента<input id="nameModalKontragent" type="text"></td>
-                <td align="center">ИНН<input id="innModalKontragent" type="text"></td>
-            </tr>
-        </table>
-
-        <div id="dliazamenyKontragentTable" th:include="fragment/modalKontragent :: modalKontragentTable">
+<!-- Modal -->
+<div class="modal-body" th:fragment="modalKontragent(kontragent2)">
+    <div class="row">
+        <div class="col-6">
+            <label class="form-label m-0" for="nameModalKontragent">Наименование контрагента</label>
+            <input class="form-control" id="nameModalKontragent" type="text">
         </div>
-        <!--<div id="pagination4" th:include="fragmentupfr/vvodzayav :: pagination"></div>-->
+        <div class="col-6">
+            <label class="form-label m-0" for="innModalKontragent">ИНН</label>
+            <input class="form-control" id="innModalKontragent" type="text">
+        </div>
     </div>
+
+
+    <div id="dliazamenyKontragentTable"  class="pt-2">
+         <!--th:include="fragment/modalKontragent :: modalKontragentTable">-->
+    </div>
+
+    <div id="MKpagination" th:include="fragment/pagination :: pagination"></div>
+
 </div>
 
-<div th:fragment="modalKontragentTable">
-    <table align="center">
-        <tr>
-            <td align="center">Наименование контрагента</td>
-            <td align="center">ИНН</td>
-            <td align="center">Выбор</td>
-        </tr>
 
+<div th:fragment="modalKontragentTable" >
+    <table class="table table-sm table-block table-light table-striped table-hover table-bordered text-center caption-top">
+        <thead>
+        <tr>
+            <td>Наименование контрагента</td>
+            <td>ИНН</td>
+            <td>Выбор</td>
+        </tr>
+        </thead>
+
+        <tbody>
         <tr th:each="k : ${kontragent2}">
-            <td align="center" th:text="${k.name}"></td>
-            <td align="center" th:text="${k.inn}"></td>
-            <td align="center"><a class="vibdoc" th:data-id-modal-kontragent="${k.id}">Выбрать</a></td>
+            <td th:text="${k.name}"></td>
+            <td th:text="${k.inn}"></td>
+            <td><a class="btn btn-link" th:data-id-modal-kontragent="${k.id}" data-bs-dismiss="modal">Выбрать</a></td>
         </tr>
 
         <tr th:each="u : ${users}">
-            <td align="center" th:text="${u.login}"></td>
+            <td th:text="${u.login}"></td>
         </tr>
+        </tbody>
     </table>
 </div>
 
-
-<table border="1" th:fragment="tableContractDop">
+<table
+        class="table table-block table-sm table-secondary table-striped table-hover table-bordered text-center"
+        th:fragment="tableContractDop">
+    <caption>Доп. информация</caption>
+    <thead>
     <tr>
         <th rowspan="2">Дата исполнения контракта</th>
         <th rowspan="2">Расчетная дата</th>
@@ -52,30 +65,35 @@
         <th>Номер</th>
         <th>Дата</th>
     </tr>
+    </thead>
+    <tbody>
     <tr>
-        <td align="center" th:text="${contract.getDate_ispolnenija_GKRu()}"></td>
-        <td align="center" th:text="${contract.getRaschet_dateRu()}"></td>
-        <td align="center" th:text="${contract.nomerZajavkiNaVozvrat}"></td>
-        <td align="center" th:text="${contract.getDateZajavkiNaVozvratRu()}"></td>
-        <td align="center" >
-            <table>
+        <td th:text="${contract.getDate_ispolnenija_GKRu()}"></td>
+        <td th:text="${contract.getRaschet_dateRu()}"></td>
+        <td th:text="${contract.nomerZajavkiNaVozvrat}"></td>
+        <td th:text="${contract.getDateZajavkiNaVozvratRu()}"></td>
+        <td>
+            <table class="text-center table table-block table-sm table-borderless">
                 <tr th:each="n : ${contract.notifications}">
-                    <td th:text="${n.name}">
-                    </td>
+                    <td th:text="${n.name}"></td>
                 </tr>
             </table>
         </td>
-        <td align="center">
-            <table>
+        <td>
+            <table class="text-center table table-block table-sm table-borderless">
                 <tr th:each="d : ${contract.myDocuments}">
                     <td>
-                        <a th:href="@{/contract/main/download(id=${d.id})}"
-                           th:text="${d.nameFile}"></a>
+                        <a
+                                class="btn btn-link"
+                                th:href="@{/contract/main/download(id=${d.id})}"
+                                th:text="${d.nameFile}"
+                        ></a>
                     </td>
                 </tr>
             </table>
         </td>
     </tr>
+    </tbody>
 </table>
 
 </body>

@@ -87,6 +87,13 @@
 			<version>2.5.5</version>
 		</dependency>
 
+		<!-- опционально, библиотека добавит полезные теги для SPRING SECURITY в Thymeleaf шаблонах -->
+		<dependency>
+			<groupId>org.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-springsecurity5</artifactId>
+			<version>3.0.4.RELEASE</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
