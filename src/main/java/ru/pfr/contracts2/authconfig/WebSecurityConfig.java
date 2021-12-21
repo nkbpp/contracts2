@@ -25,8 +25,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()//включить авторизацию
                 //.antMatchers("**/*.html").permitAll()
                 .antMatchers("/contract/admin/**").hasAnyRole(ROLE_ENUM.ROLE_ADMIN.getStringNoRole())
-                .antMatchers("/contract/main").hasAnyRole(ROLE_ENUM.ROLE_UPDATE.getStringNoRole())
-                .antMatchers("/contract/main/**").hasAnyRole(ROLE_ENUM.ROLE_UPDATE.getStringNoRole())
+                .antMatchers("/contract/main").hasAnyRole(ROLE_ENUM.ROLE_UPDATE.getStringNoRole(),ROLE_ENUM.ROLE_UPDATE_IT.getStringNoRole(),ROLE_ENUM.ROLE_READ_IT.getStringNoRole())
+                .antMatchers("/contract/main/**").hasAnyRole(ROLE_ENUM.ROLE_UPDATE.getStringNoRole(),ROLE_ENUM.ROLE_UPDATE_IT.getStringNoRole(),ROLE_ENUM.ROLE_READ_IT.getStringNoRole())
+                .antMatchers("/contract/it/**").hasAnyRole(ROLE_ENUM.ROLE_UPDATE_IT.getStringNoRole(),ROLE_ENUM.ROLE_READ_IT.getStringNoRole())
                 .antMatchers("**/*.css").permitAll()
                 .antMatchers("**/*.js").permitAll()
                 //.antMatchers("/", "/pkv").permitAll()//полный доступ

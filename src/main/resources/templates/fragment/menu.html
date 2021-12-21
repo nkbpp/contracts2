@@ -49,6 +49,13 @@
                     <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
                         <a class="nav-link" th:href="@{/contract/admin/juraudit}">Журнал аудита</a>
                     </li>
+
+                    <li sec:authorize="hasAnyRole('ROLE_UPDATEIT','ROLE_READIT')" class="nav-item">
+                        <a class="nav-link" href="#" id="menuitcontract">ИТ контракты</a>
+                    </li>
+                    <li sec:authorize="hasAnyRole('ROLE_UPDATEIT')" class="nav-item">
+                        <a class="nav-link" href="#" id="menuitaddcontract">Добавить ИТ контракт</a>
+                    </li>
             </span>
                 </ul>
                 <form

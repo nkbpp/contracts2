@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -14,8 +15,7 @@
     <script type="text/javascript">
 
         $(document).ready(function () {
-            $("#mainContainer").load("/contract/main/stat", "", function () {
-            })
+
 
             let body = $("body");
 
@@ -116,41 +116,9 @@
 
                 if ($(this).attr('id') === "menuViev") { //Кнопка просмотр
                     loadMenuView();
-                    /*let mainContainer = $("#mainContainer");
-                    mainContainer.html(getSpinner());
-                    mainContainer.load("/contract/main/vievTable", "", function () {
-                        let tableContainer = $("#tableContainer")
-                        tableContainer.html(getSpinner());
-                        tableContainer.load("/contract/main/getTable", "", function () {
-                        });
-                    });*/
-                    return false;
-                }
-                if ($(this).attr('id') === "statAll") { //Статистика показать все
-                    loadMenuView();
-                    return false;
-                }
-                if ($(this).attr('id') === "statIspolneno") { //Статистика показать исполненые
-                    loadMenuView("statIspolneno=1");
-                    return false;
-                }
-                if ($(this).attr('id') === "statNotIspolneno") { //Статистика показать не исполненые
-                    loadMenuView("statNotIspolneno=1");
                     return false;
                 }
 
-                if ($(this).attr('id') === "statNotIspolnenoSrok") { //Статистика показать не исполненые приближается срок исполнения
-                    loadMenuView("statNotIspolnenoSrok=1");
-                    return false;
-                }
-                if ($(this).attr('id') === "statNodate") { //Статистика показать без даты
-                    loadMenuView("statNodate=1");
-                    return false;
-                }
-                if ($(this).attr('id') === "statProsrocheno") { //Статистика показать просроченные
-                    loadMenuView("statProsrocheno=1");
-                    return false;
-                }
 
                 if ($(this).attr('id') === "deleteContract") { //Удалить контракт
                     if (confirm("Вы точно хотите удалить заявление c порядковым номером = " +
@@ -362,6 +330,10 @@
                 "</div>" +
                 "</div>";
         }
+        function getSpinnerButton() {
+            return '<span class="spinner-border spinner-border-sm mx-2" role="status" aria-hidden="true"></span>';
+        }
+
 
         function loadMenuView(param){
             console.log('param = ',param);
@@ -389,6 +361,8 @@
     <script type="text/javascript" th:src="@{/js/documents.js}"></script>
     <script type="text/javascript" th:src="@{/js/spisok.js}"></script>
     <script type="text/javascript" th:src="@{/js/kontragent.js}"></script>
+    <script sec:authorize="hasRole('ROLE_UPDATE')" type="text/javascript" th:src="@{/js/stat.js}"></script>
+    <script sec:authorize="hasAnyRole('ROLE_UPDATEIT','ROLE_READIT')" type="text/javascript" th:src="@{/js/it.js}"></script>
 
     <title>Обеспечение исполнения контрактов</title>
     <!--<link rel="stylesheet" th:href="@{/styles/full.css}">--><!--мои локальные стили-->

@@ -52,7 +52,6 @@ public class AuthProvider implements AuthenticationProvider {
 
     private final LogiService logiService;
 
-
     @Override
     public Authentication authenticate(Authentication a) throws AuthenticationException {
         SecurityContext context = SecurityContextHolder.getContext();
@@ -105,7 +104,6 @@ public class AuthProvider implements AuthenticationProvider {
                 logiService.save(new Logi(
                         username,
                         "Попытка авторизации пароль неверен AuthProvider authenticate()"));
-                /*logger.info("Попытка авторизации по логину " + username + " Пароль неверен AuthProvider authenticate()");*/
                 throw new BadCredentialsException("Пароль неверен");
             } else {
                 logerr.setActive(0L);
@@ -148,6 +146,7 @@ public class AuthProvider implements AuthenticationProvider {
                     ss = URLDecoder.decode(ss2,"UTF-8");
                 }catch (Exception e){}*/
 
+
                 String email = (String) authData.get("email")[0];
                 for (Object right : rights) {
                     int rightCode = Integer.parseInt((String) right);
@@ -155,12 +154,15 @@ public class AuthProvider implements AuthenticationProvider {
                         case 14: //не забыть поменять
                             roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_UPDATE.getString()));
                             break;
-//                      case 3012:
-//                          roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_READ.getString()));
-//                          break;
                         case 13:
                             roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_ADMIN.getString()));
                             upfrCode = new StringBuilder("999");
+                            break;
+                        case 100:
+                            roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_UPDATE_IT.getString()));
+                            break;
+                        case 101:
+                            roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_READ_IT.getString()));
                             break;
                     }
                 }

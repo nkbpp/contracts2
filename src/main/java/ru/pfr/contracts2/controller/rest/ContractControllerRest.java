@@ -178,7 +178,7 @@ public class ContractControllerRest {
             map.put("dateGK", contract.getDateGKEn());
             map.put("predmet_contract", contract.getPredmet_contract());
             map.put("vidObesp", contract.getVidObesp() != null ? contract.getVidObesp().getId().toString() : "");
-            map.put("sum", contract.getSum().toString());
+            map.put("sum", contract.getSumOk());
             map.put("date_ispolnenija_GK", contract.getDate_ispolnenija_GKEn());
             map.put("col_days", contract.getCol_days().toString());
             map.put("ispolneno", contract.getIspolneno().toString());

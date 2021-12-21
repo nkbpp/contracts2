@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<body>
+
+<div th:fragment="vievTable">
+
+    <div id="tableItContainer" class="overflow-auto mb-2"></div>
+
+    <div id="paginationItContract" th:include="fragment/pagination :: pagination"></div>
+</div>
+
+<table class="table table-block table-secondary table-striped
+              table-hover table-bordered text-center caption-top table-sm m-0 p-0"
+       id="tableContract" th:fragment="table">
+    <caption>Таблица контрактов</caption>
+    <thead>
+    <tr>
+        <th rowspan="2">№</th>
+        <th colspan="3">Государственный контракт</th>
+        <th colspan="3">1-й квартал</th>
+        <th colspan="3">2-й квартал</th>
+        <th colspan="3">3-й квартал</th>
+        <th colspan="3">4-й квартал</th>
+        <th rowspan="2">Остаток</th>
+        <th rowspan="2" style="min-width:200px">Документы</th>
+        <th rowspan="2">Действие</th>
+    </tr>
+
+    <tr>
+        <th style="min-width:200px">Номер</th>
+        <th>Дата</th>
+        <th>Сумма</th>
+
+        <th>Январь</th>
+        <th>Февраль</th>
+        <th>Март</th>
+
+        <th>Апрель</th>
+        <th>Май</th>
+        <th>Июнь</th>
+
+        <th>Июль</th>
+        <th>Август</th>
+        <th>Сентябрь</th>
+
+        <th>Октябрь</th>
+        <th>Ноябрь</th>
+        <th>Декабрь</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="c,iterStat  : ${contracts}" th:id="${c.id}">
+
+        <th scope="row" align="center" th:text="${iterStat.count} + ${paramstart}"></th>
+
+        <td th:text="${c.nomGK}"></td>
+        <td th:text="${c.getDateGKRu()}"></td>
+        <td th:text="${c.getSumOk()}"></td>
+        <td th:text="${c.getMonth1Ok()}"></td>
+        <td th:text="${c.getMonth2Ok()}"></td>
+        <td th:text="${c.getMonth3Ok()}"></td>
+        <td th:text="${c.getMonth4Ok()}"></td>
+        <td th:text="${c.getMonth5Ok()}"></td>
+        <td th:text="${c.getMonth6Ok()}"></td>
+        <td th:text="${c.getMonth7Ok()}"></td>
+        <td th:text="${c.getMonth8Ok()}"></td>
+        <td th:text="${c.getMonth9Ok()}"></td>
+        <td th:text="${c.getMonth10Ok()}"></td>
+        <td th:text="${c.getMonth11Ok()}"></td>
+        <td th:text="${c.getMonth12Ok()}"></td>
+        <td th:text="${c.getOstatoc()}"></td>
+        <td th:text="${c.documentu}"></td>
+        <td>
+            <div><a th:name="${c.id}" id="updateItContract" href="#">Изменить</a></div>
+            <div><a th:name="${c.id}" id="deleteItContract" href="#">Удалить</a></div>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

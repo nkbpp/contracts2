@@ -14,6 +14,7 @@ $(document).ready(function () {
                 alert("Не все обязательные поля (отмеченные *) заполнены!")
             } else {
                 $(this).prop("disabled",true);
+                $(this).prepend(getSpinnerButton());// крутилкa
 
                 // Get form
                 let form = $('#formContracts')[0];

@@ -18,8 +18,6 @@ import ru.pfr.contracts2.service.zir.ZirServise;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-
 
 @Controller
 @RequiredArgsConstructor
@@ -68,6 +66,8 @@ public class ContractController {
 
         return "fragment/table :: table";
     }
+
+
 
     @GetMapping("/dopTable")  //дополнительная информация
     public String dopTable(
@@ -154,15 +154,8 @@ public class ContractController {
     @GetMapping("/getnotification")
     public String getnotification(@AuthenticationPrincipal User user,
                       Model model){
-
         List<User> users = new ArrayList<>(zirServise.getFindAllOtdelByIdAddPusto(user.getId_user_zir()));
-
-        //Map<String,String> otdel =  zirServise.getFindAllOtdel();
-        //model.addAttribute("otdel", otdel);
-
         model.addAttribute("users", users);
-
-
         return "fragment/contractAdd :: notifications";
     }
 

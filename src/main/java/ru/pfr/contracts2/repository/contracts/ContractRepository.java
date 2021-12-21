@@ -10,11 +10,11 @@ import java.util.Optional;
 
 public interface ContractRepository extends JpaRepository<Contract, Long> {
 
-    public Optional<Contract> findById(Long l);
+    Optional<Contract> findById(Long l);
 
-    public List<Contract> findAllByOrderByIdDesc();
+    List<Contract> findAllByOrderByIdDesc();
 
-    public List<Contract> findByNomGKAndKontragentInn(String nom, String inn);
+    List<Contract> findByNomGKAndKontragentInn(String nom, String inn);
 
 
     @Query(
@@ -23,7 +23,7 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
                     "(select id from kontragent where (?2 is null or inn like ?2%))) " +
                     "order by id desc",
             nativeQuery = true)
-    public List<Contract> findByNomGKAndKontragentInnScript(String nom, String inn);
+    List<Contract> findByNomGKAndKontragentInnScript(String nom, String inn);
 
     List<Contract> findAllByIspolneno(boolean b);
 }
