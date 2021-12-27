@@ -180,19 +180,24 @@
 </table>
 
 <div th:fragment="progress(c)" class="progress" th:title="'Осталось ' + ${c.getDaysOst()} + ' дней'">
+    <!--progress-bar-animated-->
+
     <div th:class=" 'progress-bar ' +
                 (${c.ispolneno}? 'bg-success' :
-                (${c.getProcent()>=75}? 'bg-danger' :
-                (${c.getProcent()>=50}? 'bg-warning':
+                (${(c.getDaysOst()<=4 && c.getDaysOst()>=0)}? 'bg-danger progress-bar-striped ' :
+                (${(c.getProcent()>=75)}? 'bg-danger' :
+                (${c.getProcent()>=50}? 'bg-warning' :
                 (${c.getProcent()>=25}? 'bg-info'
-                ))))"
+                )))))"
 
          role="progressbar"
          th:style="'width: ' + (${c.ispolneno}? '100' : ${c.getProcent()}) + '%'"
          th:aria-valuenow="(${c.ispolneno}? '100' : ${c.getProcent()})"
          aria-valuemin="0"
          aria-valuemax="100"
-         th:text="${c.getDaysOst()}"
+
+         th:text="'' + ( ${(c.ispolneno)}? '' :
+                    ${c.getDaysOst()}) "
     ></div>
 </div>
 

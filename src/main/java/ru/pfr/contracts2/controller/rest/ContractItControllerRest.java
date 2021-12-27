@@ -55,18 +55,18 @@ public class ContractItControllerRest {
             ContractIT contract;
 
             Date dateGK2;
-            dateGK2 = ConverterDate.stringToDate(dateGK);
+            dateGK2 = ConverterDate.stringToDate(dateGK.trim());
 
             if(id.equals("undefined")){ // Добавление
                 contract = new ContractIT(
-                        nomGK, dateGK2, sum,
+                        nomGK.trim(), dateGK2, sum,
                         January, February, March, April, May, June,
                         July, August, September, October, November, December,
-                        doc, user);
+                        doc.trim(), user);
                 logiService.save(new Logi(user.getLogin(),"Add","Добавление it контракта"));
             }else{ // Изменения
                 contract=contractItService.findById(Long.valueOf(id));
-                contract.setNomGK(nomGK);
+                contract.setNomGK(nomGK.trim());
                 contract.setDateGK(dateGK2);
                 contract.setSum(sum);
 
@@ -83,7 +83,7 @@ public class ContractItControllerRest {
                 contract.setMonth11(November);
                 contract.setMonth12(December);
 
-                contract.setDocumentu(doc);
+                contract.setDocumentu(doc.trim());
                 logiService.save(new Logi(user.getLogin(),"Upd","Изменение контракта с id = " + id));
             }
             contractItService.save(contract);

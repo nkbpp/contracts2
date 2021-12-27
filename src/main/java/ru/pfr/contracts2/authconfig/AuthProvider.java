@@ -74,6 +74,10 @@ public class AuthProvider implements AuthenticationProvider {
         try {
             logerr = userService.findByLoginuser(username); //пользователь существует
 
+            if (logerr == null) {
+                Rayon r = rayonService.findByKod("999"); //пользователя небыло
+                logerr = new User(username, r);
+            }
             //для количества попыток-----------------------------
             Adminparam adminparam = adminparamService.findByAdminparam();
 
@@ -97,13 +101,14 @@ public class AuthProvider implements AuthenticationProvider {
                                 + logerr.getActive() + " AuthProvider authenticate()"));
                 throw new BadCredentialsException("Пользователь заблокирован");
             }
+
             if (headers.length == 0) {
                 logerr.setActive(logerr.getActive() + 1);
                 logerr.setDate_last_entry(new Date(datenow));
                 userService.save(logerr);
                 logiService.save(new Logi(
                         username,
-                        "Попытка авторизации пароль неверен AuthProvider authenticate()"));
+                        "Попытка авторизации пароль неверен! Зир не вернул результата! AuthProvider authenticate()"));
                 throw new BadCredentialsException("Пароль неверен");
             } else {
                 logerr.setActive(0L);
@@ -146,15 +151,15 @@ public class AuthProvider implements AuthenticationProvider {
                     ss = URLDecoder.decode(ss2,"UTF-8");
                 }catch (Exception e){}*/
 
-
                 String email = (String) authData.get("email")[0];
+
                 for (Object right : rights) {
                     int rightCode = Integer.parseInt((String) right);
                     switch (rightCode) {
                         case 14: //не забыть поменять
                             roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_UPDATE.getString()));
                             break;
-                        case 13:
+                        case 1:
                             roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_ADMIN.getString()));
                             upfrCode = new StringBuilder("999");
                             break;
@@ -174,10 +179,10 @@ public class AuthProvider implements AuthenticationProvider {
                 }
 
                 User user = userService.findByLoginuser(username);
-                if (user == null) {
+/*                if (user == null) {
                     Rayon r = rayonService.findByKod(upfrCode.toString()); //пользователя небыло
                     user = new User(username, r);
-                }
+                }*/
 
                 user.setActive(1L);
 

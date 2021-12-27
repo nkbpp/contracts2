@@ -1,13 +1,11 @@
 $(document).ready(function () {
-
-    $("body").on('click', 'a', function () {
+    let itbody = $("body");
+    itbody.on('click', 'a', function () {
 
         if ($(this).attr('id') === "menuitcontract") { //Кнопка ИТ контракты
-            console.log("click");
             let mainContainer = $("#mainContainer");
             mainContainer.html(getSpinner());
             mainContainer.load("/contract/it/vievTable", "", function () {
-                console.log("inside");
                 let tableContainer = $("#tableItContainer")
                 tableContainer.html(getSpinner());
                 tableContainer.load("/contract/it/getTable", "", function () {
@@ -52,7 +50,7 @@ $(document).ready(function () {
         }
 
         if ($(this).attr('id') === "updateItContract") {
-            console.log("update");
+            //console.log("update");
             let param = $(this).attr('name');
 
             $("#mainContainer").load("/contract/it/updateViev/" + param, "", function () {
@@ -104,7 +102,7 @@ $(document).ready(function () {
         }
     })
 
-    $("body").on('click', 'button', function () {
+    itbody.on('click', 'button', function () {
         if ($(this).attr('id') === "addContractIt") {
             // проверка заполнения основных полей
             if(
@@ -115,16 +113,15 @@ $(document).ready(function () {
                 $(this).prop("disabled",true);//делаем кнопку не активной
                 $(this).prepend(getSpinnerButton());// крутилкa
 
-                let data = $('#formItContract').serialize();
-
-                //console.log(data)
+                let param = $('#formItContract').serialize();
+                param += "&id=" + encodeURIComponent($('#addContractIt').attr("data-id-contract"))
 
                 // Отправляем запрос
                 let token = $('#_csrf').attr('content');
                 let header = $('#_csrf_header').attr('content');
                 $.post({
                     url: "/contract/it/upload",
-                    data: data + "&" + $('#addContractIt').attr("data-id-contract"),
+                    data: param,
                     beforeSend: function (xhr) {
                         xhr.setRequestHeader(header, token);
                     },
@@ -144,4 +141,165 @@ $(document).ready(function () {
             return false;
         }
     })
+
+    itbody.on('focus', 'input', function () {
+        if($("#formItContract").find($("#"+$(this).attr('id')+"[type=number]")).length>0){
+            this.select();
+        }
+    })
+
+    itbody.on('dblclick', 'td', function () { //Двойной клик в табле
+
+        let tek = $(this);
+
+        let td = tek.closest('td');
+
+        let span = td.find('span').first();
+        let input = td.find('input').first();
+        let textarea = td.find('textarea').first();
+
+        let text = span.text();
+        if(input.attr('type')==="date"){
+            text = text.split(".").reverse().join("-");
+        }
+
+        input.val(text);
+        textarea.val(text);
+        span.addClass('d-none');
+        input.removeClass('d-none');
+        textarea.removeClass('d-none');
+
+        input.select();
+        textarea.select();
+
+    });
+
+    itbody.on('keypress', 'input', function (e) { //изменение на событие клик по enter
+        if(e.keyCode === 13) {
+            if($(this).closest($('#tableItContainer')).length>0){
+                $(this).blur();
+            }
+        }
+    });
+
+    itbody.on('keypress', 'textarea', function (e) { //изменение на событие клик по enter
+        if(e.keyCode === 13) {
+            if($(this).closest($('#tableItContainer')).length>0){
+                $(this).blur();
+            }
+        }
+    });
+
+    itbody.on('blur', 'input', function () { //изменение на событие потери фокуса input
+        if($(this).closest($('#tableItContainer')).length>0){
+
+            let tek = $(this);
+
+            let tr = tek.closest('tr');
+            let td = tek.closest('td');
+
+            let span = td.find('span').first();
+            let input = td.find('input').first();
+
+
+            let text = input.val();
+            if(input.attr('type')==="date"){
+                text = text.split("-").reverse().join(".");
+            } else if(input.attr('type')==="number"){
+                let regExp = '[.]+';
+                if(text.match(regExp) == null) {
+                    text += '.00';
+                }
+            }
+            span.text(text);
+            input.addClass('d-none');
+            span.removeClass('d-none');
+
+            // Отправляем запрос
+
+            let param = getParamItContract(tr);
+            updateItContract(param);
+
+            let val = 0; //подсчет остатка
+            let tdNumbers = tr.find('td[name]:has(input[type=number])');
+            let maxIndex = tdNumbers.length;
+            tdNumbers
+                .each(function (index, el){
+                    let t = $(el).text().trim();
+                    if(+index===+0){
+                        val+=t;
+                    } else {
+                        val-=t;
+                    }
+                    if (+index===+(maxIndex-1)){ //запись в поле остаток
+                        let regExp = '[.]+';
+                        if((val+'').match(regExp) == null) {
+                            val += '.00';
+                        }
+                        ($(el).closest('td')).next().text(val);
+                    }
+                });
+            return false;
+        }
+
+    });
+
+    itbody.on('blur', 'textarea', function () { //изменение на событие потери фокуса textarea
+        if($(this).closest($('#tableItContainer')).length>0){
+
+            let tek = $(this);
+
+            let tr = tek.closest('tr');
+            let td = tek.closest('td');
+
+            let span = td.find('span').first();
+            let textarea = td.find('textarea').first();
+
+            let text = textarea.val();
+
+            span.text(text);
+            textarea.addClass('d-none');
+            span.removeClass('d-none');
+
+            // Отправляем запрос
+            let param = getParamItContract(tr);
+
+            updateItContract(param);
+
+            return false;
+        }
+    });
+
+    function updateItContract(param){
+        // Отправляем запрос
+        let token = $('#_csrf').attr('content');
+        let header = $('#_csrf_header').attr('content');
+        $.post({
+            url: "/contract/it/upload",
+            data: param,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(header, token);
+            },
+            success: function (data) {
+                initialToats("Изменение прошло успешно",data,"success").show();
+            },
+            error: function (jqXHR, textStatus) {
+                initialToats("Ошибка при изменении!!!",jqXHR.responseText,"err").show();
+            }
+        });
+    }
+
+    function getParamItContract(tr){
+        let id = tr.attr('name');
+        let param = "id="+id;
+        let tds = tr.find('td[name]');
+        tds.each(function (index, el){
+            let e = $(el);
+            let val = encodeURIComponent(e.text().trim());
+
+            param+=("&"+e.attr('name')+"="+val);
+        });
+        return param;
+    }
+
 })

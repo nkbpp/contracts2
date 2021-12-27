@@ -33,7 +33,6 @@ $(document).ready(function () {
                     xhr.setRequestHeader(header, token);
                 },
                 success: function (data) {
-                    console.log("Данные изменены",data);
                     tek.prop('disabled',true).prop('readonly',true);
                     initialToats("Изменение прошло успешно",data,"success").show();
                 },
@@ -46,8 +45,6 @@ $(document).ready(function () {
 
     spisokBody.on('dblclick', 'input', function () {
         if ($(this).attr('name') === "disabledInputVidObesps") {
-            /*let id = $(this).attr('data-disabledInputVidObesps-id');
-            console.log("dbclick",id);*/
             $(this).removeAttr('disabled').removeAttr('readonly');
             $(this).focus();
             return false;

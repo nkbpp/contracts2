@@ -265,6 +265,11 @@ public class ContractControllerRest {
     @PostMapping("/viewBadge")
     public ResponseEntity<?> viewBadge(@AuthenticationPrincipal User user,
                             Model model){
-        return ResponseEntity.ok(contractService.getColNotispolnenosrok());
+        try{
+            return ResponseEntity.ok(contractService.getColNotispolnenosrok());
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body("Ошибка!");
+        }
+
     }
 }

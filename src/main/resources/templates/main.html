@@ -16,7 +16,6 @@
 
         $(document).ready(function () {
 
-
             let body = $("body");
 
             body.on('keyup', 'input', function() {
@@ -442,7 +441,7 @@
         }, 7000);
     }*/
 
-    function getToats(id) { //для вывода обьектов в лог
+    function getToats(id) {
         return "<div id='myToast" + id + "' class='toast hide' role='alert' aria-live='assertive' aria-atomic='true' style='--bs-bg-opacity: .2;'>" +
             "<div class='toast-header bg-gradient text-white' id='myToastHeader" + id + "'>" +
             "<strong class='me-auto' id='myToastHeaderMes" + id + "' style='--bs-bg-opacity: .3;'></strong>" +

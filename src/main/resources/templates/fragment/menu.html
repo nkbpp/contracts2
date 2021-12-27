@@ -118,13 +118,15 @@
                 },
                 error: function (jqXHR, textStatus) {
                     console.log("ошибка в таймере");
-                    //initialToats("Ошибка при добавлении!!!",jqXHR.responseText,"err").show();
+                    clearInterval(interval);//останавливаю таймер если произошла ошибка при подключении к бд
                 }
             });
         }
 
+        let interval;
+
         $(document).ready(function () {
-            setInterval(() => viewBadgeFade(), 4000);
+            interval = setInterval(() => viewBadgeFade(), 4000);
         })
     </script>
     </nav>
