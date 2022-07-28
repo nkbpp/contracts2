@@ -9,7 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.pfr.contracts2.entity.contracts.Contract;
 import ru.pfr.contracts2.entity.contracts.MyDocuments;
 import ru.pfr.contracts2.entity.contracts.Notification;
+import ru.pfr.contracts2.entity.log.Logi;
 import ru.pfr.contracts2.repository.contracts.ContractRepository;
+import ru.pfr.contracts2.service.log.LogiService;
 import ru.pfr.contracts2.service.mail.MailSender;
 import ru.pfr.contracts2.service.zir.ZirServise;
 
@@ -24,6 +26,8 @@ public class ContractService {
     private final MailSender mailSender;
     private final ZirServise zirServise;
     final ContractRepository contractRepository;
+
+    private final LogiService logiService;
 
     private final int COL = 30;
 
@@ -83,13 +87,14 @@ public class ContractService {
         List<Contract> contracts2 = new ArrayList<>();
 
         int start = mnoj*(list-1);
-        int end = mnoj*(list-1) + mnoj;
+        int end = start + mnoj;
 
         for (int i = start; i < end && i<contracts.size() ; i++) {
             contracts2.add(contracts.get(i));
         }
 
         return contracts2;
+
     }
 
     public List<Contract> findByIspolnenoFalse() {
@@ -232,35 +237,51 @@ public class ContractService {
             System.out.println("Дней " + days);
             if(days>=0 && days<=4){
 
-                String emailUser = zirServise.getEmailUserById(Integer.parseInt(String.valueOf(contract.getUser().getId_user_zir())));
-                System.out.println("Создатель " + emailUser);
-                mailSender.send(
-                        zirServise.getEmailUserById(Integer.parseInt(String.valueOf(contract.getUser().getId_user_zir()))),
-                        subject,text); //сообщение создателю
-                String emailBoss  = zirServise.getEmailBossById(Integer.parseInt(String.valueOf(contract.getUser().getId_user_zir())));
-                System.out.println("Босс " + emailBoss);
-                if(!emailUser.equals(emailBoss)) {
-                    mailSender.send(
-                            emailBoss,
-                            subject, text); //сообщение начальнику отдела
-                }
+                try{
+                    String emailUser = zirServise.getEmailUserById(Integer.parseInt(String.valueOf(contract.getUser().getId_user_zir())));
+                    System.out.println("Создатель " + emailUser);
 
-                for (Notification notification:
-                        contract.getNotifications()) {
-                    String email = zirServise.getEmailUserById(
-                            Integer.parseInt(String.valueOf(notification.getId_user())));
-                    System.out.println("Кто то " +email);
-                    if(!emailUser.equals(email) && !emailBoss.equals(email)) {
-                        mailSender.send(email,
-                                subject, text);//сообщение остальным
+                    mailSender.send(
+                            zirServise.getEmailUserById(Integer.parseInt(String.valueOf(contract.getUser().getId_user_zir()))),
+                            subject,text); //сообщение создателю
+                    String emailBoss = null;
+                    try{
+                        emailBoss  = zirServise.getEmailBossById(Integer.parseInt(String.valueOf(contract.getUser().getId_user_zir())));
+
+                        System.out.println("Босс " + emailBoss);
+                        if(emailBoss != null && !emailUser.equals(emailBoss)) {
+                            mailSender.send(
+                                    emailBoss,
+                                    subject, text); //сообщение начальнику отдела
+                        }
+
+                    } catch (Exception e){
                     }
-                }
+
+
+                    for (Notification notification:
+                            contract.getNotifications()) {
+                        String email = zirServise.getEmailUserById(
+                                Integer.parseInt(String.valueOf(notification.getId_user())));
+                        System.out.println("Кто то " +email);
+                        if(!emailUser.equals(email) && (emailBoss != null && !emailBoss.equals(email))) {
+                            mailSender.send(email,
+                                    subject, text);//сообщение остальным
+                        }
+                    }
 
                 /*String emailUser = zirServise.getEmailUserById(1997);
                 System.out.println("Создатель " + emailUser);
                 mailSender.send(
                         zirServise.getEmailUserById(1997),
                         subject,text); //сообщение мне*/
+                } catch (Exception e){
+                    logiService.save(new Logi(
+                            "this",
+                            "MailError",
+                            "Ошибка при отправке сообщения!"));
+                }
+
             }
 
 

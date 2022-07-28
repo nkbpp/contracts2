@@ -135,6 +135,8 @@ public class Translit {
                 return "ju";
             case 'я':
                 return "ja";
+            case '№':
+                return "#";
             default:
                 return String.valueOf(ch);
         }
@@ -147,4 +149,5 @@ public class Translit {
         }
         return sb.toString();
     }
+
 }

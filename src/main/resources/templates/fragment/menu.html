@@ -51,12 +51,19 @@
                     </li>
 
                     <li sec:authorize="hasAnyRole('ROLE_UPDATEIT','ROLE_READIT')" class="nav-item">
-                        <a class="nav-link" href="#" id="menuitcontract">ИТ контракты</a>
+                        <a class="nav-link" href="#" id="menuitcontract">Контракты IT</a>
                     </li>
+
+                    <li sec:authorize="hasAnyRole('ROLE_UPDATEAXO','ROLE_READAXO')" class="nav-item">
+                        <a class="nav-link" href="#" id="menuaxocontract">Контракты АХО</a>
+                    </li>
+
                     <li sec:authorize="hasAnyRole('ROLE_UPDATEIT')" class="nav-item">
-                        <a class="nav-link" href="#" id="menuitaddcontract">Добавить ИТ контракт</a>
+                        <a class="nav-link" href="#" id="menuitaddcontract">Добавить контракт</a>
                     </li>
-            </span>
+                    <li sec:authorize="hasAnyRole('ROLE_UPDATEAXO')" class="nav-item">
+                        <a class="nav-link" href="#" id="menuaxoaddcontract">Добавить контракт</a>
+                    </li>
                 </ul>
                 <form
                         class="d-flex"

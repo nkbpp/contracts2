@@ -37,17 +37,25 @@ function clearPagination(pag) {
 }
 
 function activeList(idpag) {
-/*    let list;
-    let text = $(idpag+" li.active").text();
-    //console.log("text=",text)
-    if (text === "Назад") {
-        list = 1;
-    } else //кнопка далее
-    if (text === "Далее") {
-        list = +$(idpag+" a").eq(5).text() + 1;
-    } else {
-        list=text
-    }*/
-    //console.log("activeList= " + list);
     return $(idpag+" li.active").text();
+}
+
+function activePagination(selPag,pagId) {
+    if(pagId==1) {
+        clearPagination(selPag);
+    } else if (pagId==2) {
+        selPag.first().parent().removeClass("disabled");
+        selPag.eq(1).text("1").parent().removeClass("active");
+        selPag.eq(2).text("2").parent().removeClass("active").addClass("active");
+        selPag.eq(3).text("3").parent().removeClass("active");
+        selPag.eq(4).text("4").parent().removeClass("active");
+        selPag.eq(5).text("5").parent().removeClass("active");
+    } else if (pagId>2){
+        selPag.first().parent().removeClass("disabled");
+        selPag.eq(1).text(pagId-2).parent().removeClass("active");
+        selPag.eq(2).text(pagId-1).parent().removeClass("active");
+        selPag.eq(3).text(pagId).parent().removeClass("active").addClass("active");
+        selPag.eq(4).text(pagId+1).parent().removeClass("active");
+        selPag.eq(5).text(pagId+2).parent().removeClass("active");
+    }
 }

@@ -151,9 +151,10 @@ public class Contract {
     }
 
     public void setAllDocuments(List<MyDocuments> myDocs) {
-        while (myDocuments.size()>0){
+        //вроде это не требуется
+/*        while (myDocuments.size()>0){
             removeDocuments(myDocuments.get(0));
-        }
+        }*/
         for (MyDocuments d :
                 myDocs) {
             addDocuments(d);

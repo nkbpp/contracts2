@@ -3,6 +3,8 @@ package ru.pfr.contracts2.entity.user;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -47,5 +49,23 @@ public class User {
         this.rayon = rayon;
     }
 
+    public static String getRole(Authentication authentication){
+        String role = null;
+        for (GrantedAuthority g:
+                authentication.getAuthorities()) {
+            if(g.getAuthority().equals(ROLE_ENUM.ROLE_UPDATE_IT.getString()) ||
+               g.getAuthority().equals(ROLE_ENUM.ROLE_READ_IT.getString())
+            ){
+                role="IT"; break;
+            }
+            if(g.getAuthority().equals(ROLE_ENUM.ROLE_UPDATE_AXO.getString()) ||
+               g.getAuthority().equals(ROLE_ENUM.ROLE_READ_AXO.getString())
+            ){
+                role="AXO"; break;
+            }
+        }
+
+        return role;
+    }
 
 }

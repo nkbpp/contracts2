@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<!--TODO УДОЛИТЬ?-->
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<body>
+
+<table class="table table-block table-secondary table-striped
+              table-hover table-bordered text-center caption-top table-sm m-0 p-0"
+       id="tableContract" th:fragment="table2">
+    <!--Отключение стрелочек-->
+    <style>
+        #tableContract input[type="number"] {
+            -moz-appearance: textfield;
+            -webkit-appearance: textfield;
+            appearance: textfield;
+        }
+
+        #tableContract input[type="number"]::-webkit-outer-spin-button,
+        #tableContract input[type="number"]::-webkit-inner-spin-button {
+            display: none;
+        }
+
+        #tableContract input[type="number"] {
+            min-width: 130px;
+        }
+
+        #tableContract input[type="date"] {
+            max-width: 160px;
+        }
+
+        #tableContract textarea {
+            min-width: 300px;
+        }
+
+        .fix { /*чтобы прилипало*/
+            position: sticky;
+            left: 0px;
+        }
+
+    </style>
+    <caption>
+        <p class="fw-weight-bold m-0">Таблица контрактов</p>
+        <div sec:authorize="hasAnyRole('ROLE_UPDATEAXO','ROLE_READAXO')"
+             class="container-fluid form-check mx-2">
+            <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
+            <label class="form-check-label " for="flexCheckChecked">
+                Натуральный показатель2
+            </label>
+        </div>
+    </caption>
+
+    <thead>
+    <tr>
+        <th rowspan="2">№</th>
+        <th colspan="4">Государственный контракт</th>
+        <th colspan="12">Расход по месяцам</th>
+        <th colspan="2">Средний расход в месяц</th>
+        <th rowspan="2">Остаток</th>
+        <th rowspan="2">Действие</th>
+    </tr>
+
+    <tr>
+        <th style="min-width:200px" class="fix">Номер</th>
+        <th style="min-width:200px">Контрагент</th>
+        <th>Дата</th>
+        <th>Сумма (натуральный показатель)</th>
+
+        <th>1</th>
+        <th>2</th>
+        <th>3</th>
+
+        <th>4</th>
+        <th>5</th>
+        <th>6</th>
+
+        <th>7</th>
+        <th>8</th>
+        <th>9</th>
+
+        <th>10</th>
+        <th>11</th>
+        <th>12</th>
+
+        <th>ожидаемый</th>
+        <th>фактический</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="c,iterStat  : ${contracts}" th:name="${c.id}">
+
+        <th scope="row" th:text="${iterStat.count} + ${paramstart}"></th>
+
+        <td class="fix" name="nomGK">
+            <span th:text="${c.nomGK}"></span>
+            <textarea class="form-control d-none"
+                      rows="1"></textarea>
+        </td>
+        <td name="kontragent">
+            <span th:text="${c.kontragent}"></span>
+            <textarea class="form-control d-none"
+                      rows="1"></textarea>
+        </td>
+        <td name="dateGK">
+            <span th:text="${c.getDateGKRu()}"></span>
+            <input type="date" class="form-control d-none">
+        </td>
+        <td name="sumNaturalIndicators">
+            <span th:text="${c.getSumNaturalIndicatorsStr()}"></span>
+            <input
+                    class="form-control d-none"
+                    type="number"
+                    min="0" step="1" data-bind="value:replyNumber"
+                    onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
+            />
+        </td>
+        <td name="1month">
+            <span th:text="${c.getNaturalIndicatorsById(0)}"></span>
+            <input
+                    class="form-control d-none"
+                    type="number"
+                    min="0" step="1" data-bind="value:replyNumber"
+                    onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
+            />
+        </td>
+        <td name="2month">
+            <span th:text="${c.getNaturalIndicatorsById(1)}"></span>
+            <input
+                    class="form-control d-none"
+                    type="number"
+                    min="0" step="1" data-bind="value:replyNumber"
+                    onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
+            />
+        </td>
+        <td name="3month">
+            <span th:text="${c.getNaturalIndicatorsById(2)}"></span>
+            <input
+                    class="form-control d-none"
+                    type="number"
+                    min="0" step="1" data-bind="value:replyNumber"
+                    onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
+            />
+        </td>
+        <td name="4month">
+            <span th:text="${c.getNaturalIndicatorsById(3)}"></span>
+            <input
+                    class="form-control d-none"
+                    type="number"
+                    min="0" step="1" data-bind="value:replyNumber"
+                    onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
+            />
+        </td>
+        <td name="5month">
+            <span th:text="${c.getNaturalIndicatorsById(4)}"></span>
+            <input
+                    class="form-control d-none"
+                    type="number"
+                    min="0" step="1" data-bind="value:replyNumber"
+                    onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
+            />
+        </td>
+        <td name="6month">
+            <span th:text="${c.getNaturalIndicatorsById(5)}"></span>
+            <input
+                    class="form-control d-none"
+                    type="number"
+                    min="0" step="1" data-bind="value:replyNumber"
+                    onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
+            />
+        </td>
+        <td name="7month">
+            <span th:text="${c.getNaturalIndicatorsById(6)}"></span>
+            <input
+                    class="form-control d-none"
+                    type="number"
+                    min="0" step="1" data-bind="value:replyNumber"
+                    onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
+            />
+        </td>
+        <td name="8month">
+            <span th:text="${c.getNaturalIndicatorsById(7)}"></span>
+            <input
+                    class="form-control d-none"
+                    type="number"
+                    min="0" step="1" data-bind="value:replyNumber"
+                    onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
+            />
+        </td>
+        <td name="9month">
+            <span th:text="${c.getNaturalIndicatorsById(8)}"></span>
+            <input
+                    class="form-control d-none"
+                    type="number"
+                    min="0" step="1" data-bind="value:replyNumber"
+                    onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
+            />
+        </td>
+        <td name="10month">
+            <span th:text="${c.getNaturalIndicatorsById(9)}"></span>
+            <input
+                    class="form-control d-none"
+                    type="number"
+                    min="0" step="1" data-bind="value:replyNumber"
+                    onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
+            />
+        </td>
+
+        <td name="11month">
+            <span th:text="${c.getNaturalIndicatorsById(10)}"></span>
+            <input
+                    class="form-control d-none"
+                    type="number"
+                    min="0" step="1" data-bind="value:replyNumber"
+                    onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
+            />
+        </td>
+
+        <td name="12month">
+            <span th:text="${c.getNaturalIndicatorsById(11)}"></span>
+            <input
+                    class="form-control d-none"
+                    type="number"
+                    min="0" step="1" data-bind="value:replyNumber"
+                    onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
+            />
+        </td>
+
+        <td th:text="${c.getOjidRashodMonth()}"></td>
+        <td th:text="${c.getFactRashodMonth()}"></td>
+
+        <td th:text="${c.getOstatocNaturalIndicator()}"></td>
+
+        <td>
+            <div><a th:name="${c.id}" id="updateItContract" href="#">Изменить</a></div>
+            <div><a th:name="${c.id}" id="deleteItContract" href="#">Удалить</a></div>
+        </td>
+    </tr>
+    </tbody>
+
+</table>
+
+
+
+
+</body>
+</html>

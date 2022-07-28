@@ -12,8 +12,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class AdminparamService {
-
-
+    
     final AdminparamRepository adminparamRepository;
 
     @Transactional

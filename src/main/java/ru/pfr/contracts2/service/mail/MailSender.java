@@ -20,17 +20,26 @@ public class MailSender {
     private final JavaMailSender javaMailSender;
 
     public void send(String emailTo, String subject, String message){
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
 
-        simpleMailMessage.setFrom(username);
-        simpleMailMessage.setTo(emailTo);
-        simpleMailMessage.setSubject(subject);
-        simpleMailMessage.setText(message);
+        try{
+            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
 
-        javaMailSender.send(simpleMailMessage);
+            simpleMailMessage.setFrom(username);
+            simpleMailMessage.setTo(emailTo);
+            simpleMailMessage.setSubject(subject);
+            simpleMailMessage.setText(message);
 
-        logiService.save(new Logi("this","Mail","Почта отправлена пользователю " + username +
-                " на email: " + emailTo +
-                " с текстом: " + message));
+            javaMailSender.send(simpleMailMessage);
+
+            logiService.save(new Logi("this","Mail","Почта отправлена пользователю " + username +
+                    " на email: " + emailTo +
+                    " с текстом: " + message));
+        }catch(Exception e){
+            logiService.save(new Logi("this","MailError","Отправить письмо не удалось " + username +
+                    " на email: " + emailTo +
+                    " с текстом: " + message +
+                    " ошибка " + e));
+        }
+
     }
 }

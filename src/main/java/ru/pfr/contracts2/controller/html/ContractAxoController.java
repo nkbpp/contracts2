@@ -19,8 +19,8 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping(value = { "/contract/it"})
-public class ContractItController {
+@RequestMapping(value = { "/contract/axo"})
+public class ContractAxoController {
 
     private final ContractItService contractItService;
 
@@ -32,10 +32,10 @@ public class ContractItController {
             Model model
     ){
         logiService.save(new Logi(user.getLogin(),"View",
-                "Показ таблицы it контрактов"));
-       // model.addAttribute("paginationContractName", "paginationItContract");
-        model.addAttribute("findContractName", "findContractIt");
-        return "fragment/it/viev :: vievTable";
+                "Показ таблицы axo контрактов"));
+        //model.addAttribute("paginationContractName", "paginationAxoContract");
+        model.addAttribute("findContractName", "findContractAxo");
+        return "fragment/axo/viev :: vievTableAxo";
     }
 
     @GetMapping("/getTable")  //Перелистывания
@@ -46,25 +46,25 @@ public class ContractItController {
             Model model){
 
         //String role = User.getRole(authentication);
-        String role = "IT";
+        String role = "AXO";
 
         logiService.save(new Logi(user.getLogin(),"View",
-                "Показ таблицы it контрактов на странице " + param));
+                "Показ таблицы axo контрактов на странице " + param));
 
         param = param==null?1:param;
 
         List<ContractIT> contractITs = contractItService.findAll(param, role);
 
         model.addAttribute("contracts", contractITs);
-        //model.addAttribute("paginationContractName", "paginationItContract");
+        //model.addAttribute("paginationContractName", "paginationAxoContract");
         model.addAttribute("paramstart",
                 (param-1) * contractItService.getCOL());
 
-        return "fragment/it/viev :: table";
+        return "fragment/axo/viev :: table";
 
     }
 
-/*    @GetMapping("/getTable2")  //TODO
+    @GetMapping("/getTable2")  //TODO
     public String getTable2(
             @RequestParam(defaultValue = "") Integer param,
             @AuthenticationPrincipal User user,
@@ -72,7 +72,7 @@ public class ContractItController {
             Model model){
 
         //String role = User.getRole(authentication);
-        String role = "IT";
+        String role = "AXO";
 
         param = param==null?1:param;
 
@@ -82,9 +82,9 @@ public class ContractItController {
         model.addAttribute("paramstart",
                 (param-1) * contractItService.getCOL());
 
-        return "fragment/it/viev2 :: table2";
+        return "fragment/axo/viev2 :: table2";
 
-    }*/
+    }
 
     @GetMapping("/findTable")
     public String findTable(
@@ -98,7 +98,7 @@ public class ContractItController {
                 "Поиск в таблице контрактов"));
 
         //String role = User.getRole(authentication);
-        String role = "IT";
+        String role = "AXO";
 
         List<ContractIT> contracts;
         if(poleFindByNomGK.equals("") && poleFindByKontragent.equals("")){
@@ -110,17 +110,17 @@ public class ContractItController {
 
         model.addAttribute("contracts", contracts);
         model.addAttribute("paramstart", 0);
-        return "fragment/it/viev :: table";
+        return "fragment/axo/viev :: table";
     }
 
     @GetMapping("/add")
     public String add(@AuthenticationPrincipal User user,
-                       Model model){
+                      Model model){
 
         logiService.save(new Logi(user.getLogin(),"View",
-                "Показ страницы добавления it контракта"));
+                "Показ страницы добавления axo контракта"));
 
-        return "fragment/it/add :: addviev";
+        return "fragment/axo/add :: addviev";
     }
 
     @GetMapping("/updateViev/{id}")
@@ -130,9 +130,9 @@ public class ContractItController {
             Model model){
 
         logiService.save(new Logi(user.getLogin(),"View",
-                "Показ страницы изменения it контракта с id = " + id));
+                "Показ страницы изменения axo контракта с id = " + id));
 
-        return "fragment/it/add :: addviev";
+        return "fragment/axo/add :: addviev";
     }
 
 

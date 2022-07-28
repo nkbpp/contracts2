@@ -154,7 +154,13 @@ public class ContractController {
     @GetMapping("/getnotification")
     public String getnotification(@AuthenticationPrincipal User user,
                       Model model){
-        List<User> users = new ArrayList<>(zirServise.getFindAllOtdelByIdAddPusto(user.getId_user_zir()));
+        List<User> users = new ArrayList<>();
+
+        if(!user.getId_user_zir().equals(147L)){
+            users.addAll(zirServise.getFindAllOtdelByIdAddPusto(147L));
+        }
+        users.addAll(zirServise.getFindAllOtdelByIdAddPusto(user.getId_user_zir()));
+
         model.addAttribute("users", users);
         return "fragment/contractAdd :: notifications";
     }

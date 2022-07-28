@@ -42,6 +42,18 @@ public class ZirServise {
         return users;
     }
 
+    public List<String> getAllIdUserByIdOtdel (String id_otdel){
+        String[][] S = GetSelect("SELECT ID_EM " +
+                "FROM EMPLOYEES " +
+                "WHERE ID_POD_EM = " + id_otdel);
+        List<String> ids = new ArrayList<>();
+        for (String[] strings : S) {
+            ids.add(String.valueOf(strings[0]));
+        }
+        return ids;
+    }
+
+
     public List<User> getFindAllOtdelById (Long id_zir){
         String[][] S = GetSelect("SELECT e.ID_EM, " +
                 "CONCAT(CONCAT(CONCAT(e.FAM_EM, CONCAT(' ', SUBSTR(e.NAM_EM, 1, 1))),'.'), CONCAT(SUBSTR(e.OTCH_EM, 1, 1),'.')) as NAME, " +

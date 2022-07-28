@@ -32,10 +32,10 @@ import ru.pfr.contracts2.service.user.RayonService;
 import ru.pfr.contracts2.service.user.UserService;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -69,7 +69,6 @@ public class AuthProvider implements AuthenticationProvider {
                 parameterList);
         Header[] headers = httpResponse.getHeaders("Location");
 
-        //v2****************************************************
         User logerr;
         try {
             logerr = userService.findByLoginuser(username); //пользователь существует
@@ -134,12 +133,7 @@ public class AuthProvider implements AuthenticationProvider {
                 /*byte[] decoded = DatatypeConverter.parseBase64Binary((String) authData.get("namepod")[0]);
                 String namepod = new String(decoded, StandardCharsets.UTF_8);*/
 
-                String namepod = null;
-                try {
-                    namepod = URLDecoder.decode((String) authData.get("namepod")[0], "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
+                String namepod = URLDecoder.decode((String) authData.get("namepod")[0], StandardCharsets.UTF_8);
 
 /*              String ss2 = "";
                 try{
@@ -156,33 +150,31 @@ public class AuthProvider implements AuthenticationProvider {
                 for (Object right : rights) {
                     int rightCode = Integer.parseInt((String) right);
                     switch (rightCode) {
-                        case 14: //не забыть поменять
-                            roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_UPDATE.getString()));
-                            break;
-                        case 1:
+                        case 14 -> roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_UPDATE.getString()));
+                        case 1 -> {
                             roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_ADMIN.getString()));
                             upfrCode = new StringBuilder("999");
-                            break;
-                        case 100:
-                            roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_UPDATE_IT.getString()));
-                            break;
-                        case 101:
-                            roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_READ_IT.getString()));
-                            break;
+                        }
+                        //TODO оригинал
+                        case 100 -> roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_UPDATE_IT.getString()));
+                        case 101 -> roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_READ_IT.getString()));
+                        case 102 -> roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_UPDATE_AXO.getString()));
+                        case 103 -> roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_READ_AXO.getString()));
+
+                        /*case 100 -> roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_UPDATE_AXO.getString()));
+                        case 101 -> roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_READ_AXO.getString()));*/
                     }
                 }
 
                 //roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_ADMIN.getString()));//TODO УБРАТЬ
+                //roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_UPDATE_AXO.getString()));
+                //roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_READ_AXO.getString()));
 
                 while (upfrCode.length() < 3) {
                     upfrCode.insert(0, "0");
                 }
 
                 User user = userService.findByLoginuser(username);
-/*                if (user == null) {
-                    Rayon r = rayonService.findByKod(upfrCode.toString()); //пользователя небыло
-                    user = new User(username, r);
-                }*/
 
                 user.setActive(1L);
 
@@ -199,11 +191,11 @@ public class AuthProvider implements AuthenticationProvider {
                         user.getLogin(),
                         "Пользователь " + user.getLogin() + " авторизован  AuthProvider authenticate()"));
             }
-            //-----------------------------
         } catch (Exception e) {
             System.out.println("MES=" + e.getMessage());
             throw new BadCredentialsException(e.getMessage());
         }
+
 
         return a;
     }

@@ -6,7 +6,7 @@
 	<groupId>ru.pfr</groupId>
 	<artifactId>contracts2</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>contracts2</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
@@ -78,16 +78,17 @@
 			<version>8.0.26</version>
 		</dependency>
 
-		<dependency> <!--thymeleaf-->
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-thymeleaf</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-
 		<!-- защита -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<!--thymeleaf-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
 
@@ -142,6 +143,7 @@
 			<artifactId>materialize-css</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+
 		<!--bootstrap-->
 		<dependency>
 			<groupId>org.webjars.bower</groupId>

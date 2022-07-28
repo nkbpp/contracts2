@@ -83,8 +83,13 @@ public class ContractControllerRest {
             List<Notification> notifications1 = new ArrayList<>();
             for (String n:
                  notifications) {
-                if(!n.equals("undefined") && !n.equals("")){
-                    notifications1.add(new Notification(Long.valueOf(n),zirServise.getNameUserById(Integer.parseInt(n))));
+                try{
+                    if(!n.equals("undefined") && !n.equals("")){
+                        notifications1.add(
+                                new Notification(Long.valueOf(n),
+                                        zirServise.getNameUserById(Integer.parseInt(n))));
+                    }
+                }catch (Exception e){
                 }
             }
 
@@ -133,7 +138,7 @@ public class ContractControllerRest {
 
     @GetMapping("/download")
     public @ResponseBody
-    ResponseEntity downloadxml(
+    ResponseEntity download(
             @RequestParam Long id,
             @AuthenticationPrincipal User user,
             Model model) {
@@ -166,7 +171,7 @@ public class ContractControllerRest {
             Model model) {
         try {
             Contract contract = contractService.findById(id);
-            Map<String, Object> map2 = new HashMap<>();
+
 
             Map<String, String> map = new HashMap<>();//TODO Автоматизировать
             map.put("id", contract.getId().toString());
@@ -185,6 +190,7 @@ public class ContractControllerRest {
             map.put("nomerZajavkiNaVozvrat", contract.getNomerZajavkiNaVozvrat());
             map.put("dateZajavkiNaVozvrat", contract.getDateZajavkiNaVozvratEn());
 
+            Map<String, Object> map2 = new HashMap<>();
             map2.put("contract",map);
             List<MyDocuments> myDocuments = contract.getMyDocuments();
             for (MyDocuments d:
@@ -239,11 +245,14 @@ public class ContractControllerRest {
             Model model) {
         try {
             Map<String, Object> map2 = new HashMap<>();
-            if (user.getId_ondel_zir().longValue() == Long.valueOf("148").longValue()) {//147
-                List<String> notifications = new ArrayList<>();
+//            if (user.getId_ondel_zir().longValue() == Long.valueOf("148").longValue()) {//147
+
+                List<String> notifications = zirServise.getAllIdUserByIdOtdel("147");
+                /*List<String> notifications = new ArrayList<>();
                 notifications.add("1270");//Нехаева
                 notifications.add("1089");//Бессонова
                 notifications.add("1681");//Алясина
+                notifications.add("3225");//Георгобиани*/
 
                 List<Notification> notifications1 = new ArrayList<>();
                 for (String n:
@@ -253,8 +262,8 @@ public class ContractControllerRest {
                     }
                 }
                 map2.put("notifications",notifications1);
-            } else {
-            }
+/*            } else {
+            }*/
 
             return new ResponseEntity<>(map2, HttpStatus.OK);
         } catch (Exception e) {

@@ -26,8 +26,8 @@ import java.util.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = {"/contract/it"})
-public class ContractItControllerRest {
+@RequestMapping(value = {"/contract/axo"})
+public class ContractAxoControllerRest {
 
     private final ContractItService contractItService;
 
@@ -68,7 +68,7 @@ public class ContractItControllerRest {
         try {
 
             //String role = User.getRole(authentication);
-            String role = "IT";
+            String role = "AXO";
 
             //проход по документам
             List<ItDocuments> listDocuments = new ArrayList<>();
@@ -123,7 +123,7 @@ public class ContractItControllerRest {
                         sumNaturalIndicators, naturalIndicators1,
                         doc.trim(), listDocuments, user, role);
                 logiService.save(new Logi(user.getLogin(),"Add",
-                        "Добавление it контракта"));
+                        "Добавление axo контракта"));
             } else { // Изменения
                 contract=contractItService.findById(Long.valueOf(id));
                 contract.setNomGK(nomGK.trim());
@@ -176,8 +176,8 @@ public class ContractItControllerRest {
                 .body(itDocuments.getDokument());
     }
 
-    @PostMapping("/delItDoc")
-    public ResponseEntity delItDoc(
+    @PostMapping("/delAxoDoc")
+    public ResponseEntity delAxoDoc(
             @RequestParam Long id,
             @AuthenticationPrincipal User user,
             Model model) {
