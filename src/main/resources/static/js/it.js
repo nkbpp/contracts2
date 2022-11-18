@@ -70,6 +70,8 @@ $(document).ready(function () {
                             $('textarea[name=nomGK]').val(data.contract.nomGK);
                             $('textarea[name=kontragent]').val(data.contract.kontragent);
                             $('input[name=dateGK]').val(data.contract.dateGK);
+                            $('input[name=dateGKs]').val(data.contract.dateGKs);
+                            $('input[name=dateGKpo]').val(data.contract.dateGKpo);
                             $('input[name=sum]').val(data.contract.sum.replace(',','.'));
                             $('input[name=January]').val(data.contract.January);
                             $('input[name=February]').val(data.contract.February);
@@ -83,6 +85,8 @@ $(document).ready(function () {
                             $('input[name=October]').val(data.contract.October);
                             $('input[name=November]').val(data.contract.November);
                             $('input[name=December]').val(data.contract.December);
+                            $('#statusGK').val(data.contract.statusGK);
+                            $('#notificationsSelect').val(data.contract.idzirot);
 
                             $('input[name=sumNaturalIndicators]').val(data.contract.sumNaturalIndicators);
                             $('#range').val(data.contract.naturalIndicatorsSize);
@@ -122,28 +126,23 @@ $(document).ready(function () {
         //переключатели страниц pagination
         if ($(this).parents("#paginationItContract").attr("id") === "paginationItContract") {
             let list = clickPagination($(this),"#paginationItContract");
-            let param = "param=" + list;
-
-            let bool = $("#flexCheckChecked").prop("checked");
-            if(bool){
-                $("#tableItContainer").load("/contract/it/getTable2", param, function (data) {
-                });
-
-            }else{
-                $("#tableItContainer").load("/contract/it/getTable", param, function (data,f) {
-                });
-            }
-
+            fpagination()
         }
 
     })
+
+    itbody.on('change','#col',function(){
+        fpagination()
+    });
 
     itbody.on('click', 'button', function () {
 
         if ($(this).attr('name') === "findContractIt") { //поиск
             let param = "poleFindByNomGK=" + $("[data-name=poleFindByNomGK]").val() +
-                "&poleFindByKontragent=" + $("[data-name=poleFindByKontragent]").val() /*+
-                "&poleFindByIspolneno=" + $('[data-name=poleFindByIspolneno]').prop("checked") +
+                "&poleFindByKontragent=" + $("[data-name=poleFindByKontragent]").val() +
+                "&dateGK=" + $("#poleFindDateGK").val() +
+                "&idot=" + $("#poleFindnotificationsSelect").val()
+                /*"&poleFindByIspolneno=" + $('[data-name=poleFindByIspolneno]').prop("checked") +
                 "&poleFindByNotIspolneno=" + $('[data-name=poleFindByNotIspolneno]').prop("checked")*/;
             console.log("findContract param2 = ", param);
             $("#tableItContainer").load("/contract/it/findTable", param, function (data) {
@@ -194,6 +193,8 @@ $(document).ready(function () {
 
                 let param = new FormData($('#formItContract')[0]);
                 param.append('id', encodeURIComponent($('#addContractIt').attr("data-id-contract")));
+                param.append('statusGK', $('#statusGK').val());
+                param.append('idzirot', $('#notificationsSelect').val());
 
                 let ntinput = $('#nt').find('.col-3:not(.d-none) input');
                 let strntinput = "";
@@ -466,4 +467,20 @@ function inputAddClassDnone(value) {
         else
             inputs.eq(i).addClass('d-none');
     }
+}
+
+function fpagination(){
+
+    let param = "param=" + activeList("#paginationItContract") + "&col=" + $("#col").val();
+
+    let bool = $("#flexCheckChecked").prop("checked");
+    if(bool){
+        $("#tableItContainer").load("/contract/it/getTable2", param, function (data) {
+        });
+
+    }else{
+        $("#tableItContainer").load("/contract/it/getTable", param, function (data,f) {
+        });
+    }
+
 }

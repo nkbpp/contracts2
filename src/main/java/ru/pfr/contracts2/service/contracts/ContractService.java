@@ -26,9 +26,7 @@ public class ContractService {
     private final MailSender mailSender;
     private final ZirServise zirServise;
     final ContractRepository contractRepository;
-
     private final LogiService logiService;
-
     private final int COL = 30;
 
     public Contract findById(Long id) {
@@ -92,9 +90,7 @@ public class ContractService {
         for (int i = start; i < end && i<contracts.size() ; i++) {
             contracts2.add(contracts.get(i));
         }
-
         return contracts2;
-
     }
 
     public List<Contract> findByIspolnenoFalse() {

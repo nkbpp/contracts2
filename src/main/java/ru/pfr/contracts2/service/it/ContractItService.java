@@ -5,7 +5,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.pfr.contracts2.entity.contractIT.ContractIT;
-import ru.pfr.contracts2.entity.contracts.Contract;
 import ru.pfr.contracts2.repository.it.ContractItRepository;
 
 import java.util.ArrayList;
@@ -36,17 +35,21 @@ public class ContractItService {
         return contractItRepository.findByIds(list);
     }
 
-    public List<ContractIT> findAll(int l) {
+    public List<ContractIT> findAll(String role) {
+        return contractItRepository.findAllByRoleOrderByIdDesc(role);
+    }
+
+    public List<ContractIT> findAllcut(int l) {
         return cutTheList(findAll(), l, COL);
     }
 
-    public List<ContractIT> findAll(int l, String role) {
+    public List<ContractIT> findAllcut(int l, String role) {
         return cutTheList(contractItRepository.findAllByRoleOrderByIdDesc(role), l, COL);
     }
 
     //поиск по номеру гк и контрагенту
-    public List<ContractIT> findByNomGK(String nomgk, String komtragent, String role) {
-        return contractItRepository.findByNomGKAndKontragent(nomgk, komtragent, role);
+    public List<ContractIT> findByNomGK(String nomgk, String kontragent, String role) {
+        return contractItRepository.findByNomGKAndKontragent(nomgk, kontragent, role);
     }
 
     @Transactional

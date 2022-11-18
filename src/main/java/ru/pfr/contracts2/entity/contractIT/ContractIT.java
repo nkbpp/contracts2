@@ -29,6 +29,10 @@ public class ContractIT {
 
     private Date dateGK; //дата ГК
 
+    private Date dateGKs; //действие ГК с
+    private Date dateGKpo; //действие ГК по
+
+    private String statusGK; //Статус ГК
     private Double sum; //сумма
 
     private Double month1;
@@ -50,6 +54,8 @@ public class ContractIT {
     @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     private User user; //кто создал контракт
 
+    private Integer idzirot;
+    private String nameot;//имя ответственного
     private String role;
 
     private Date date_update;
@@ -62,6 +68,22 @@ public class ContractIT {
 
     public String getDateGKEn() {
         return dateGK==null?"":ConverterDate.datetostring_yyyyMMdd(dateGK);
+    }
+
+    public String getDateGKsRu() {
+        return dateGKs==null?"":ConverterDate.datetostring_ddMMyyyy(dateGKs);
+    }
+
+    public String getDateGKsEn() {
+        return dateGKs==null?"":ConverterDate.datetostring_yyyyMMdd(dateGKs);
+    }
+
+    public String getDateGKpoRu() {
+        return dateGKpo==null?"":ConverterDate.datetostring_ddMMyyyy(dateGKpo);
+    }
+
+    public String getDateGKpoEn() {
+        return dateGKpo==null?"":ConverterDate.datetostring_yyyyMMdd(dateGKpo);
     }
 
     public String getSumOk() {
@@ -120,6 +142,10 @@ public class ContractIT {
         return MyNumbers.okrug(sum - (month1+month2+month3+month4+month5+month6+month7+month8+month9+month10+month11+month12));
     }
 
+    public Double getOstatocDouble() {
+        return sum - (month1+month2+month3+month4+month5+month6+month7+month8+month9+month10+month11+month12);
+    }
+
     @OneToMany(mappedBy = "contractIT", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItDocuments> itDocuments = new ArrayList<>();
 
@@ -131,15 +157,21 @@ public class ContractIT {
     private List<NaturalIndicator> naturalIndicators = new ArrayList<>();
 
 
-    public ContractIT(String nomGK, String kontragent,
-                      Date dateGK, Double sum, Double month1, Double month2,
+    public ContractIT(String nomGK, String kontragent, String statusGK,
+                      Date dateGK, Date dateGKs, Date dateGKpo, Double sum, Double month1, Double month2,
                       Double month3, Double month4, Double month5, Double month6, Double month7,
                       Double month8, Double month9, Double month10, Double month11, Double month12,
                       Double sumNaturalIndicators, List<NaturalIndicator> naturalIndicators,
-                      String documentu, List<ItDocuments> itDocuments, User user, String role) {
+                      String documentu, List<ItDocuments> itDocuments, User user, String role,
+                      Integer idzirot, String nameot) {
         this.nomGK = nomGK;
         this.kontragent = kontragent;
+        this.statusGK = statusGK;
         this.dateGK = dateGK;
+        this.dateGKs = dateGKs;
+        this.dateGKpo = dateGKpo;
+        this.idzirot = idzirot;
+        this.nameot = nameot;
         this.sum = sum;
         this.month1 = month1;
         this.month2 = month2;
@@ -160,7 +192,6 @@ public class ContractIT {
         setAllNaturalIndicators(naturalIndicators);
 
         setAllDocuments(itDocuments);
-
 
         this.role = role;
 

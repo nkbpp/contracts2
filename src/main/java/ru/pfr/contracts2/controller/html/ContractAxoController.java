@@ -53,7 +53,7 @@ public class ContractAxoController {
 
         param = param==null?1:param;
 
-        List<ContractIT> contractITs = contractItService.findAll(param, role);
+        List<ContractIT> contractITs = contractItService.findAllcut(param, role);
 
         model.addAttribute("contracts", contractITs);
         //model.addAttribute("paginationContractName", "paginationAxoContract");
@@ -76,7 +76,7 @@ public class ContractAxoController {
 
         param = param==null?1:param;
 
-        List<ContractIT> contractITs = contractItService.findAll(param, role);
+        List<ContractIT> contractITs = contractItService.findAllcut(param, role);
 
         model.addAttribute("contracts", contractITs);
         model.addAttribute("paramstart",

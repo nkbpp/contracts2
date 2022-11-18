@@ -42,17 +42,33 @@
     <div class="collapse" id="collapseExample">
         <div class="card card-body">
             <div class="row">
-                <div class="col-2">
+                <div class="col-3">
+                    <label for="poleFindByNomGK" class="form-label m-0">Номер ГК</label>
                     <input
                             class="form-control m-1"
                             type="text"
+                            id="poleFindByNomGK"
                             data-name="poleFindByNomGK"
                             placeholder="Номер ГК"/>
+                    <label for="poleFindByKontragent" class="form-label m-0">Контрагент</label>
                     <input
                             class="form-control m-1"
                             type="text"
+                            id="poleFindByKontragent"
                             data-name="poleFindByKontragent"
                             placeholder="Контрагент"/>
+
+                    <label for="poleFindDateGK" class="form-label m-0">Дата ГК</label>
+                    <input type="date" class="form-control" id="poleFindDateGK">
+
+                    <label for="poleFindnotificationsSelect" class="form-label m-0">Ответственный</label>
+                    <select id="poleFindnotificationsSelect"  class="form-select m-1">
+                        <option th:each="u : ${notifications}" th:text="${u.name}"
+                                th:value="${u.id_user}"></option>
+                    </select>
+
+
+
                 </div>
                 <!--<div class="col-2 text-center align-self-center">
                     <div class="form-check">
@@ -86,7 +102,7 @@
                             type="button"
                             aria-expanded="false"
                             th:name="${findContractName}"
-                            >
+                    >
                         Найти
                     </button>
                 </div>
@@ -110,7 +126,7 @@
 </div>
 
 <table class="table table-block table-secondary table-striped
-              table-hover table-bordered text-center caption-top table-sm m-0 p-0"
+              table-hover table-bordered text-center caption-top table-sm m-0 p-0 fixtable"
        id="tableContractIt" th:fragment="table">
     <!--Отключение стрелочек-->
     <style>
@@ -142,9 +158,119 @@
             left: 0px;
         }
 
+        /*.header_fixed {
+            position: fixed;
+            left: 0;
+            top: 0;
+        }*/
+
+        /*thead {
+            position: sticky;
+            top: 0;
+        }*/
+
+        /*    FIX*/
+/*        .fixtable-fixed {
+            position: fixed;
+            top: 0;
+            z-index: 101;
+            background-color: #E2E3E5;
+            border-bottom: 1px solid #ddd;
+        }*/
     </style>
+    <script>
+/*        function FixTable(table) {
+            var inst = this;
+            this.table = table;
+
+            $('tr > th', $(this.table)).each(function (index) {
+                var div_fixed = $('<div/>').addClass('fixtable-fixed');
+                var div_relat = $('<div/>').addClass('fixtable-relative');
+                div_fixed.html($(this).html());
+                div_relat.html($(this).html());
+                $(this).html('').append(div_fixed).append(div_relat);
+                $(div_fixed).hide();
+            });
+
+            this.StyleColumns();
+            this.FixColumns();
+
+            $(window).scroll(function () {
+                inst.FixColumns()
+            }).resize(function () {
+                inst.StyleColumns()
+            });
+        }
+
+        FixTable.prototype.StyleColumns = function () {
+            var inst = this;
+            $('tr > th', $(this.table)).each(function () {
+                var div_relat = $('div.fixtable-relative', $(this));
+                var th = $(div_relat).parent('th');
+                $('div.fixtable-fixed', $(this)).css({
+                    'width': $(th).outerWidth(true) - parseInt($(th).css('border-left-width')) + 'px',
+                    'height': $(th).outerHeight(true) + 'px',
+                    'left': $(div_relat).offset().left - parseInt($(th).css('padding-left')) + 'px',
+                    'padding-top': $(div_relat).offset().top - $(inst.table).offset().top + 'px',
+                    'padding-left': $(th).css('padding-left'),
+                    'padding-right': $(th).css('padding-right')
+                });
+            });
+        }
+
+        FixTable.prototype.FixColumns = function () {
+            var inst = this;
+            var show = false;
+            var s_top = $(window).scrollTop();
+            var h_top = $(inst.table).offset().top;
+
+            if (s_top < (h_top + $(inst.table).height() - $(inst.table).find('.fixtable-fixed').outerHeight()) && s_top > h_top) {
+                show = true;
+            }
+
+            $('tr > th > div.fixtable-fixed', $(this.table)).each(function () {
+                show ? $(this).show() : $(this).hide()
+            });
+        }
+
+        $(document).ready(function () {
+            $('.fixtable').each(function () {
+                new FixTable(this);
+            });
+        });*/
+/*$(function() {
+    let header = $('thead');
+
+    $(window).scroll(function() {
+        if($(this).scrollTop() > 1) {
+            header.addClass('header_fixed');
+        } else {
+            header.removeClass('header_fixed');
+        }
+    });
+});*/
+    </script>
     <caption>
-        <p class="fw-weight-bold m-0">Таблица контрактов</p>
+        <div class="row m-0 p-0">
+            <div class="col-11">
+                <p class="fw-weight-bold m-0">Таблица контрактов</p>
+            </div>
+            <div class="col-1">
+                <select id="col" name="col" class="form-select">
+                    <option th:selected="${col==10}" th:text="10"
+                            value="10"></option>
+                    <option th:selected="${col==20}" th:text="20"
+                            value="20"></option>
+                    <option th:selected="${col==30}" th:text="30"
+                            value="30"></option>
+                    <option th:selected="${col==50}" th:text="50"
+                            value="50"></option>
+                    <option th:selected="${col==100}" th:text="100"
+                            value="100"></option>
+                </select>
+            </div>
+        </div>
+
         <!--        <div sec:authorize="hasAnyRole('ROLE_UPDATEAXO','ROLE_READAXO')"
                      class="container-fluid form-check mx-2">
                     <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked">
@@ -152,18 +278,18 @@
                         Натуральный показатель
                     </label>
                 </div>-->
-        </caption>
-
+    </caption>
     <thead>
     <tr>
-        <th rowspan="2">№</th>
-        <th colspan="4">Государственный контракт</th>
+        <th  rowspan="2">№</th>
+        <th colspan="7">Государственный контракт</th>
         <th colspan="3">1-й квартал</th>
         <th colspan="3">2-й квартал</th>
         <th colspan="3">3-й квартал</th>
         <th colspan="3">4-й квартал</th>
         <th rowspan="2">Остаток</th>
-        <th rowspan="2" style="min-width:200px">Документы</th>
+        <th rowspan="2">Ответственный</th>
+        <!--<th rowspan="2" style="min-width:200px">Документы</th>-->
         <th rowspan="2">Прикрепленные файлы</th>
         <th rowspan="2">Действие</th>
     </tr>
@@ -172,7 +298,10 @@
         <th style="min-width:200px" class="fix">Номер</th>
         <th style="min-width:200px">Контрагент</th>
         <th>Дата</th>
+        <th>Дата с</th>
+        <th>Дата по</th>
         <th>Сумма</th>
+        <th>Статус</th>
 
         <th>Январь</th>
         <th>Февраль</th>
@@ -193,7 +322,9 @@
     </thead>
 
     <tbody>
-    <tr th:each="c,iterStat  : ${contracts}" th:name="${c.id}">
+    <tr th:each="c,iterStat  : ${contracts}" th:name="${c.id}"
+        th:class="${c.getOstatocDouble()<=0}? 'table-danger'"
+    >
 
         <th scope="row" th:text="${iterStat.count} + ${paramstart}"></th>
 
@@ -211,6 +342,15 @@
             <span th:text="${c.getDateGKRu()}"></span>
             <input type="date" class="form-control d-none">
         </td>
+        <td name="dateGKs">
+            <span th:text="${c.getDateGKsRu()}"></span>
+            <input type="date" class="form-control d-none">
+        </td>
+        <td name="dateGKpo">
+            <span th:text="${c.getDateGKpoRu()}"></span>
+            <input type="date" class="form-control d-none">
+        </td>
+
         <td name="sum">
             <span th:text="${c.getSumOk()}"></span>
             <input
@@ -219,6 +359,9 @@
                     min="0" step="1" data-bind="value:replyNumber"
                     onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
             />
+        </td>
+        <td name="statusGK">
+            <span th:text="${c.getStatusGK()}"></span>
         </td>
         <td name="January">
             <span th:text="${c.getMonth1Ok()}"></span>
@@ -333,11 +476,15 @@
 
         <td th:text="${c.getOstatoc()}"></td>
 
-        <td name="doc">
+        <td name="otvet">
+            <span th:text="${c.nameot}"></span>
+        </td>
+
+        <!--<td name="doc">
             <span th:text="${c.documentu}"></span>
             <textarea class="form-control d-none"
                       rows="2"></textarea>
-        </td>
+        </td>-->
 
         <td>
             <table class="text-center table table-block table-sm table-borderless">
@@ -366,8 +513,6 @@
     </tbody>
 
 </table>
-
-
 
 
 </body>

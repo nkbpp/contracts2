@@ -12,6 +12,7 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
+import ru.pfr.contracts2.entity.contracts.Notification;
 import ru.pfr.contracts2.entity.user.User;
 
 import java.io.IOException;
@@ -201,6 +202,18 @@ public class ZirServise {
             }
         }
         return ret;
+    }
+
+    public List<Notification> getNotification(String idZir){
+        List<Notification> notifications = new ArrayList<>();
+        notifications.add(new Notification(0L,""));
+        for (String n:
+                getAllIdUserByIdOtdel(idZir)) {
+            if(!n.equals("undefined") && !n.equals("")){
+                notifications.add(new Notification(Long.valueOf(n),getNameUserById(Integer.parseInt(n))));
+            }
+        }
+        return notifications;
     }
 
 }

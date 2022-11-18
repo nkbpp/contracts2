@@ -42,7 +42,11 @@ public class ContractAxoControllerRest {
             @RequestParam String nomGK,
             @RequestParam String kontragent,
             @RequestParam String dateGK,
+            @RequestParam(defaultValue = "") String dateGKs,
+            @RequestParam(defaultValue = "") String dateGKpo,
+            @RequestParam(defaultValue = "") String statusGK,
             @RequestParam(defaultValue = "0") Double sum,
+            @RequestParam(defaultValue = "0") Integer idzirot,
 
             @RequestParam(defaultValue = "0") Double January,
             @RequestParam(defaultValue = "0") Double February,
@@ -96,6 +100,10 @@ public class ContractAxoControllerRest {
 
             Date dateGK2;
             dateGK2 = ConverterDate.stringToDate(dateGK.trim());
+            Date dateGKs2;
+            dateGKs2 = ConverterDate.stringToDate(dateGKs.trim());
+            Date dateGKpo2;
+            dateGKpo2 = ConverterDate.stringToDate(dateGKpo.trim());
 
             //проход по натуральным показателям
             List<NaturalIndicator> naturalIndicators1 = new ArrayList<>();
@@ -117,11 +125,12 @@ public class ContractAxoControllerRest {
                     sumNaturalIndicators=0D;
                 }
                 contract = new ContractIT(
-                        nomGK.trim(), kontragent.trim(),  dateGK2, sum,
+                        nomGK.trim(), kontragent.trim(), statusGK,
+                        dateGK2, dateGKs2, dateGKpo2, sum,
                         January, February, March, April, May, June,
                         July, August, September, October, November, December,
                         sumNaturalIndicators, naturalIndicators1,
-                        doc.trim(), listDocuments, user, role);
+                        doc.trim(), listDocuments, user, role, idzirot, "");
                 logiService.save(new Logi(user.getLogin(),"Add",
                         "Добавление axo контракта"));
             } else { // Изменения
@@ -129,6 +138,9 @@ public class ContractAxoControllerRest {
                 contract.setNomGK(nomGK.trim());
                 contract.setKontragent(kontragent.trim());
                 contract.setDateGK(dateGK2);
+                contract.setDateGKs(dateGKs2);
+                contract.setDateGKpo(dateGKpo2);
+                contract.setStatusGK(statusGK);
                 contract.setSum(sum);
 
                 contract.setMonth1(January);
@@ -143,6 +155,9 @@ public class ContractAxoControllerRest {
                 contract.setMonth10(October);
                 contract.setMonth11(November);
                 contract.setMonth12(December);
+
+                contract.setIdzirot(idzirot);
+
 
                 if(sumNaturalIndicators!=-1){ //не обновлять если ничего не приходило
                     contract.setSumNaturalIndicators(sumNaturalIndicators);
@@ -222,6 +237,9 @@ public class ContractAxoControllerRest {
             map.put("nomGK", contract.getNomGK());
             map.put("kontragent", contract.getKontragent());
             map.put("dateGK", contract.getDateGKEn());
+            map.put("dateGKs", contract.getDateGKsEn());
+            map.put("dateGKpo", contract.getDateGKpoEn());
+            map.put("statusGK", contract.getStatusGK());
             map.put("sum", contract.getSumOk());
 
             map.put("January", contract.getMonth1Ok());
@@ -236,6 +254,8 @@ public class ContractAxoControllerRest {
             map.put("October", contract.getMonth10Ok());
             map.put("November", contract.getMonth11Ok());
             map.put("December", contract.getMonth12Ok());
+
+            map.put("idzirot", String.valueOf(contract.getIdzirot()));
 
             map.put("sumNaturalIndicators", contract.getSumNaturalIndicatorsStr());
             map.put("naturalIndicatorsSize",

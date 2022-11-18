@@ -12,10 +12,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ru.pfr.contracts2.entity.contractIT.ContractIT;
 import ru.pfr.contracts2.entity.log.Logi;
 import ru.pfr.contracts2.entity.user.User;
+import ru.pfr.contracts2.global.ConverterDate;
 import ru.pfr.contracts2.service.it.ContractItService;
 import ru.pfr.contracts2.service.log.LogiService;
+import ru.pfr.contracts2.service.zir.ZirServise;
 
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -23,6 +27,8 @@ import java.util.List;
 public class ContractItController {
 
     private final ContractItService contractItService;
+
+    private final ZirServise zirServise;
 
     private final LogiService logiService;
 
@@ -35,12 +41,17 @@ public class ContractItController {
                 "Показ таблицы it контрактов"));
        // model.addAttribute("paginationContractName", "paginationItContract");
         model.addAttribute("findContractName", "findContractIt");
+        model.addAttribute(
+                "notifications",
+                zirServise.getNotification(String.valueOf(user.getId_ondel_zir()))
+        );
         return "fragment/it/viev :: vievTable";
     }
 
     @GetMapping("/getTable")  //Перелистывания
     public String getTable(
             @RequestParam(defaultValue = "") Integer param,
+            @RequestParam(defaultValue = "10") Integer col,
             @AuthenticationPrincipal User user,
             Authentication authentication,
             Model model){
@@ -51,45 +62,31 @@ public class ContractItController {
         logiService.save(new Logi(user.getLogin(),"View",
                 "Показ таблицы it контрактов на странице " + param));
 
-        param = param==null?1:param;
-
-        List<ContractIT> contractITs = contractItService.findAll(param, role);
+        Integer skip = col*(param==null?0:param-1);
+        List<ContractIT> contractITs = contractItService.findAll(role)
+                .stream()
+                .skip(skip)
+                .limit(col)
+                .collect(Collectors.toList());
 
         model.addAttribute("contracts", contractITs);
         //model.addAttribute("paginationContractName", "paginationItContract");
         model.addAttribute("paramstart",
-                (param-1) * contractItService.getCOL());
+                skip);
+        model.addAttribute("col",
+                col);
 
         return "fragment/it/viev :: table";
 
     }
 
-/*    @GetMapping("/getTable2")  //TODO
-    public String getTable2(
-            @RequestParam(defaultValue = "") Integer param,
-            @AuthenticationPrincipal User user,
-            Authentication authentication,
-            Model model){
-
-        //String role = User.getRole(authentication);
-        String role = "IT";
-
-        param = param==null?1:param;
-
-        List<ContractIT> contractITs = contractItService.findAll(param, role);
-
-        model.addAttribute("contracts", contractITs);
-        model.addAttribute("paramstart",
-                (param-1) * contractItService.getCOL());
-
-        return "fragment/it/viev2 :: table2";
-
-    }*/
-
     @GetMapping("/findTable")
     public String findTable(
             @RequestParam(defaultValue = "") String poleFindByNomGK,
             @RequestParam(defaultValue = "") String poleFindByKontragent,
+            @RequestParam(defaultValue = "") String dateGK,
+            @RequestParam(defaultValue = "0") Integer idot,
+            //@RequestParam(defaultValue = "30") Integer col,
             Authentication authentication,
             @AuthenticationPrincipal User user,
             Model model){
@@ -108,8 +105,31 @@ public class ContractItController {
                     .findByNomGK(poleFindByNomGK, poleFindByKontragent, role);
         }
 
+        final Integer idot2 = idot;
+        if(idot2!= null && !idot2.equals(0)){
+            contracts = contracts
+                    .stream()
+                    .filter(contractIT ->
+                            contractIT.getIdzirot()!=null && contractIT.getIdzirot().equals(idot2)
+                    )
+                    .collect(Collectors.toList());
+        }
+
+        final Date dateGK2;
+        if(dateGK != null && !dateGK.equals("")){
+            dateGK2 = ConverterDate.stringToDate(dateGK.trim());
+            contracts = contracts
+                    .stream()
+                    .filter(contractIT ->
+                            contractIT.getDateGK()!=null && contractIT.getDateGK().compareTo(dateGK2)==0
+                    )
+                    .collect(Collectors.toList());
+        }
+
+
         model.addAttribute("contracts", contracts);
         model.addAttribute("paramstart", 0);
+
         return "fragment/it/viev :: table";
     }
 
@@ -119,6 +139,11 @@ public class ContractItController {
 
         logiService.save(new Logi(user.getLogin(),"View",
                 "Показ страницы добавления it контракта"));
+
+        model.addAttribute(
+                "notifications",
+                zirServise.getNotification(String.valueOf(user.getId_ondel_zir()))
+        );
 
         return "fragment/it/add :: addviev";
     }
@@ -131,6 +156,11 @@ public class ContractItController {
 
         logiService.save(new Logi(user.getLogin(),"View",
                 "Показ страницы изменения it контракта с id = " + id));
+
+        model.addAttribute(
+                "notifications",
+                zirServise.getNotification(String.valueOf(user.getId_ondel_zir()))
+        );
 
         return "fragment/it/add :: addviev";
     }
