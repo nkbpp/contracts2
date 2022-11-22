@@ -141,13 +141,13 @@ $(document).ready(function () {
             let param = "poleFindByNomGK=" + $("[data-name=poleFindByNomGK]").val() +
                 "&poleFindByKontragent=" + $("[data-name=poleFindByKontragent]").val() +
                 "&dateGK=" + $("#poleFindDateGK").val() +
+                "&poleStatusGK=" + $("#poleStatusGK").val() +
                 "&idot=" + $("#poleFindnotificationsSelect").val()
                 /*"&poleFindByIspolneno=" + $('[data-name=poleFindByIspolneno]').prop("checked") +
                 "&poleFindByNotIspolneno=" + $('[data-name=poleFindByNotIspolneno]').prop("checked")*/;
-            console.log("findContract param2 = ", param);
+
             $("#tableItContainer").load("/contract/it/findTable", param, function (data) {
-                console.log("sfsdf");
-                clearPagination1();
+                clearPagination($("#paginationItContract a"));
             });
             return false;
         }

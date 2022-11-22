@@ -27,7 +27,7 @@ function clickPagination(selA, idpag) {
     return list;
 }
 
-function clearPagination(pag) {
+function clearPagination(pag) { // pag = $("#paginationItContract a")
     pag.first().parent().removeClass("disabled").addClass("disabled");
     pag.eq(1).text("1").parent().removeClass("active").addClass("active");
     pag.eq(2).text("2").parent().removeClass("active");

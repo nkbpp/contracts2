@@ -17,8 +17,8 @@ public interface ContractItRepository extends JpaRepository<ContractIT, Long> {
 
     @Query(
             value = "SELECT * FROM contractit " +
-                    "WHERE (?1 is null or nomgk like ?1%)" +
-                    "and (?2 is null or kontragent like ?2%) " +
+                    "WHERE (?1 is null or nomgk like %?1%)" +
+                    "and (?2 is null or kontragent like %?2%) " +
                     "and (role = ?3) " +
                     "order by id desc",
             nativeQuery = true)

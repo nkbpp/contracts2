@@ -85,6 +85,7 @@ public class ContractItController {
             @RequestParam(defaultValue = "") String poleFindByNomGK,
             @RequestParam(defaultValue = "") String poleFindByKontragent,
             @RequestParam(defaultValue = "") String dateGK,
+            @RequestParam(defaultValue = "") String poleStatusGK,
             @RequestParam(defaultValue = "0") Integer idot,
             //@RequestParam(defaultValue = "30") Integer col,
             Authentication authentication,
@@ -122,6 +123,15 @@ public class ContractItController {
                     .stream()
                     .filter(contractIT ->
                             contractIT.getDateGK()!=null && contractIT.getDateGK().compareTo(dateGK2)==0
+                    )
+                    .collect(Collectors.toList());
+        }
+
+        if(poleStatusGK != null && !poleStatusGK.equals("")){
+            contracts = contracts
+                    .stream()
+                    .filter(contractIT ->
+                            contractIT.getStatusGK()!=null && contractIT.getStatusGK().compareTo(poleStatusGK)==0
                     )
                     .collect(Collectors.toList());
         }

@@ -61,14 +61,20 @@
                     <label for="poleFindDateGK" class="form-label m-0">Дата ГК</label>
                     <input type="date" class="form-control" id="poleFindDateGK">
 
+                </div>
+                <div class="col-3">
                     <label for="poleFindnotificationsSelect" class="form-label m-0">Ответственный</label>
                     <select id="poleFindnotificationsSelect"  class="form-select m-1">
                         <option th:each="u : ${notifications}" th:text="${u.name}"
                                 th:value="${u.id_user}"></option>
                     </select>
-
-
-
+                    <label for="poleStatusGK" class="form-label m-0">Cтатус ГК</label>
+                    <select id="poleStatusGK" class="form-select m-1">
+                        <option value="" selected>Выберите статус ГК</option>
+                        <option value="Действующий">Действующий</option>
+                        <option value="Исполнен">Исполнен</option>
+                        <option value="Расторгнут">Расторгнут</option>
+                    </select>
                 </div>
                 <!--<div class="col-2 text-center align-self-center">
                     <div class="form-check">
@@ -323,7 +329,7 @@
 
     <tbody>
     <tr th:each="c,iterStat  : ${contracts}" th:name="${c.id}"
-        th:class="${c.getOstatocDouble()<=0}? 'table-danger'"
+        th:class="${c.getOstatocDouble()<=0}? 'table-success'"
     >
 
         <th scope="row" th:text="${iterStat.count} + ${paramstart}"></th>

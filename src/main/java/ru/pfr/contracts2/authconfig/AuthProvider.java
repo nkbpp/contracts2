@@ -163,7 +163,7 @@ public class AuthProvider implements AuthenticationProvider {
 
                         /*case 100 -> roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_UPDATE_AXO.getString()));
                         case 101 -> roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_READ_AXO.getString()));*/
-                    }
+                    }/**/
                 }
 
                 //roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_ADMIN.getString()));//TODO УБРАТЬ
