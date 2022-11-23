@@ -1,170 +1,97 @@
-package ru.pfr.contracts2.entity.contractIT;
+package ru.pfr.contracts2.entity.contractIT.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.pfr.contracts2.entity.annotations.date.CustomDateDeserializerRuAndEn;
+import ru.pfr.contracts2.entity.annotations.date.CustomDateSerializerRu;
+import ru.pfr.contracts2.entity.annotations.okrug.OkrugSerializer;
 
-import ru.pfr.contracts2.entity.user.User;
-import ru.pfr.contracts2.global.ConverterDate;
-import ru.pfr.contracts2.global.MyNumbers;
-
-import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Data
-// 	генерация всех служебных методов, заменяет сразу команды @ToString, @EqualsAndHashCode, Getter, Setter, @RequiredArgsConstructor
-@NoArgsConstructor // создания пустого конструктора
-@AllArgsConstructor // конструктора включающего все возможные поля
-@Entity
-public class ContractIT {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@Data //@ToString, @EqualsAndHashCode, @Getter, @Setter, @RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class ContractITDto {
+
     private Long id;
-
     private String nomGK; //номер ГК
-
     private String kontragent; //Контрагент
-
+    @JsonDeserialize(using = CustomDateDeserializerRuAndEn.class)
+    @JsonSerialize(using = CustomDateSerializerRu.class)
     private Date dateGK; //дата ГК
-
+    @JsonDeserialize(using = CustomDateDeserializerRuAndEn.class)
+    @JsonSerialize(using = CustomDateSerializerRu.class)
     private Date dateGKs; //действие ГК с
+    @JsonDeserialize(using = CustomDateDeserializerRuAndEn.class)
+    @JsonSerialize(using = CustomDateSerializerRu.class)
     private Date dateGKpo; //действие ГК по
-
-    private String statusGK; //Статус ГК
+    @JsonSerialize(using = OkrugSerializer.class)
     private Double sum; //сумма
-
+    @JsonSerialize(using = OkrugSerializer.class)
     private Double month1;
+    @JsonSerialize(using = OkrugSerializer.class)
     private Double month2;
+    @JsonSerialize(using = OkrugSerializer.class)
     private Double month3;
+    @JsonSerialize(using = OkrugSerializer.class)
     private Double month4;
+    @JsonSerialize(using = OkrugSerializer.class)
     private Double month5;
+    @JsonSerialize(using = OkrugSerializer.class)
     private Double month6;
+    @JsonSerialize(using = OkrugSerializer.class)
     private Double month7;
+    @JsonSerialize(using = OkrugSerializer.class)
     private Double month8;
+    @JsonSerialize(using = OkrugSerializer.class)
     private Double month9;
+    @JsonSerialize(using = OkrugSerializer.class)
     private Double month10;
+    @JsonSerialize(using = OkrugSerializer.class)
     private Double month11;
+    @JsonSerialize(using = OkrugSerializer.class)
     private Double month12;
-
-    @Column(columnDefinition = "TEXT")
-    private String documentu;
-
-    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
-    private User user; //кто создал контракт
-
-    private Integer idzirot;
+    private String statusGK; //Статус ГК
+    private Integer idzirot; // id ответственного в зире
     private String nameot;//имя ответственного
-    private String role;
+    @JsonSerialize(using = OkrugSerializer.class)
+    private Double ostatoc; //остаток
+    private List<ItDocumentsDto> documents;
 
-    private Date date_update;
 
-    private Date date_create;
 
-    public String getDateGKRu() {
-        return dateGK==null?"":ConverterDate.datetostring_ddMMyyyy(dateGK);
-    }
 
-    public String getDateGKEn() {
-        return dateGK==null?"":ConverterDate.datetostring_yyyyMMdd(dateGK);
-    }
 
-    public String getDateGKsRu() {
-        return dateGKs==null?"":ConverterDate.datetostring_ddMMyyyy(dateGKs);
-    }
-
-    public String getDateGKsEn() {
-        return dateGKs==null?"":ConverterDate.datetostring_yyyyMMdd(dateGKs);
-    }
-
-    public String getDateGKpoRu() {
-        return dateGKpo==null?"":ConverterDate.datetostring_ddMMyyyy(dateGKpo);
-    }
-
-    public String getDateGKpoEn() {
-        return dateGKpo==null?"":ConverterDate.datetostring_yyyyMMdd(dateGKpo);
-    }
-
-    public String getSumOk() {
-        return MyNumbers.okrug(sum);
-    }
-
-    public String getMonth1Ok() {
-        return MyNumbers.okrug(month1);
-    }
-
-    public String getMonth2Ok() {
-        return MyNumbers.okrug(month2);
-    }
-
-    public String getMonth3Ok() {
-        return MyNumbers.okrug(month3);
-    }
-
-    public String getMonth4Ok() {
-        return MyNumbers.okrug(month4);
-    }
-
-    public String getMonth5Ok() {
-        return MyNumbers.okrug(month5);
-    }
-
-    public String getMonth6Ok() {
-        return MyNumbers.okrug(month6);
-    }
-
-    public String getMonth7Ok() {
-        return MyNumbers.okrug(month7);
-    }
-
-    public String getMonth8Ok() {
-        return MyNumbers.okrug(month8);
-    }
-
-    public String getMonth9Ok() {
-        return MyNumbers.okrug(month9);
-    }
-
-    public String getMonth10Ok() {
-        return MyNumbers.okrug(month10);
-    }
-
-    public String getMonth11Ok() {
-        return MyNumbers.okrug(month11);
-    }
-
-    public String getMonth12Ok() {
-        return MyNumbers.okrug(month12);
-    }
-
-    public String getOstatoc() {
+/*    public String getOstatoc() {
         return MyNumbers.okrug(sum - (month1+month2+month3+month4+month5+month6+month7+month8+month9+month10+month11+month12));
     }
 
     public Double getOstatocDouble() {
         return sum - (month1+month2+month3+month4+month5+month6+month7+month8+month9+month10+month11+month12);
-    }
-
-    @OneToMany(mappedBy = "contractIT", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ItDocuments> itDocuments = new ArrayList<>();
+    }*/
 
 
-    private Double sumNaturalIndicators;
 
 
-    @OneToMany(mappedBy = "contractIT", cascade = CascadeType.ALL, orphanRemoval = true)
+
+
+/*    @OneToMany(mappedBy = "contractIT", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<NaturalIndicator> naturalIndicators = new ArrayList<>();
 
-    @Builder
-    public ContractIT(String nomGK, String kontragent, String statusGK,
-                      Date dateGK, Date dateGKs, Date dateGKpo, Double sum, Double month1, Double month2,
-                      Double month3, Double month4, Double month5, Double month6, Double month7,
-                      Double month8, Double month9, Double month10, Double month11, Double month12,
-                      Double sumNaturalIndicators, List<NaturalIndicator> naturalIndicators,
-                      String documentu, List<ItDocuments> itDocuments, User user, String role,
-                      Integer idzirot, String nameot) {
+
+    public ContractITDto(String nomGK, String kontragent, String statusGK,
+                         Date dateGK, Date dateGKs, Date dateGKpo, Double sum, Double month1, Double month2,
+                         Double month3, Double month4, Double month5, Double month6, Double month7,
+                         Double month8, Double month9, Double month10, Double month11, Double month12,
+                         Double sumNaturalIndicators, List<NaturalIndicator> naturalIndicators,
+                         String documentu, List<ItDocuments> itDocuments, User user, String role,
+                         Integer idzirot, String nameot) {
         this.nomGK = nomGK;
         this.kontragent = kontragent;
         this.statusGK = statusGK;
@@ -205,9 +132,9 @@ public class ContractIT {
     }
 
     public void setAllDocuments(List<ItDocuments> myDocs) {
-/*        while (itDocuments.size()>0){
+*//*        while (itDocuments.size()>0){
             removeDocuments(itDocuments.get(0));
-        }*/
+        }*//*
         for (ItDocuments d :
                 myDocs) {
             addDocuments(d);
@@ -282,6 +209,6 @@ public class ContractIT {
                         .mapToDouble(value -> value.getSum())
                         .sum() / naturalIndicators.size()
                 );
-    }
+    }*/
 
 }

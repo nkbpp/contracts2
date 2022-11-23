@@ -10,20 +10,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.pfr.contracts2.entity.contractIT.ContractIT;
+import ru.pfr.contracts2.entity.contractIT.mapper.ContractItMapper;
 import ru.pfr.contracts2.entity.log.Logi;
 import ru.pfr.contracts2.entity.user.User;
-import ru.pfr.contracts2.global.ConverterDate;
 import ru.pfr.contracts2.service.it.ContractItService;
 import ru.pfr.contracts2.service.log.LogiService;
 import ru.pfr.contracts2.service.zir.ZirServise;
 
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping(value = { "/contract/it"})
+@RequestMapping(value = {"/contract/it"})
 public class ContractItController {
 
     private final ContractItService contractItService;
@@ -31,19 +30,20 @@ public class ContractItController {
     private final ZirServise zirServise;
 
     private final LogiService logiService;
+    private final ContractItMapper contractItMapper;
 
     @GetMapping("/vievTable")
     public String vievTable(
             @AuthenticationPrincipal User user,
             Model model
-    ){
-        logiService.save(new Logi(user.getLogin(),"View",
+    ) {
+        logiService.save(new Logi(user.getLogin(), "View",
                 "Показ таблицы it контрактов"));
-       // model.addAttribute("paginationContractName", "paginationItContract");
+        // model.addAttribute("paginationContractName", "paginationItContract");
         model.addAttribute("findContractName", "findContractIt");
         model.addAttribute(
                 "notifications",
-                zirServise.getNotification(String.valueOf(user.getId_ondel_zir()))
+                zirServise.getNotification("148","149")
         );
         return "fragment/it/viev :: vievTable";
     }
@@ -54,22 +54,25 @@ public class ContractItController {
             @RequestParam(defaultValue = "10") Integer col,
             @AuthenticationPrincipal User user,
             Authentication authentication,
-            Model model){
+            Model model) {
 
         //String role = User.getRole(authentication);
         String role = "IT";
 
-        logiService.save(new Logi(user.getLogin(),"View",
+        logiService.save(new Logi(user.getLogin(), "View",
                 "Показ таблицы it контрактов на странице " + param));
 
-        Integer skip = col*(param==null?0:param-1);
+        Integer skip = col * (param == null ? 0 : param - 1);
         List<ContractIT> contractITs = contractItService.findAll(role)
                 .stream()
                 .skip(skip)
                 .limit(col)
                 .collect(Collectors.toList());
 
-        model.addAttribute("contracts", contractITs);
+        model.addAttribute("contracts", contractITs == null ? null : contractITs
+                .stream()
+                .map(contractItMapper::toDto)
+                .collect(Collectors.toList()));
         //model.addAttribute("paginationContractName", "paginationItContract");
         model.addAttribute("paramstart",
                 skip);
@@ -80,7 +83,7 @@ public class ContractItController {
 
     }
 
-    @GetMapping("/findTable")
+/*    @GetMapping("/findTable")
     public String findTable(
             @RequestParam(defaultValue = "") String poleFindByNomGK,
             @RequestParam(defaultValue = "") String poleFindByKontragent,
@@ -90,16 +93,16 @@ public class ContractItController {
             //@RequestParam(defaultValue = "30") Integer col,
             Authentication authentication,
             @AuthenticationPrincipal User user,
-            Model model){
+            Model model) {
 
-        logiService.save(new Logi(user.getLogin(),"Find",
+        logiService.save(new Logi(user.getLogin(), "Find",
                 "Поиск в таблице контрактов"));
 
         //String role = User.getRole(authentication);
         String role = "IT";
 
         List<ContractIT> contracts;
-        if(poleFindByNomGK.equals("") && poleFindByKontragent.equals("")){
+        if (poleFindByNomGK.equals("") && poleFindByKontragent.equals("")) {
             contracts = contractItService.findAllByRole(role);
         } else {
             contracts = contractItService
@@ -107,52 +110,55 @@ public class ContractItController {
         }
 
         final Integer idot2 = idot;
-        if(idot2!= null && !idot2.equals(0)){
+        if (idot2 != null && !idot2.equals(0)) {
             contracts = contracts
                     .stream()
                     .filter(contractIT ->
-                            contractIT.getIdzirot()!=null && contractIT.getIdzirot().equals(idot2)
+                            contractIT.getIdzirot() != null && contractIT.getIdzirot().equals(idot2)
                     )
                     .collect(Collectors.toList());
         }
 
         final Date dateGK2;
-        if(dateGK != null && !dateGK.equals("")){
+        if (dateGK != null && !dateGK.equals("")) {
             dateGK2 = ConverterDate.stringToDate(dateGK.trim());
             contracts = contracts
                     .stream()
                     .filter(contractIT ->
-                            contractIT.getDateGK()!=null && contractIT.getDateGK().compareTo(dateGK2)==0
+                            contractIT.getDateGK() != null && contractIT.getDateGK().compareTo(dateGK2) == 0
                     )
                     .collect(Collectors.toList());
         }
 
-        if(poleStatusGK != null && !poleStatusGK.equals("")){
+        if (poleStatusGK != null && !poleStatusGK.equals("")) {
             contracts = contracts
                     .stream()
                     .filter(contractIT ->
-                            contractIT.getStatusGK()!=null && contractIT.getStatusGK().compareTo(poleStatusGK)==0
+                            contractIT.getStatusGK() != null && contractIT.getStatusGK().compareTo(poleStatusGK) == 0
                     )
                     .collect(Collectors.toList());
         }
 
 
-        model.addAttribute("contracts", contracts);
+        model.addAttribute("contracts",  contracts == null ? null : contracts
+                .stream()
+                .map(contractItMapper::toDto)
+                .collect(Collectors.toList()));
         model.addAttribute("paramstart", 0);
 
         return "fragment/it/viev :: table";
-    }
+    }*/
 
     @GetMapping("/add")
     public String add(@AuthenticationPrincipal User user,
-                       Model model){
+                      Model model) {
 
-        logiService.save(new Logi(user.getLogin(),"View",
+        logiService.save(new Logi(user.getLogin(), "View",
                 "Показ страницы добавления it контракта"));
 
         model.addAttribute(
                 "notifications",
-                zirServise.getNotification(String.valueOf(user.getId_ondel_zir()))
+                zirServise.getNotification("148","149")
         );
 
         return "fragment/it/add :: addviev";
@@ -162,19 +168,18 @@ public class ContractItController {
     public String updateViev(
             @PathVariable Long id,
             @AuthenticationPrincipal User user,
-            Model model){
+            Model model) {
 
-        logiService.save(new Logi(user.getLogin(),"View",
+        logiService.save(new Logi(user.getLogin(), "View",
                 "Показ страницы изменения it контракта с id = " + id));
 
         model.addAttribute(
                 "notifications",
-                zirServise.getNotification(String.valueOf(user.getId_ondel_zir()))
+                zirServise.getNotification("148","149")
         );
 
         return "fragment/it/add :: addviev";
     }
-
 
 
 }

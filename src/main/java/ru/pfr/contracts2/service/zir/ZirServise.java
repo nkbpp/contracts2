@@ -204,15 +204,19 @@ public class ZirServise {
         return ret;
     }
 
-    public List<Notification> getNotification(String idZir){
+    public List<Notification> getNotification(String... idZir){
         List<Notification> notifications = new ArrayList<>();
         notifications.add(new Notification(0L,""));
-        for (String n:
-                getAllIdUserByIdOtdel(idZir)) {
-            if(!n.equals("undefined") && !n.equals("")){
-                notifications.add(new Notification(Long.valueOf(n),getNameUserById(Integer.parseInt(n))));
+        for (var s :
+                idZir) {
+            for (String n:
+                    getAllIdUserByIdOtdel(s)) {
+                if(!n.equals("undefined") && !n.equals("")){
+                    notifications.add(new Notification(Long.valueOf(n),getNameUserById(Integer.parseInt(n))));
+                }
             }
         }
+
         return notifications;
     }
 

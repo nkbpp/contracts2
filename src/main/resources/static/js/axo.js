@@ -1,6 +1,6 @@
 $(document).ready(function () {
-    let itbody = $("body");
-    itbody.on('click', 'a', function () {
+    let axobody = $("body");
+    axobody.on('click', 'a', function () {
 
         if ($(this).attr('id') === "updateAxoContract") { //перейти на вкладку изменения ItContract
             let param = $(this).attr('name');
@@ -16,35 +16,36 @@ $(document).ready(function () {
                         xhr.setRequestHeader(header, token);
                     },
                     success: function(data){
-                        $("#addContractAxo").attr("data-id-contract",data.contract.id)
-                        $('textarea[name=nomGK]').val(data.contract.nomGK);
-                        $('textarea[name=kontragent]').val(data.contract.kontragent);
-                        $('input[name=dateGK]').val(data.contract.dateGK);
-                        $('input[name=sum]').val(data.contract.sum.replace(',','.'));
-                        $('input[name=January]').val(data.contract.January);
-                        $('input[name=February]').val(data.contract.February);
-                        $('input[name=March]').val(data.contract.March);
-                        $('input[name=April]').val(data.contract.April);
-                        $('input[name=May]').val(data.contract.May);
-                        $('input[name=June]').val(data.contract.June);
-                        $('input[name=July]').val(data.contract.July);
-                        $('input[name=August]').val(data.contract.August);
-                        $('input[name=September]').val(data.contract.September);
-                        $('input[name=October]').val(data.contract.October);
-                        $('input[name=November]').val(data.contract.November);
-                        $('input[name=December]').val(data.contract.December);
+                        $("#addContractAxo").attr("data-id-contract",data.id)
+                        $('textarea[name=nomGK]').val(data.nomGK);
+                        $('textarea[name=kontragent]').val(data.kontragent);
+                        $('input[name=dateGK]').val(data.dateGK);
+                        $('input[name=sum]').val(data.sum.replace(',','.'));
+                        $('input[name=January]').val(data.month1);
+                        $('input[name=February]').val(data.month2);
+                        $('input[name=March]').val(data.month3);
+                        $('input[name=April]').val(data.month4);
+                        $('input[name=May]').val(data.month5);
+                        $('input[name=June]').val(data.month6);
+                        $('input[name=July]').val(data.month7);
+                        $('input[name=August]').val(data.month8);
+                        $('input[name=September]').val(data.month9);
+                        $('input[name=October]').val(data.month10);
+                        $('input[name=November]').val(data.month11);
+                        $('input[name=December]').val(data.month12);
 
-                        $('input[name=sumNaturalIndicators]').val(data.contract.sumNaturalIndicators);
-                        $('#range').val(data.contract.naturalIndicatorsSize);
-                        //$('#spanVal').text(data.contract.naturalIndicatorsSize);
-                        inputAddClassDnone(data.contract.naturalIndicatorsSize);
-                        let vvv = data.contract.naturalIndicators.split(";");
+                        $('input[name=sumNaturalIndicators]').val(data.sumNaturalIndicators);
+                        $('#range').val(data.naturalIndicators.length);
+                        inputAddClassDnone(data.naturalIndicators.length);
+
+                        console.log("inputs = " + data.naturalIndicators.length)
                         let inputs = $('#nt').find('input');
-                        for (let i = 0; i < vvv.length; i++) {
-                            inputs.eq(i).val(vvv[i]);
+                        for (let i = 0; i < data.naturalIndicators.length; i++) {
+                            console.log("sum[" + i + "] = " + data.naturalIndicators[i].sum)
+                            inputs.eq(i).val(data.naturalIndicators[i].sum);
                         }
 
-                        $('textarea[name=doc]').val(data.contract.doc);
+                        $('textarea[name=doc]').val(data.documentu);
 
                         for (let doc of data.documents) {
                             let dv = $("#documentsAxoViev");
@@ -56,13 +57,14 @@ $(document).ready(function () {
                                 "</div>"
                             );
                         }
-
+                        $('.datepicker').datepicker({
+                            format: 'dd.mm.yyyy',
+                            language: "ru"
+                        });
                         $('#addContractAxo').text("Изменить");
-
                     },
                     error: function(textStatus){
                         initialToats("Ошибка!!!",textStatus,"err").show();
-                        console.log('ОШИБКИ AJAX запроса: ' + textStatus);
                     }
                 });
             });
@@ -71,6 +73,10 @@ $(document).ready(function () {
 
         if ($(this).attr('id') === "menuaxoaddcontract") { //Кнопка Добавить Axo контракт TODO
             $("#mainContainer").load("/contract/axo/add", "", function () {
+                $('.datepicker').datepicker({
+                    format: 'dd.mm.yyyy',
+                    language: "ru"
+                });
             });
             return false;
         }
@@ -79,20 +85,16 @@ $(document).ready(function () {
             let mainContainer = $("#mainContainer");
             mainContainer.html(getSpinner());
             mainContainer.load("/contract/axo/vievTable", "", function () {
-                let tableContainer = $("#tableAxoContainer")
-                tableContainer.html(getSpinner());
-                tableContainer.load("/contract/axo/getTable", "", function () {
-                    /*Для скролов*/
-                    $('.div1').width($('table').width());
-                    $('.div2').width($('table').width());
-                });
+                ajaxContractAxoNoNatural("");
+                $('.div1').width($('table').width());
+                $('.div2').width($('table').width());
             });
             return false;
         }
 
         if ($(this).attr('id') === "deleteAxoContract") { //Удалить контракт
             if (confirm("Вы точно хотите удалить заявление c порядковым номером = " +
-                $(this).parents("#" + $(this).attr('name')).children().eq(0).text())){
+                $(this).parents("tr").children().eq(0).text())){
 
                 let param = "id="+$(this).attr('name');
                 let token = $('#_csrf').attr('content');
@@ -105,9 +107,8 @@ $(document).ready(function () {
                         xhr.setRequestHeader(header, token);
                     },
                     success: function(data){
-                        param = "param=" + activeList("#paginationAxoContract");//чтобы при удалении осталась текущая страница
-                        $("#tableAxoContainer").load("/contract/axo/getTable", param, function () {
-                        });
+                        ajaxContractAxo()
+
                         initialToats("Удаление прошло успешно",data,"success").show();
                     },
                     error: function(textStatus){
@@ -118,49 +119,29 @@ $(document).ready(function () {
             return false;
         }
 
-
         //переключатели страниц pagination
         if ($(this).parents("#paginationAxoContract").attr("id") === "paginationAxoContract") {
             let list = clickPagination($(this),"#paginationAxoContract");
-            let param = "param=" + list;
-
-            let bool = $("#flexCheckChecked").prop("checked");
-            if(bool){
-                $("#tableAxoContainer").load("/contract/axo/getTable2", param, function (data) {
-                });
-
-            }else{
-                $("#tableAxoContainer").load("/contract/axo/getTable", param, function (data,f) {
-                });
-            }
-
+            ajaxContractAxo()
         }
-
 
     })
 
-    //checkBox в таблице
-    itbody.on('click', 'input', function () {
-        if ($(this).attr('id') === "flexCheckChecked") {
-            let bool = $(this).prop("checked");
-            let list = clickPagination($("#paginationAxoContract li.active"),"#paginationAxoContract");
-            let param = "param=" + list;
+    //сколько выводить на странице
+    axobody.on('change','#col',function(){
+        ajaxContractAxo()
+    });
 
-            if(bool){
-                $("#tableAxoContainer").load("/contract/axo/getTable2", param, function (data) {
-                });
-            }else{
-                $("#tableAxoContainer").load("/contract/axo/getTable", param, function (data,f) {
-                });
-            }
-            activePagination($("#paginationAxoContract a"), list)
+    //checkBox в таблице натурального показателя
+    axobody.on('click', 'input', function () {
+        if ($(this).attr('id') === "flexCheckChecked") {
+            ajaxContractAxo()
         }
     });
 
-    itbody.on('click', 'button', function () {
+    axobody.on('click', 'button', function () {
 
         if ($(this).attr('id') === "addContractAxo") {
-            console.log("sdfsdf")
             // проверка заполнения основных полей
             if(
                 !$("#nomGK").val().trim()
@@ -195,10 +176,7 @@ $(document).ready(function () {
                     success: function (data) {
                         //после добавления показать таблицу
                         $("#mainContainer").load("/contract/axo/vievTable", "", function () {
-                            $("#tableAxoContainer").load("/contract/axo/getTable", "", function () {                    /*Для скролов*/
-                                $('.div1').width($('table').width());
-                                $('.div2').width($('table').width());
-                            });
+                            ajaxContractAxoNoNatural("");
                         });
                         initialToats("Добавление прошло успешно",data,"success").show();
                     },
@@ -237,23 +215,252 @@ $(document).ready(function () {
         }
 
         if ($(this).attr('name') === "findContractAxo") { //поиск
-            let param = "poleFindByNomGK=" + $("[data-name=poleFindByNomGK]").val() +
-                "&poleFindByKontragent=" + $("[data-name=poleFindByKontragent]").val();
-            $("#tableAxoContainer").load("/contract/axo/findTable", param, function (data) {
-                clearPagination1();
-            });
+            clearPagination($("#paginationAxoContract a"))
+            ajaxContractAxo()
             return false;
         }
 
     })
 
-
+    axobody.on('input','input', function() { //range
+        if($(this).attr('id')==='range'){
+            let value = +$(this).val();
+            inputAddClassDnone(value);
+        }
+    });
 
 
 })
 
 
+function inputAddClassDnone(value) {
+    $('#spanVal').text(value)
+    let inputs = $('#nt').find('.col-3');
+    for (let i = 0; i < inputs.length; i++) {
+        if(i<value)
+            inputs.eq(i).removeClass('d-none');
+        else
+            inputs.eq(i).addClass('d-none');
+    }
+}
 
+function ajaxContractAxoNoNatural(params){
 
+    $("#tableContractAxo thead").html(
+        "<tr>" +
+        "            <th rowSpan='2'>№</th>" +
+        "            <th colSpan='4'>Государственный контракт</th>" +
+        "            <th colSpan='3'>1-й квартал</th>" +
+        "            <th colSpan='3'>2-й квартал</th>" +
+        "            <th colSpan='3'>3-й квартал</th>" +
+        "            <th colSpan='3'>4-й квартал</th>" +
+        "            <th rowSpan='2'>Остаток</th>" +
+        "            <th rowSpan='2' style='min-width:200px'>Документы</th>" +
+        "            <th rowSpan='2'>Прикрепленные файлы</th>" +
+        "            <th rowSpan='2'>Действие</th>" +
+        "        </tr>" +
+        "" +
+        "    <tr>" +
+        "        <th style='min-width:200px' class='fix'>Номер</th>" +
+        "        <th style='min-width:200px'>Контрагент</th>" +
+        "        <th>Дата</th>" +
+        "        <th>Сумма</th>" +
+        "" +
+        "        <th>Январь</th>" +
+        "        <th>Февраль</th>" +
+        "        <th>Март</th>" +
+        "" +
+        "        <th>Апрель</th>" +
+        "        <th>Май</th>" +
+        "        <th>Июнь</th>" +
+        "" +
+        "        <th>Июль</th>" +
+        "        <th>Август</th>" +
+        "        <th>Сентябрь</th>" +
+        "" +
+        "        <th>Октябрь</th>" +
+        "        <th>Ноябрь</th>" +
+        "        <th>Декабрь</th>" +
+        "    </tr>"
+    )
 
+    getSpinnerTable("tableContractAxo")
+    $.ajax({
+        url: "/contract/axo/findTable?" + params,
+        data: "",
+        cache: false,
+        processData: false,
+        contentType: "application/json",
+        dataType: 'json',
+        type: 'GET',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader($('#_csrf').attr('content'),
+                $('#_csrf_header').attr('content'));
+        },
+        success: function (response) {
+            let trHTML = '';
+            $('#tableContractAxo tbody').html("");
+            let start = (+activeList("#paginationAxoContract")-1)*$("#col").val();
+            console.log("ststartr=" + start)
+            $.each(response, function (i, item) {
+                let docum = "";
+                for (let doc of item.documents) {
+                    docum +=
+                        '<div><a class="btn btn-link" href="/contract/it/download?id=' + doc.id + '">' + replaceNull(doc.nameFile) + '</a></div>';
+                }
 
+                trHTML +=
+                    '<tr class="' + (replaceNull(item.ostatoc)==="0.00"?"table-success":"") + '">' +
+                    '<th>' + (start + +i+1) + '</th>' +
+                    /*'<td>' + replaceNull(item.id) + '</td>' +*/
+                    '<td class="fix">' + replaceNull(item.nomGK) + '</td>' +
+                    '<td>' + replaceNull(item.kontragent) + '</td>' +
+                    '<td>' + replaceNull(item.dateGK) + '</td>' +
+                    '<td>' + replaceNull(item.sum) + '</td>' +
+                    '<td>' + replaceNull(item.month1) + '</td>' +
+                    '<td>' + replaceNull(item.month2) + '</td>' +
+                    '<td>' + replaceNull(item.month3) + '</td>' +
+                    '<td>' + replaceNull(item.month4) + '</td>' +
+                    '<td>' + replaceNull(item.month5) + '</td>' +
+                    '<td>' + replaceNull(item.month6) + '</td>' +
+                    '<td>' + replaceNull(item.month7) + '</td>' +
+                    '<td>' + replaceNull(item.month8) + '</td>' +
+                    '<td>' + replaceNull(item.month9) + '</td>' +
+                    '<td>' + replaceNull(item.month10) + '</td>' +
+                    '<td>' + replaceNull(item.month11) + '</td>' +
+                    '<td>' + replaceNull(item.month12) + '</td>' +
+                    '<td>' + replaceNull(item.ostatoc) + '</td>' +
+                    '<td>' + replaceNull(item.documentu) + '</td>' +
+                    '<td>' + docum + '</td>' +
+                    '<td>' +
+                    '<div><a name="' + item.id + '" id="updateAxoContract" href="#">Изменить</a></div>' +
+                    '<div><a name="' + item.id + '" id="deleteAxoContract" href="#">Удалить</a></div>' +
+                    '</td>' +
+                    '</tr>';
+            });
+
+            $('#tableContractAxo').append(trHTML);
+            $('#wrapper1 .div1').attr('style','width: ' + $('#tableContractAxo').width() + 'px;');
+            $('#wrapper2 .div2').attr('style','width: ' + $('#tableContractAxo').width() + 'px;');
+        },
+        error: function (response) {
+            initialToats("Ошибка!", response.responseJSON.message , "err").show();
+            $('#tableContractAxo tbody').html("");
+        }
+    });
+}
+
+function ajaxContractAxoNatural(params){
+
+    $("#tableContractAxo thead").html(
+        "<tr>" +
+        "        <th rowspan='2'>№</th>" +
+        "        <th colspan='4'>Государственный контракт</th>" +
+        "        <th colspan='12'>Расход по месяцам</th>" +
+        "        <th colspan='2'>Средний расход в месяц</th>" +
+        "        <th rowspan='2'>Остаток</th>" +
+        "        <th rowspan='2'>Действие</th>" +
+        "    </tr>" +
+        "" +
+        "    <tr>" +
+        "        <th style='min-width:200px' class='fix'>Номер</th>" +
+        "        <th style='min-width:200px'>Контрагент</th>" +
+        "        <th>Дата</th>" +
+        "        <th>Сумма (натуральный показатель)</th>" +
+        "" +
+        "        <th>1</th>" +
+        "        <th>2</th>" +
+        "        <th>3</th>" +
+        "" +
+        "        <th>4</th>" +
+        "        <th>5</th>" +
+        "        <th>6</th>" +
+        "" +
+        "        <th>7</th>" +
+        "        <th>8</th>" +
+        "        <th>9</th>" +
+        "" +
+        "        <th>10</th>" +
+        "        <th>11</th>" +
+        "        <th>12</th>" +
+        "" +
+        "        <th>ожидаемый</th>" +
+        "        <th>фактический</th>" +
+        "    </tr>"
+    )
+
+    getSpinnerTable("tableContractAxo")
+    $.ajax({
+        url: "/contract/axo/findTable?" + params,
+        data: "",
+        cache: false,
+        processData: false,
+        contentType: "application/json",
+        dataType: 'json',
+        type: 'GET',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader($('#_csrf').attr('content'),
+                $('#_csrf_header').attr('content'));
+        },
+        success: function (response) {
+            let trHTML = '';
+            $('#tableContractAxo tbody').html("");
+            let start = (+activeList("#paginationAxoContract")-1)*$("#col").val();
+            $.each(response, function (i, item) {
+
+                trHTML +=
+                    '<tr class="' + (replaceNull(item.ostatoc)==="0.00"?"table-success":"") + '">' +
+                    '<th>' + (start + +i+1) + '</th>' +
+                    /*'<td>' + replaceNull(item.id) + '</td>' +*/
+                    '<td class="fix">' + replaceNull(item.nomGK) + '</td>' +
+                    '<td>' + replaceNull(item.kontragent) + '</td>' +
+                    '<td>' + replaceNull(item.dateGK) + '</td>' +
+                    '<td>' + replaceNull(item.sumNaturalIndicators) + '</td>' +
+                    '<td>' + (item.naturalIndicators[0]===null || item.naturalIndicators[0]===undefined ? '' : replaceNull(item.naturalIndicators[0].sum)) + '</td>' +
+                    '<td>' + (item.naturalIndicators[1]===null || item.naturalIndicators[1]===undefined ? '' : replaceNull(item.naturalIndicators[1].sum)) + '</td>' +
+                    '<td>' + (item.naturalIndicators[2]===null || item.naturalIndicators[2]===undefined ? '' : replaceNull(item.naturalIndicators[2].sum)) + '</td>' +
+                    '<td>' + (item.naturalIndicators[3]===null || item.naturalIndicators[3]===undefined ? '' : replaceNull(item.naturalIndicators[3].sum)) + '</td>' +
+                    '<td>' + (item.naturalIndicators[4]===null || item.naturalIndicators[4]===undefined ? '' : replaceNull(item.naturalIndicators[4].sum)) + '</td>' +
+                    '<td>' + (item.naturalIndicators[5]===null || item.naturalIndicators[5]===undefined ? '' : replaceNull(item.naturalIndicators[5].sum)) + '</td>' +
+                    '<td>' + (item.naturalIndicators[6]===null || item.naturalIndicators[6]===undefined ? '' : replaceNull(item.naturalIndicators[6].sum)) + '</td>' +
+                    '<td>' + (item.naturalIndicators[7]===null || item.naturalIndicators[7]===undefined ? '' : replaceNull(item.naturalIndicators[7].sum)) + '</td>' +
+                    '<td>' + (item.naturalIndicators[8]===null || item.naturalIndicators[8]===undefined ? '' : replaceNull(item.naturalIndicators[8].sum)) + '</td>' +
+                    '<td>' + (item.naturalIndicators[9]===null || item.naturalIndicators[9]===undefined ? '' : replaceNull(item.naturalIndicators[9].sum)) + '</td>' +
+                    '<td>' + (item.naturalIndicators[10]===null || item.naturalIndicators[10]===undefined ? '' : replaceNull(item.naturalIndicators[10].sum)) + '</td>' +
+                    '<td>' + (item.naturalIndicators[11]===null || item.naturalIndicators[11]===undefined ? '' : replaceNull(item.naturalIndicators[11].sum)) + '</td>' +
+                    '<td>' + replaceNull(item.ojidRashodMonth) + '</td>' +
+                    '<td>' + replaceNull(item.factRashodMonth) + '</td>' +
+                    '<td>' + replaceNull(item.ostatoc) + '</td>' +
+                    '<td>' +
+                    '<div><a name="' + item.id + '" id="updateAxoContract" href="#">Изменить</a></div>' +
+                    '<div><a name="' + item.id + '" id="deleteAxoContract" href="#">Удалить</a></div>' +
+                    '</td>' +
+                    '</tr>';
+            });
+
+            $('#tableContractAxo').append(trHTML);
+            $('#wrapper1 .div1').attr('style','width: ' + $('#tableContractAxo').width() + 'px;');
+            $('#wrapper2 .div2').attr('style','width: ' + $('#tableContractAxo').width() + 'px;');
+        },
+        error: function (response) {
+            initialToats("Ошибка!", response.responseJSON.message , "err").show();
+            $('#tableContractAxo tbody').html("");
+        }
+    });
+}
+
+function getContractAxoParams() {
+    return "param=" + activeList("#paginationAxoContract") +
+        "&poleFindByNomGK=" + $("[data-name=poleFindByNomGK]").val() +
+        "&poleFindByKontragent=" + $("[data-name=poleFindByKontragent]").val() +
+        "&col=" + $("#col").val();
+}
+
+function ajaxContractAxo() {
+    let bool = $("#flexCheckChecked").prop("checked");
+    if(bool){
+        ajaxContractAxoNatural(getContractAxoParams())
+    }else{
+        ajaxContractAxoNoNatural(getContractAxoParams())
+    }
+}

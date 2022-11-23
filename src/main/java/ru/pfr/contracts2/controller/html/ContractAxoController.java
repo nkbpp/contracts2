@@ -86,7 +86,7 @@ public class ContractAxoController {
 
     }
 
-    @GetMapping("/findTable")
+/*    @GetMapping("/findTable")
     public String findTable(
             @RequestParam(defaultValue = "") String poleFindByNomGK,
             @RequestParam(defaultValue = "") String poleFindByKontragent,
@@ -111,7 +111,7 @@ public class ContractAxoController {
         model.addAttribute("contracts", contracts);
         model.addAttribute("paramstart", 0);
         return "fragment/axo/viev :: table";
-    }
+    }*/
 
     @GetMapping("/add")
     public String add(@AuthenticationPrincipal User user,

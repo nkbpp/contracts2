@@ -74,6 +74,7 @@
                 >
                     <div class="text-center text-success align-self-center mx-2">Пользователь:
                         <span sec:authorize="isAuthenticated()"  sec:authentication="principal.login"></span>
+                        <!--<span sec:authentication="principal.authorities"></span>-->
                         <!--<a class="btn btn-link dropdown-toggle"
                            href="#" role="button"
                            id="dropdownMenuLink"

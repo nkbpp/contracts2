@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.pfr.contracts2.entity.contractIT.ContractIT;
 import ru.pfr.contracts2.entity.contractIT.ItDocuments;
 import ru.pfr.contracts2.entity.contractIT.NaturalIndicator;
+import ru.pfr.contracts2.entity.contractIT.mapper.ContractItMapper;
 import ru.pfr.contracts2.entity.log.Logi;
 import ru.pfr.contracts2.entity.user.User;
 import ru.pfr.contracts2.global.ConverterDate;
@@ -24,6 +25,7 @@ import ru.pfr.contracts2.service.log.LogiService;
 import ru.pfr.contracts2.service.zir.ZirServise;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,6 +39,7 @@ public class ContractItControllerRest {
 
     private final ZirServise zirServise;
     private final LogiService logiService;
+    private final ContractItMapper contractItMapper;
 
     @PostMapping("/upload")
     public ResponseEntity upload(
@@ -110,27 +113,28 @@ public class ContractItControllerRest {
             //проход по натуральным показателям
             List<NaturalIndicator> naturalIndicators1 = new ArrayList<>();
             List<Double> naturalIndicatorsDoubles =
-                    naturalIndicators.length()>0?
+                    naturalIndicators.length() > 0 ?
                             List.of(naturalIndicators.split(";")).stream()
-                    .mapToDouble(d -> Double.parseDouble(d))
-                    .boxed()
-                    .toList() : new ArrayList<>();
+                                    .mapToDouble(d -> Double.parseDouble(d))
+                                    .boxed()
+                                    .toList() : new ArrayList<>();
 
-            for (Double d:
+            for (Double d :
                     naturalIndicatorsDoubles) {
                 NaturalIndicator naturalIndicator = new NaturalIndicator(d);
                 naturalIndicators1.add(naturalIndicator);
             }
 
             String fio = "";
-            try{
+            try {
                 fio = zirServise.getNameUserById(idzirot);
-            }catch (Exception e){}
+            } catch (Exception e) {
+            }
 
 
-            if(id.equals("undefined")){ // Добавление
-                if(sumNaturalIndicators==-1){ //не обновлять если ничего не приходило
-                    sumNaturalIndicators=0D;
+            if (id.equals("undefined")) { // Добавление
+                if (sumNaturalIndicators == -1) { //не обновлять если ничего не приходило
+                    sumNaturalIndicators = 0D;
                 }
                 contract = new ContractIT(
                         nomGK.trim(), kontragent.trim(), statusGK,
@@ -139,10 +143,10 @@ public class ContractItControllerRest {
                         July, August, September, October, November, December,
                         sumNaturalIndicators, naturalIndicators1,
                         doc.trim(), listDocuments, user, role, idzirot, fio);
-                logiService.save(new Logi(user.getLogin(),"Add",
+                logiService.save(new Logi(user.getLogin(), "Add",
                         "Добавление it контракта"));
             } else { // Изменения
-                contract=contractItService.findById(Long.valueOf(id));
+                contract = contractItService.findById(Long.valueOf(id));
                 contract.setNomGK(nomGK.trim());
                 contract.setKontragent(kontragent.trim());
                 contract.setDateGK(dateGK2);
@@ -168,14 +172,14 @@ public class ContractItControllerRest {
                 contract.setIdzirot(idzirot);
                 contract.setNameot(fio);
 
-                if(sumNaturalIndicators!=-1){ //не обновлять если ничего не приходило
+                if (sumNaturalIndicators != -1) { //не обновлять если ничего не приходило
                     contract.setSumNaturalIndicators(sumNaturalIndicators);
                     contract.setAllNaturalIndicators(naturalIndicators1);
                 }
 
                 contract.setDocumentu(doc.trim());
                 contract.setAllDocuments(listDocuments);
-                logiService.save(new Logi(user.getLogin(),"Upd",
+                logiService.save(new Logi(user.getLogin(), "Upd",
                         "Изменение контракта с id = " + id));
             }
             contractItService.save(contract);
@@ -192,7 +196,7 @@ public class ContractItControllerRest {
             @AuthenticationPrincipal User user,
             Model model) {
         ItDocuments itDocuments = itDocumentsService.findById(id);
-        logiService.save(new Logi(user.getLogin(),"Скачивание документа id = " + id));
+        logiService.save(new Logi(user.getLogin(), "Скачивание документа id = " + id));
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
                 .header(HttpHeaders.CONTENT_DISPOSITION,
@@ -208,7 +212,7 @@ public class ContractItControllerRest {
         try {
             String myDocumentsName = itDocumentsService.findById(id).getNameFile();
             itDocumentsService.delete(id);
-            logiService.save(new Logi(user.getLogin(),"Del",
+            logiService.save(new Logi(user.getLogin(), "Del",
                     "Удаление документа с id = " + id));
             return ResponseEntity.ok(
                     "Документ с именем " + myDocumentsName + " успешно удален!");
@@ -225,7 +229,7 @@ public class ContractItControllerRest {
             Model model) {
         try {
             contractItService.delete(id);
-            logiService.save(new Logi(user.getLogin(),"Del",
+            logiService.save(new Logi(user.getLogin(), "Del",
                     "Удаление контракта с id = " + id));
             return ResponseEntity.ok("Контракт с ID = " + id + " успешно удален!");
         } catch (Exception e) {
@@ -239,50 +243,77 @@ public class ContractItControllerRest {
             @AuthenticationPrincipal User user,
             Model model) {
         try {
-            ContractIT contract = contractItService.findById(id);
-
-            Map<String, String> map = new HashMap<>();//TODO Автоматизировать
-            map.put("id", contract.getId().toString());
-            map.put("nomGK", contract.getNomGK());
-            map.put("kontragent", contract.getKontragent());
-            map.put("dateGK", contract.getDateGKEn());
-            map.put("sum", contract.getSumOk());
-            map.put("dateGKs", contract.getDateGKsEn());
-            map.put("dateGKpo", contract.getDateGKpoEn());
-            map.put("statusGK", contract.getStatusGK());
-
-            map.put("January", contract.getMonth1Ok());
-            map.put("February", contract.getMonth2Ok());
-            map.put("March", contract.getMonth3Ok());
-            map.put("April", contract.getMonth4Ok());
-            map.put("May", contract.getMonth5Ok());
-            map.put("June", contract.getMonth6Ok());
-            map.put("July", contract.getMonth7Ok());
-            map.put("August", contract.getMonth8Ok());
-            map.put("September", contract.getMonth9Ok());
-            map.put("October", contract.getMonth10Ok());
-            map.put("November", contract.getMonth11Ok());
-            map.put("December", contract.getMonth12Ok());
-
-            map.put("idzirot", String.valueOf(contract.getIdzirot()));
-
-            map.put("sumNaturalIndicators", contract.getSumNaturalIndicatorsStr());
-            map.put("naturalIndicatorsSize",
-                    String.valueOf(contract.getNaturalIndicators().size()));
-
-            String s = contract.getNaturalIndicatorsStr();
-            map.put("naturalIndicators", contract.getNaturalIndicatorsStr());
-
-            map.put("doc", contract.getDocumentu());
-
-            Map<String, Object> map2 = new HashMap<>();
-            map2.put("documents",contract.getItDocuments());
-            map2.put("contract",map);
-
-            return new ResponseEntity<>(map2, HttpStatus.OK);
+            return new ResponseEntity<>(contractItMapper.toDto(contractItService.findById(id)), HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Ошибка!");
         }
+    }
+
+    @GetMapping("/findTable")
+    public ResponseEntity<?> findTable(
+            @RequestParam(defaultValue = "") String poleFindByNomGK,
+            @RequestParam(defaultValue = "") String poleFindByKontragent,
+            @RequestParam(defaultValue = "") String dateGK,
+            @RequestParam(defaultValue = "") String poleStatusGK,
+            @RequestParam(defaultValue = "0") Integer idot,
+            @RequestParam(defaultValue = "1") Integer param,
+            @RequestParam(defaultValue = "10") Integer col,
+            @AuthenticationPrincipal User user,
+            Authentication authentication
+    ) {
+
+        try {
+            String role = "IT";
+
+            List<ContractIT> contracts;
+            if (poleFindByNomGK.equals("") && poleFindByKontragent.equals("")) {
+                contracts = contractItService.findAllByRole(role);
+            } else {
+                contracts = contractItService
+                        .findByNomGK(poleFindByNomGK, poleFindByKontragent, role);
+            }
+
+            final Integer idot2 = idot;
+            if (idot2 != null && !idot2.equals(0)) {
+                contracts = contracts
+                        .stream()
+                        .filter(contractIT ->
+                                contractIT.getIdzirot() != null && contractIT.getIdzirot().equals(idot2)
+                        )
+                        .collect(Collectors.toList());
+            }
+            final Date dateGK2;
+            if (dateGK != null && !dateGK.equals("")) {
+                dateGK2 = ConverterDate.stringToDate(dateGK.trim());
+                contracts = contracts
+                        .stream()
+                        .filter(contractIT ->
+                                contractIT.getDateGK() != null && contractIT.getDateGK().compareTo(dateGK2) == 0
+                        )
+                        .collect(Collectors.toList());
+            }
+            if (poleStatusGK != null && !poleStatusGK.equals("")) {
+                contracts = contracts
+                        .stream()
+                        .filter(contractIT ->
+                                contractIT.getStatusGK() != null && contractIT.getStatusGK().compareTo(poleStatusGK) == 0
+                        )
+                        .collect(Collectors.toList());
+            }
+            return new ResponseEntity<>(
+                    contracts == null ? null : contracts
+                            .stream()
+                            .map(contractItMapper::toDto)
+                            .collect(Collectors.toList())
+                            .stream()
+                            .skip((long) col * (param - 1))
+                            .limit(col)
+                            .collect(Collectors.toList()),
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Ошибка!");
+        }
+
     }
 
 }

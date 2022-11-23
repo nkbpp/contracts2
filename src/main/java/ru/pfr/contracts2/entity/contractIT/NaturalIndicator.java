@@ -2,6 +2,7 @@ package ru.pfr.contracts2.entity.contractIT;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.pfr.contracts2.global.MyNumbers;
@@ -13,6 +14,7 @@ import javax.persistence.*;
 @NoArgsConstructor // создания пустого конструктора
 @AllArgsConstructor // конструктора включающего все возможные поля
 @Entity
+@Builder
 public class NaturalIndicator {
 
     @Id
