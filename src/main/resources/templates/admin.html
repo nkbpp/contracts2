@@ -48,13 +48,6 @@
 
 <div th:insert="fragment/menu :: menu"></div>
 
-<!--<div th:insert="fragment/logout :: logout(${user})"></div>-->
-
-
-<!--<a class="btn btn-secondary" th:href="@{/contract/admin/juraudit}">
-    Журнал аудита
-</a>
-<hr>-->
 
 <div class="row">
     <div class="col-3 d-flex align-items-end">
@@ -95,92 +88,3 @@
 </body>
 </html>
 
-
-<!--<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="UTF-8">
-    <title>Админка</title>
-    <script type="text/javascript" src="/webjars/jquery/3.3.1/jquery.js"></script>
-    <link type="text/css" rel="stylesheet" href="/webjars/materialize/1.0.0-rc.2/dist/css/materialize.min.css"/>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("body").on('click', 'a', function () {
-
-                if ($(this).attr('name') == "clear") {
-                    var param = "id=" + $(this).attr("value");
-                    $("#aaa").load("/contract/admin/admin/clear", param, function () {
-                    });
-                    return false;
-                }
-
-                if ($(this).attr('name') == "zablock") {
-                    var param = "id=" + $(this).attr("value");
-                    $("#aaa").load("/contract/admin/admin/zablock", param, function () {
-                    });
-                    return false;
-                }
-
-                if ($(this).attr('id') == "bt1") {
-                    var param = "/contract/admin/adminupdate?kolpopitok=" +
-                        $("#kolpopitok").val() + "&koefpopitok=" +
-                        $("#koefpopitok").val() + "&block=" +
-                        $("#block").val();
-                    $.ajax({
-                        url: param,
-                        success: function (data) {
-                            alert("Данные изменены");
-                        }
-                    });
-                }
-            });
-        });
-
-    </script>
-
-    <script type="text/javascript" src="/webjars/bootstrap/5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-</head>
-<body>-->
-
-<!--ТАК БЫЛО И РАБОТАЛО-->
-<!--
-<div th:insert="fragment/logout :: logout(${user})"></div>
-<br>
-<a th:href="@{/contract/admin/juraudit}">
-    Журнал аудита
-</a>
-<div class="row">
-    <div class="col s3"></div>
-    <div class="col s6">
-        <div class="row">
-            <div class="col s6">Количество попыток</div>
-            <div class="col s6">
-                <input type="text" id="kolpopitok" th:value="${adminparam.kolpopitok}">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col s6">Коэффициэнт увеличения времени блокировки в минутах</div>
-            <div class="col s6">
-                <input type="text" id="koefpopitok" th:value="${adminparam.koefpopitok}">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col s6">Количество попыток перед полной блокировкой</div>
-            <div class="col s6">
-                <input type="text" id="block" th:value="${adminparam.block}">
-            </div>
-        </div>
-
-        <a class="waves-effect waves-light btn" id="bt1">Применить</a>
-
-    </div>
-</div>
-<div class="row">
-    <div class="col s12">
-        <div th:insert="fragmentadmin/adminfragment :: blocks(${logerrs})"></div>
-    </div>
-</div>
-
-<script type="text/javascript" src="/webjars/materialize/1.0.0-rc.2/dist/js/materialize.min.js"></script>
-</body>
-</html>-->
