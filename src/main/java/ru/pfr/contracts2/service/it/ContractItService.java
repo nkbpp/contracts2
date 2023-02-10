@@ -1,18 +1,19 @@
 package ru.pfr.contracts2.service.it;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.pfr.contracts2.entity.contractIT.ContractIT;
 import ru.pfr.contracts2.repository.it.ContractItRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @EnableScheduling
+@Transactional
 public class ContractItService {
 
     final ContractItRepository contractItRepository;
@@ -23,7 +24,7 @@ public class ContractItService {
         return contractItRepository.findById(id).orElse(null);
     }
 
-    public List<ContractIT> findAll() {
+    private List<ContractIT> findAll() {
         return contractItRepository.findAllByOrderByIdDesc();
     }
 
@@ -39,12 +40,16 @@ public class ContractItService {
         return contractItRepository.findAllByRoleOrderByIdDesc(role);
     }
 
-    public List<ContractIT> findAllcut(int l) {
-        return cutTheList(findAll(), l, COL);
+    public List<ContractIT> findAll(String role, int page) {
+        return contractItRepository.findAllByRoleOrderByIdDesc(role, PageRequest.of(page, COL));
     }
 
-    public List<ContractIT> findAllcut(int l, String role) {
-        return cutTheList(contractItRepository.findAllByRoleOrderByIdDesc(role), l, COL);
+    public List<ContractIT> findAllcut(int page) {
+        return contractItRepository.findAll(PageRequest.of(page, COL)).getContent();
+    }
+
+    public List<ContractIT> findAllcut(int page, String role) {
+        return contractItRepository.findAllByRoleOrderByIdDesc(role, PageRequest.of(page, COL));
     }
 
     //поиск по номеру гк и контрагенту
@@ -52,32 +57,16 @@ public class ContractItService {
         return contractItRepository.findByNomGKAndKontragent(nomgk, kontragent, role);
     }
 
-    @Transactional
     public void save(ContractIT contractIT) {
         contractItRepository.save(contractIT);
     }
 
-    @Transactional
     public void delete(Long id) {
         contractItRepository.deleteById(id);
     }
 
     public int getCOL() {
         return COL;
-    }
-
-    //для обрезки
-    private List<ContractIT> cutTheList(List<ContractIT> contracts, int list, int mnoj) {
-        List<ContractIT> contracts2 = new ArrayList<>();
-
-        int start = mnoj*(list-1);
-        int end = start + mnoj;
-
-        for (int i = start; i < end && i<contracts.size() ; i++) {
-            contracts2.add(contracts.get(i));
-        }
-
-        return contracts2;
     }
 
 }

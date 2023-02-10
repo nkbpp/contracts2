@@ -8,6 +8,6 @@ import java.util.Optional;
 
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
-    public Optional<Notification> findById(Long l);
+    Optional<Notification> findById(Long l);
 
 }

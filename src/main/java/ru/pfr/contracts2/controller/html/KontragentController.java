@@ -14,7 +14,7 @@ import ru.pfr.contracts2.service.log.LogiService;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping(value = { "/contract/main/kontragent"})
+@RequestMapping(value = {"/contract/main/kontragent"})
 public class KontragentController {
 
     private final KontragentService kontragentService;
@@ -23,9 +23,9 @@ public class KontragentController {
     @GetMapping("/kontragentViev")
     public String kontragentViev(
             @AuthenticationPrincipal User user,
-            Model model){
-        model.addAttribute("kontragents",kontragentService.findAll());
-        logiService.save(new Logi(user.getLogin(),"View","Страница контрагенты"));
+            Model model) {
+        model.addAttribute("kontragents", kontragentService.findAll());
+        logiService.save(new Logi(user.getLogin(), "View", "Страница контрагенты"));
         return "fragment/kontragent :: kontragent";
     }
 
@@ -33,9 +33,9 @@ public class KontragentController {
     public String modalKontragentViev(
             @RequestParam Integer param,
             @AuthenticationPrincipal User user,
-            Model model){
+            Model model) {
 
-        model.addAttribute("kontragent2",kontragentService.findAll(param));
+        model.addAttribute("kontragent2", kontragentService.findAll(param - 1));
         return "fragment/modalKontragent :: modalKontragentTable";
     }
 
@@ -44,9 +44,9 @@ public class KontragentController {
             @RequestParam(defaultValue = "") String name,
             @RequestParam(defaultValue = "") String inn,
             @AuthenticationPrincipal User user,
-            Model model){
-        model.addAttribute("kontragent2",kontragentService.findByNameAndInn(name, inn));
-        logiService.save(new Logi(user.getLogin(),"Поиск контрагента name="+name + " inn="+inn));
+            Model model) {
+        model.addAttribute("kontragent2", kontragentService.findByNameAndInn(name, inn));
+        logiService.save(new Logi(user.getLogin(), "Поиск контрагента name=" + name + " inn=" + inn));
         return "fragment/modalKontragent :: modalKontragentTable";
     }
 

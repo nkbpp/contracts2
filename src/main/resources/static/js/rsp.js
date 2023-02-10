@@ -4,11 +4,11 @@ $(document).ready(function () {
     let itbody = $("body");
     itbody.on('click', 'a', function () {
 
-        if ($(this).attr('id') === "menuitcontract") { //Кнопка ИТ контракты
+        if ($(this).attr('id') === "menurspcontract") { //Кнопка ИТ контракты
             let mainContainer = $("#mainContainer");
             mainContainer.html(getSpinner());
-            mainContainer.load("/contract/it/vievTable", "", function () {
-                ajaxContractIt(getContractItJson(), "");
+            mainContainer.load("/contract/rsp/vievTable", "", function () {
+                ajaxContractIt("");
                 $('.datepicker').datepicker({
                     format: 'dd.mm.yyyy',
                     language: "ru"
@@ -17,8 +17,8 @@ $(document).ready(function () {
             return false;
         }
 
-        if ($(this).attr('id') === "menuitaddcontract") { //Кнопка Добавить ИТ контракт
-            $("#mainContainer").load("/contract/it/add", "", function () {
+        if ($(this).attr('id') === "menurspaddcontract") { //Кнопка Добавить ИТ контракт
+            $("#mainContainer").load("/contract/rsp/add", "", function () {
                 $('.datepicker').datepicker({
                     format: 'dd.mm.yyyy',
                     language: "ru"
@@ -35,14 +35,14 @@ $(document).ready(function () {
                 let token = $('#_csrf').attr('content');
                 let header = $('#_csrf_header').attr('content');
                 $.ajax({
-                    url: '/contract/it/deleteContract',
+                    url: '/contract/rsp/deleteContract',
                     method: 'post',
                     data: param,
                     beforeSend: function (xhr) {
                         xhr.setRequestHeader(header, token);
                     },
                     success: function (data) {
-                        ajaxContractIt(getContractItJson(), getContractItParams())
+                        ajaxContractIt(getContractItParams())
                         initialToats("Удаление прошло успешно", data, "success").show();
                     },
                     error: function (textStatus) {
@@ -57,12 +57,12 @@ $(document).ready(function () {
         if ($(this).attr('id') === "updateItContract") { //перейти на вкладку изменения ItContract
             let param = $(this).attr('name');
 
-            $("#mainContainer").load("/contract/it/updateViev/" + param, "", function () {
+            $("#mainContainer").load("/contract/rsp/updateViev/" + param, "", function () {
 
                 let token = $('#_csrf').attr('content');
                 let header = $('#_csrf_header').attr('content');
                 $.ajax({
-                    url: '/contract/it/getContract/' + param,
+                    url: '/contract/rsp/getContract/' + param,
                     method: 'post',
                     beforeSend: function (xhr) {
                         xhr.setRequestHeader(header, token);
@@ -149,7 +149,7 @@ $(document).ready(function () {
                 $("#sortDspan").text("");
 
             }
-            ajaxContractIt(getContractItJson(), getContractItParams());
+            ajaxContractIt(getContractItParams());
         }
 
         return false;
@@ -158,10 +158,10 @@ $(document).ready(function () {
     itbody.on('click', 'button', function () {
 
         if ($(this).attr('name') === "findContractIt") { //поиск
-            SORTD = 0;
-            SORTK = 0;
+            SORTD=0;
+            SORTK=0;
             clearPagination($("#paginationItContract  a"))
-            ajaxContractIt(getContractItJson(), getContractItParams())
+            ajaxContractIt(getContractItParams())
             return false;
         }
 
@@ -171,7 +171,7 @@ $(document).ready(function () {
             let token = $('#_csrf').attr('content');
             let header = $('#_csrf_header').attr('content');
             $.ajax({
-                url: '/contract/it/delItDoc',
+                url: '/contract/rsp/delItDoc',
                 method: 'post',
                 data: param,
                 beforeSend: function (xhr) {
@@ -216,7 +216,7 @@ $(document).ready(function () {
                 let token = $('#_csrf').attr('content');
                 let header = $('#_csrf_header').attr('content');
                 $.post({
-                    url: "/contract/it/upload",
+                    url: "/contract/rsp/upload",
                     data: param,
                     cache: false,
                     processData: false, // Не обрабатываем файлы (Don't process the files)
@@ -226,8 +226,8 @@ $(document).ready(function () {
                     },
                     success: function (data) {
                         //после добавления показать таблицу
-                        $("#mainContainer").load("/contract/it/vievTable", "", function () {
-                            ajaxContractIt(getContractItJson(), "");
+                        $("#mainContainer").load("/contract/rsp/vievTable", "", function () {
+                            ajaxContractIt("");
                         });
                         initialToats("Добавление прошло успешно", data, "success").show();
                     },
@@ -244,25 +244,11 @@ $(document).ready(function () {
 
 
 function fpagination() {
-    ajaxContractIt(getContractItJson(), getContractItParams())
-}
-
-function getContractItJson() {
-    let object = {};
-    object['poleFindByNomGK'] = $("[data-name=poleFindByNomGK]").val();
-    object['poleFindByKontragent'] = $("[data-name=poleFindByKontragent]").val();
-    object['dateGK'] = $("#poleFindDateGK").val();
-    object['poleStatusGK'] = $("#poleStatusGK").val();
-    object['idot'] = $("#poleFindnotificationsSelect").val();
-    object['sortd'] = SORTD;
-    object['sortk'] = SORTK;
-    return JSON.stringify(object);
+    ajaxContractIt(getContractItParams())
 }
 
 function getContractItParams() {
-    return "param=" + activeList("#paginationItContract") +
-        "&col=" + $("#col").val();
-    /*return "poleFindByNomGK=" + $("[data-name=poleFindByNomGK]").val() +
+    return "poleFindByNomGK=" + $("[data-name=poleFindByNomGK]").val() +
         "&poleFindByKontragent=" + $("[data-name=poleFindByKontragent]").val() +
         "&dateGK=" + $("#poleFindDateGK").val() +
         "&poleStatusGK=" + $("#poleStatusGK").val() +
@@ -270,23 +256,25 @@ function getContractItParams() {
         "&col=" + $("#col").val() +
         "&idot=" + $("#poleFindnotificationsSelect").val() +
         "&sortd=" + SORTD +
-        "&sortk=" + SORTK;*/
+        "&sortk=" + SORTK
+        ;
 }
 
-function ajaxContractIt(json, params) {
+function ajaxContractIt(params) {
 
     getSpinnerTable("tableContractIt")
     console.log("params = " + params)
-    console.log("json = " + json)
-    let token = $('#_csrf').attr('content');
-    let header = $('#_csrf_header').attr('content');
     $.ajax({
-        url: "/contract/it/findTable?" + params,
-        data: json,
-        type: 'post',
+        url: "/contract/rsp/findTable?" + params,
+        data: "",
+        cache: false,
+        processData: false,
         contentType: "application/json",
+        dataType: 'json',
+        type: 'GET',
         beforeSend: function (xhr) {
-            xhr.setRequestHeader(header, token);
+            xhr.setRequestHeader($('#_csrf').attr('content'),
+                $('#_csrf_header').attr('content'));
         },
         success: function (response) {
             let trHTML = '';
@@ -297,7 +285,7 @@ function ajaxContractIt(json, params) {
                 let docum = "";
                 for (let doc of item.documents) {
                     docum +=
-                        '<div><a class="btn btn-link" href="/contract/it/download?id=' + doc.id + '">' + replaceNull(doc.nameFile) + '</a></div>';
+                        '<div><a class="btn btn-link" href="/contract/rsp/download?id=' + doc.id + '">' + replaceNull(doc.nameFile) + '</a></div>';
                 }
 
                 trHTML +=

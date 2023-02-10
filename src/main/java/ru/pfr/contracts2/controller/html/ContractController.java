@@ -21,7 +21,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping(value = { "/contract/main"})
+@RequestMapping(value = {"/contract/main"})
 public class ContractController {
 
     private final ContractService contractService;
@@ -40,42 +40,41 @@ public class ContractController {
             @RequestParam(defaultValue = "0") String statNodate,
             @RequestParam(defaultValue = "0") String statProsrocheno,
             @AuthenticationPrincipal User user,
-            Model model){
+            Model model) {
 
-        logiService.save(new Logi(user.getLogin(),"View","Показ таблицы контрактов на странице " + param));
+        logiService.save(new Logi(user.getLogin(), "View", "Показ таблицы контрактов на странице " + param));
 
-        param = param==null?1:param;
+        param = param == null ? 0 : param - 1;
 
         List<Contract> contracts;
-        if(statIspolneno.equals("1")){
+        if (statIspolneno.equals("1")) {
             contracts = contractService.findByIspolnenoTrue();
-        } else if(statNotIspolneno.equals("1")){
+        } else if (statNotIspolneno.equals("1")) {
             contracts = contractService.findByIspolnenoFalse();
-        } else if(statNotIspolnenoSrok.equals("1")){
+        } else if (statNotIspolnenoSrok.equals("1")) {
             contracts = contractService.findByNotIspolnenoSrok();
-        } else if(statNodate.equals("1")){
+        } else if (statNodate.equals("1")) {
             contracts = contractService.findByNodate();
-        } else if(statProsrocheno.equals("1")){
+        } else if (statProsrocheno.equals("1")) {
             contracts = contractService.findByProsrocheno();
         } else {
             contracts = contractService.findAll(param);
         }
 
         model.addAttribute("contracts", contracts);
-        model.addAttribute("paramstart", (param-1) * contractService.getCOL());
+        model.addAttribute("paramstart", (param) * contractService.getCOL());
 
         return "fragment/table :: table";
     }
-
 
 
     @GetMapping("/dopTable")  //дополнительная информация
     public String dopTable(
             @RequestParam(defaultValue = "") Long id,
             @AuthenticationPrincipal User user,
-            Model model){
+            Model model) {
 
-        logiService.save(new Logi(user.getLogin(),"Запрос дополнительной информации по ID = " + id));
+        logiService.save(new Logi(user.getLogin(), "Запрос дополнительной информации по ID = " + id));
 
         Contract contract = contractService.findById(id);
         model.addAttribute("contract", contract);
@@ -89,22 +88,22 @@ public class ContractController {
             @RequestParam(defaultValue = "") Boolean poleFindByIspolneno,
             @RequestParam(defaultValue = "") Boolean poleFindByNotIspolneno,
             @AuthenticationPrincipal User user,
-            Model model){
+            Model model) {
 
-        logiService.save(new Logi(user.getLogin(),"Find","Поиск в таблице контрактов"));
+        logiService.save(new Logi(user.getLogin(), "Find", "Поиск в таблице контрактов"));
 
         List<Contract> contracts;
-        if(poleFindByNomGK.equals("") && poleFindByINN.equals("")){
+        if (poleFindByNomGK.equals("") && poleFindByINN.equals("")) {
             contracts = contractService.findAll();
         } else {
             contracts = contractService.findByfindByNomGK(poleFindByNomGK, poleFindByINN);
         }
-        List<Contract> contracts2  = new ArrayList<>();
+        List<Contract> contracts2 = new ArrayList<>();
         contracts.forEach(contract -> {
-            if(!poleFindByIspolneno && !poleFindByNotIspolneno) {
-            } else if(contract.getIspolneno()==poleFindByIspolneno){
+            if (!poleFindByIspolneno && !poleFindByNotIspolneno) {
+            } else if (contract.getIspolneno() == poleFindByIspolneno) {
                 contracts2.add(contract);
-            } else if(contract.getIspolneno()==!poleFindByNotIspolneno){
+            } else if (contract.getIspolneno() == !poleFindByNotIspolneno) {
                 contracts2.add(contract);
             }
         });
@@ -115,15 +114,15 @@ public class ContractController {
     }
 
     @GetMapping("/vievTable")
-    public String vievTable(@AuthenticationPrincipal User user){
-        logiService.save(new Logi(user.getLogin(),"View","Показ таблицы контрактов"));
+    public String vievTable(@AuthenticationPrincipal User user) {
+        logiService.save(new Logi(user.getLogin(), "View", "Показ таблицы контрактов"));
         return "fragment/table :: vievTable";
     }
 
     @GetMapping("/add")
     public String add(@AuthenticationPrincipal User user,
-                       Model model){
-        logiService.save(new Logi(user.getLogin(),"View","Показ страницы добавления контракта"));
+                      Model model) {
+        logiService.save(new Logi(user.getLogin(), "View", "Показ страницы добавления контракта"));
 
         model.addAttribute("kontragent", kontragentService.findAllwithPusto());
         model.addAttribute("kontragent2", kontragentService.findAll());
@@ -139,9 +138,9 @@ public class ContractController {
     public String updateViev(
             @RequestParam Long id,
             @AuthenticationPrincipal User user,
-                      Model model){
+            Model model) {
 
-        logiService.save(new Logi(user.getLogin(),"View","Показ страницы изменения контракта с id = " + id));
+        logiService.save(new Logi(user.getLogin(), "View", "Показ страницы изменения контракта с id = " + id));
 
         model.addAttribute("kontragent", kontragentService.findAllwithPusto());
         model.addAttribute("kontragent2", kontragentService.findAll());
@@ -153,10 +152,10 @@ public class ContractController {
 
     @GetMapping("/getnotification")
     public String getnotification(@AuthenticationPrincipal User user,
-                      Model model){
+                                  Model model) {
         List<User> users = new ArrayList<>();
 
-        if(!user.getId_user_zir().equals(147L)){
+        if (!user.getId_user_zir().equals(147L)) {
             users.addAll(zirServise.getFindAllOtdelByIdAddPusto(147L));
         }
         users.addAll(zirServise.getFindAllOtdelByIdAddPusto(user.getId_user_zir()));
@@ -170,7 +169,7 @@ public class ContractController {
     public String getProgress(
             @RequestParam Long id,
             @AuthenticationPrincipal User user,
-            Model model){
+            Model model) {
 
         model.addAttribute("c", contractService.findById(id));
 
@@ -180,7 +179,7 @@ public class ContractController {
     @GetMapping("/stat")
     public String stat(
             @AuthenticationPrincipal User user,
-            Model model){
+            Model model) {
 
         model.addAttribute("size", contractService.getColSize());
         model.addAttribute("ispolneno", contractService.getColIspolneno());

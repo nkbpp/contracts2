@@ -131,6 +131,10 @@
                             left: 0px;
                         }
 
+                        /*курсор сортировка*/
+                        th.sort {
+                            cursor: pointer;
+                        }
                     </style>
 
                     <caption>
@@ -170,10 +174,10 @@
 
                     <tr>
                         <th style="min-width:200px" class="fix">Номер</th>
-                        <th style="min-width:200px">Контрагент</th>
-                        <th>Дата</th>
-                        <th>Дата с</th>
-                        <th>Дата по</th>
+                        <th class="sort" style="min-width:200px" id="sortK">Контрагент <span id="sortKspan"></span></th>
+                        <th class="sort" id="sortD">Дата <span id="sortDspan"></span></th>
+                        <th>Действие ГК c</th>
+                        <th>Действие ГК по</th>
                         <th>Сумма</th>
                         <th>Статус</th>
 

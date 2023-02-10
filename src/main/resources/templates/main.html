@@ -405,6 +405,7 @@
     <script type="text/javascript" th:src="@{/js/wrapper.js}"></script>
     <script sec:authorize="hasRole('ROLE_UPDATE')" type="text/javascript" th:src="@{/js/stat.js}"></script>
     <script sec:authorize="hasAnyRole('ROLE_UPDATEIT','ROLE_READIT')" type="text/javascript" th:src="@{/js/it.js}"></script>
+    <script sec:authorize="hasAnyRole('ROLE_UPDATERSP','ROLE_READRSP')" type="text/javascript" th:src="@{/js/rsp.js}"></script>
     <script sec:authorize="hasAnyRole('ROLE_UPDATEAXO','ROLE_READAXO')" type="text/javascript" th:src="@{/js/axo.js}"></script>
 
     <title>Обеспечение исполнения контрактов</title>

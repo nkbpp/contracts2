@@ -13,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.pfr.contracts2.entity.contractIT.ContractIT;
 import ru.pfr.contracts2.entity.contractIT.ItDocuments;
 import ru.pfr.contracts2.entity.contractIT.NaturalIndicator;
-import ru.pfr.contracts2.entity.contractIT.dto.FilterContractIt;
 import ru.pfr.contracts2.entity.contractIT.mapper.ContractItMapper;
 import ru.pfr.contracts2.entity.log.Logi;
 import ru.pfr.contracts2.entity.user.User;
@@ -21,7 +20,6 @@ import ru.pfr.contracts2.global.ConverterDate;
 import ru.pfr.contracts2.global.Translit;
 import ru.pfr.contracts2.service.it.ContractItService;
 import ru.pfr.contracts2.service.it.ItDocumentsService;
-import ru.pfr.contracts2.service.it.NaturalIndicatorService;
 import ru.pfr.contracts2.service.log.LogiService;
 import ru.pfr.contracts2.service.zir.ZirServise;
 
@@ -33,22 +31,20 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = {"/contract/it"})
-public class ContractItControllerRest {
+@RequestMapping(value = {"/contract/rsp"})
+public class ContractRspControllerRest {
 
-    private static final String ROLE = "IT";
-
+    private static final String ROLE = "RSP";
     private final ContractItService contractItService;
 
     private final ItDocumentsService itDocumentsService;
-    private final NaturalIndicatorService naturalIndicatorService;//todo
 
     private final ZirServise zirServise;
     private final LogiService logiService;
     private final ContractItMapper contractItMapper;
 
     @PostMapping("/upload")
-    public ResponseEntity upload(
+    public ResponseEntity<?> upload(
             @RequestParam(defaultValue = "undefined") String id,
             @RequestParam String nomGK,
             @RequestParam String kontragent,
@@ -77,12 +73,9 @@ public class ContractItControllerRest {
             @RequestParam(defaultValue = "") String naturalIndicators,
 
             @RequestParam(defaultValue = "") String doc,
-            @AuthenticationPrincipal User user,
-            Authentication authentication,
-            Model model) {
+            @AuthenticationPrincipal User user) {
         try {
 
-            //String role = User.getRole(authentication);
 
             //проход по документам
             List<ItDocuments> listDocuments = new ArrayList<>();
@@ -254,51 +247,32 @@ public class ContractItControllerRest {
         }
     }
 
-    @PostMapping(value = "/findTable")
+    @GetMapping("/findTable")
     public ResponseEntity<?> findTable(
-
-            @RequestBody FilterContractIt filterContractIt,
-
-            @RequestParam(defaultValue = "1") Integer param,
-            @RequestParam(defaultValue = "10") Integer col,
-
-            /*@RequestParam(defaultValue = "") String poleFindByNomGK,
+            @RequestParam(defaultValue = "") String poleFindByNomGK,
             @RequestParam(defaultValue = "") String poleFindByKontragent,
             @RequestParam(defaultValue = "") String dateGK,
             @RequestParam(defaultValue = "") String poleStatusGK,
             @RequestParam(defaultValue = "0") Integer idot,
+            @RequestParam(defaultValue = "1") Integer param,
+            @RequestParam(defaultValue = "10") Integer col,
             @RequestParam(defaultValue = "0") Integer sortk,
-            @RequestParam(defaultValue = "0") Integer sortd,*/
-
+            @RequestParam(defaultValue = "0") Integer sortd,
             @AuthenticationPrincipal User user,
             Authentication authentication
     ) {
 
         try {
 
-            /*Integer param = 0;
-            Integer col = 10;
-            FilterContractIt filterContractIt = new FilterContractIt(
-                    "",
-                    "",
-                    "",
-                    "",
-                    0,
-                    0,
-                    0
-            );*/
-
             List<ContractIT> contracts;
-            if (filterContractIt.poleFindByNomGK().equals("") &&
-                    filterContractIt.poleFindByKontragent().equals("")) {
+            if (poleFindByNomGK.equals("") && poleFindByKontragent.equals("")) {
                 contracts = contractItService.findAllByRole(ROLE);
             } else {
                 contracts = contractItService
-                        .findByNomGK(filterContractIt.poleFindByNomGK(),
-                                filterContractIt.poleFindByKontragent(), ROLE);
+                        .findByNomGK(poleFindByNomGK, poleFindByKontragent, ROLE);
             }
 
-            final Integer idot2 = filterContractIt.idot();
+            final Integer idot2 = idot;
             if (idot2 != null && !idot2.equals(0)) {
                 contracts = contracts
                         .stream()
@@ -308,8 +282,8 @@ public class ContractItControllerRest {
                         .collect(Collectors.toList());
             }
             final Date dateGK2;
-            if (filterContractIt.dateGK() != null && !filterContractIt.dateGK().equals("")) {
-                dateGK2 = ConverterDate.stringToDate(filterContractIt.dateGK().trim());
+            if (dateGK != null && !dateGK.equals("")) {
+                dateGK2 = ConverterDate.stringToDate(dateGK.trim());
                 contracts = contracts
                         .stream()
                         .filter(contractIT ->
@@ -317,24 +291,24 @@ public class ContractItControllerRest {
                         )
                         .collect(Collectors.toList());
             }
-            if (filterContractIt.poleStatusGK() != null && !filterContractIt.poleStatusGK().equals("")) {
+            if (poleStatusGK != null && !poleStatusGK.equals("")) {
                 contracts = contracts
                         .stream()
                         .filter(contractIT ->
-                                contractIT.getStatusGK() != null && contractIT.getStatusGK().compareTo(filterContractIt.poleStatusGK()) == 0
+                                contractIT.getStatusGK() != null && contractIT.getStatusGK().compareTo(poleStatusGK) == 0
                         )
                         .collect(Collectors.toList());
             }
 
             //фильтр
-            if (filterContractIt.sortd() == 1) {
+            if(sortd==1){
                 contracts = contracts
                         .stream()
                         .sorted(
                                 Comparator.comparing(ContractIT::getDateGK)
                         )
                         .collect(Collectors.toList());
-            } else if (filterContractIt.sortd() == 2) {
+            } else if (sortd==2) {
                 contracts = contracts
                         .stream()
                         .sorted(
@@ -343,14 +317,14 @@ public class ContractItControllerRest {
                         .collect(Collectors.toList());
             }
 
-            if (filterContractIt.sortk() == 1) {
+            if(sortk==1){
                 contracts = contracts
                         .stream()
                         .sorted(
                                 Comparator.comparing(ContractIT::getKontragent)
                         )
                         .collect(Collectors.toList());
-            } else if (filterContractIt.sortk() == 2) {
+            } else if (sortk==2) {
                 contracts = contracts
                         .stream()
                         .sorted(
@@ -359,11 +333,12 @@ public class ContractItControllerRest {
                         .collect(Collectors.toList());
             }
 
+
             return new ResponseEntity<>(
                     contracts == null ? null : contracts
                             .stream()
                             .map(contractItMapper::toDto)
-                            .toList()
+                            .collect(Collectors.toList())
                             .stream()
                             .skip((long) col * (param - 1))
                             .limit(col)

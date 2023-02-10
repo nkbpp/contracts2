@@ -1,6 +1,8 @@
 package ru.pfr.contracts2.service.contracts;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,13 +23,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Service
 @RequiredArgsConstructor
 @EnableScheduling
+@Transactional
 public class ContractService {
 
     private final MailSender mailSender;
     private final ZirServise zirServise;
     final ContractRepository contractRepository;
     private final LogiService logiService;
-    private final int COL = 30;
+    private final int SIZE = 30;
 
     public Contract findById(Long id) {
         return contractRepository.findById(id).orElse(null);
@@ -45,18 +48,27 @@ public class ContractService {
         return contractRepository.findAllByOrderByIdDesc();
     }
 
-    public List<Contract> findAll(int l) {
-        return cutTheList(findAll(), l, COL);
+    public List<Contract> findAll(int page) {
+
+        //для обрезки
+        PageRequest pageRequest = PageRequest.of(
+                page, SIZE,
+                Sort
+                        .by("id")
+                        .descending()
+        );
+        return contractRepository.findAll(pageRequest).getContent();
+
     }
 
-    @Transactional
+
     public void save(Contract contract) {
         //рассчитываем расчетную дату
         Date date = contract.getDate_ispolnenija_GK();
-        if(date!=null){
+        if (date != null) {
             Calendar calendar = GregorianCalendar.getInstance();
             calendar.setTime(date);
-            calendar.add(Calendar.DATE,(contract.getCol_days() + 2) );
+            calendar.add(Calendar.DATE, (contract.getCol_days() + 2));
             contract.setRaschet_date(calendar.getTime());
         }
 
@@ -71,26 +83,12 @@ public class ContractService {
         contractRepository.save(contract);
     }
 
-    @Transactional
     public void delete(Long id) {
         contractRepository.deleteById(id);
     }
 
     public int getCOL() {
-        return COL;
-    }
-
-    //для обрезки
-    private List<Contract> cutTheList(List<Contract> contracts, int list, int mnoj) {
-        List<Contract> contracts2 = new ArrayList<>();
-
-        int start = mnoj*(list-1);
-        int end = start + mnoj;
-
-        for (int i = start; i < end && i<contracts.size() ; i++) {
-            contracts2.add(contracts.get(i));
-        }
-        return contracts2;
+        return SIZE;
     }
 
     public List<Contract> findByIspolnenoFalse() {
@@ -104,7 +102,7 @@ public class ContractService {
     public List<Contract> findByNotIspolnenoSrok() {
         List<Contract> contracts = new ArrayList<>();
         findByIspolnenoFalse().forEach(contract -> {
-            if(contract.getDaysOst()>=0 && contract.getDaysOst()<=4){
+            if (contract.getDaysOst() >= 0 && contract.getDaysOst() <= 4) {
                 contracts.add(contract);
             }
         });
@@ -114,7 +112,7 @@ public class ContractService {
     public List<Contract> findByNodate() {
         List<Contract> contracts = new ArrayList<>();
         findByIspolnenoFalse().forEach(contract -> {
-            if(contract.getRaschet_date()==null){
+            if (contract.getRaschet_date() == null) {
                 contracts.add(contract);
             }
         });
@@ -124,8 +122,8 @@ public class ContractService {
     public List<Contract> findByProsrocheno() {
         List<Contract> contracts = new ArrayList<>();
         findByIspolnenoFalse().forEach(contract -> {
-            if(contract.getDaysOst()<0) {
-                if(contract.getRaschet_date()!=null) {
+            if (contract.getDaysOst() < 0) {
+                if (contract.getRaschet_date() != null) {
                     contracts.add(contract);
                 }
             }
@@ -134,40 +132,40 @@ public class ContractService {
     }
 
 
-    public int getColSize(){
+    public int getColSize() {
         List<Contract> contracts = findAll();
         return contracts.size();
     }
 
-    public AtomicInteger getColIspolneno(){
+    public AtomicInteger getColIspolneno() {
         List<Contract> contracts = findAll();
         AtomicInteger ispolneno = new AtomicInteger();
         contracts.forEach(contract -> {
-            if(contract.getIspolneno()==true){
+            if (contract.getIspolneno() == true) {
                 ispolneno.getAndIncrement();
             }
         });
         return ispolneno;
     }
 
-    public AtomicInteger getColNotispolneno(){
+    public AtomicInteger getColNotispolneno() {
         List<Contract> contracts = findAll();
 
         AtomicInteger notispolneno = new AtomicInteger();
         contracts.forEach(contract -> {
-            if(contract.getIspolneno()!=true){
+            if (contract.getIspolneno() != true) {
                 notispolneno.getAndIncrement();
             }
         });
         return notispolneno;
     }
 
-    public AtomicInteger getColNotispolnenosrok(){
+    public AtomicInteger getColNotispolnenosrok() {
         List<Contract> contracts = findAll();
         AtomicInteger notispolnenosrok = new AtomicInteger();
         contracts.forEach(contract -> {
-            if(contract.getIspolneno()!=true) {
-                if(contract.getDaysOst()<=4) {
+            if (contract.getIspolneno() != true) {
+                if (contract.getDaysOst() <= 4) {
                     if (contract.getDaysOst() >= 0) {
                         if (contract.getRaschet_date() != null) {
                             notispolnenosrok.getAndIncrement();
@@ -179,31 +177,31 @@ public class ContractService {
         return notispolnenosrok;
     }
 
-    public AtomicInteger getColNodate(){
+    public AtomicInteger getColNodate() {
         List<Contract> contracts = findAll();
         AtomicInteger nodate = new AtomicInteger();
         contracts.forEach(contract -> {
-            if(contract.getIspolneno()!=true){
-                    if(contract.getDaysOst()<0) {
-                        if(contract.getRaschet_date()==null){
-                            nodate.getAndIncrement();
-                        }
+            if (contract.getIspolneno() != true) {
+                if (contract.getDaysOst() < 0) {
+                    if (contract.getRaschet_date() == null) {
+                        nodate.getAndIncrement();
                     }
                 }
+            }
 
         });
         return nodate;
     }
 
-    public AtomicInteger getColProsrocheno(){
+    public AtomicInteger getColProsrocheno() {
         List<Contract> contracts = findAll();
         AtomicInteger prosrocheno = new AtomicInteger();
         contracts.forEach(contract -> {
-            if(contract.getIspolneno()!=true){
-                    if(contract.getDaysOst()<0) {
-                        if(contract.getRaschet_date()!=null){
-                            prosrocheno.getAndIncrement();
-                        }
+            if (contract.getIspolneno() != true) {
+                if (contract.getDaysOst() < 0) {
+                    if (contract.getRaschet_date() != null) {
+                        prosrocheno.getAndIncrement();
+                    }
 
                 }
             }
@@ -231,36 +229,36 @@ public class ContractService {
                     "\n Сумма: " + contract.getSumOk();
 
             System.out.println("Дней " + days);
-            if(days>=0 && days<=4){
+            if (days >= 0 && days <= 4) {
 
-                try{
+                try {
                     String emailUser = zirServise.getEmailUserById(Integer.parseInt(String.valueOf(contract.getUser().getId_user_zir())));
                     System.out.println("Создатель " + emailUser);
 
                     mailSender.send(
                             zirServise.getEmailUserById(Integer.parseInt(String.valueOf(contract.getUser().getId_user_zir()))),
-                            subject,text); //сообщение создателю
+                            subject, text); //сообщение создателю
                     String emailBoss = null;
-                    try{
-                        emailBoss  = zirServise.getEmailBossById(Integer.parseInt(String.valueOf(contract.getUser().getId_user_zir())));
+                    try {
+                        emailBoss = zirServise.getEmailBossById(Integer.parseInt(String.valueOf(contract.getUser().getId_user_zir())));
 
                         System.out.println("Босс " + emailBoss);
-                        if(emailBoss != null && !emailUser.equals(emailBoss)) {
+                        if (emailBoss != null && !emailUser.equals(emailBoss)) {
                             mailSender.send(
                                     emailBoss,
                                     subject, text); //сообщение начальнику отдела
                         }
 
-                    } catch (Exception e){
+                    } catch (Exception e) {
                     }
 
 
-                    for (Notification notification:
+                    for (Notification notification :
                             contract.getNotifications()) {
                         String email = zirServise.getEmailUserById(
                                 Integer.parseInt(String.valueOf(notification.getId_user())));
-                        System.out.println("Кто то " +email);
-                        if(!emailUser.equals(email) && (emailBoss != null && !emailBoss.equals(email))) {
+                        System.out.println("Кто то " + email);
+                        if (!emailUser.equals(email) && (emailBoss != null && !emailBoss.equals(email))) {
                             mailSender.send(email,
                                     subject, text);//сообщение остальным
                         }
@@ -271,17 +269,14 @@ public class ContractService {
                 mailSender.send(
                         zirServise.getEmailUserById(1997),
                         subject,text); //сообщение мне*/
-                } catch (Exception e){
+                } catch (Exception e) {
                     logiService.save(new Logi(
                             "this",
                             "MailError",
                             "Ошибка при отправке сообщения!"));
                 }
-
             }
-
-
         });
-
     }
+
 }

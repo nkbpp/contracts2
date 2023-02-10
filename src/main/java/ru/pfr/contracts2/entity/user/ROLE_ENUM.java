@@ -7,7 +7,9 @@ public enum ROLE_ENUM {
     ROLE_UPDATE_IT ("UPDATEIT"),
     ROLE_READ_IT ("READIT"),
     ROLE_UPDATE_AXO ("UPDATEAXO"),
-    ROLE_READ_AXO ("READAXO");
+    ROLE_READ_AXO ("READAXO"),
+    ROLE_READ_RSP ("READRSP"),
+    ROLE_UPDATE_RSP ("UPDATERSP");
 
     private final String code;
 

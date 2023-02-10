@@ -1,5 +1,6 @@
 package ru.pfr.contracts2.repository.it;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ru.pfr.contracts2.entity.contractIT.ContractIT;
@@ -12,6 +13,8 @@ public interface ContractItRepository extends JpaRepository<ContractIT, Long> {
     Optional<ContractIT> findById(Long l);
 
     List<ContractIT> findAllByOrderByIdDesc();
+
+    List<ContractIT> findAllByRoleOrderByIdDesc(String role, Pageable pageable);
 
     List<ContractIT> findAllByRoleOrderByIdDesc(String role);
 

@@ -17,14 +17,13 @@ import ru.pfr.contracts2.service.log.LogiService;
 import ru.pfr.contracts2.service.zir.ZirServise;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping(value = {"/contract/it"})
-public class ContractItController {
+@RequestMapping(value = {"/contract/rsp"})
+public class ContractRspController {
 
-    private static final String ROLE = "IT";
+    private static final String ROLE = "RSP";
 
     private final ContractItService contractItService;
     private final ZirServise zirServise;
@@ -37,7 +36,7 @@ public class ContractItController {
             Model model
     ) {
         logiService.save(new Logi(user.getLogin(), "View",
-                "Показ таблицы it контрактов"));
+                "Показ таблицы rsp контрактов"));
         model.addAttribute("findContractName", "findContractIt");
         model.addAttribute(
                 "notifications",
@@ -54,19 +53,19 @@ public class ContractItController {
             Model model) {
 
         logiService.save(new Logi(user.getLogin(), "View",
-                "Показ таблицы it контрактов на странице " + param));
+                "Показ таблицы rsp контрактов на странице " + param));
 
-        Integer skip = col * (param == null ? 0 : param - 1);
+        int skip = col * (param == null ? 0 : param - 1);
         List<ContractIT> contractITs = contractItService.findAll(ROLE)
                 .stream()
                 .skip(skip)
                 .limit(col)
-                .collect(Collectors.toList());
+                .toList();
 
-        model.addAttribute("contracts", contractITs == null ? null : contractITs
+        model.addAttribute("contracts", contractITs
                 .stream()
                 .map(contractItMapper::toDto)
-                .collect(Collectors.toList()));
+                .toList());
         model.addAttribute("paramstart",
                 skip);
         model.addAttribute("col",
@@ -81,7 +80,7 @@ public class ContractItController {
                       Model model) {
 
         logiService.save(new Logi(user.getLogin(), "View",
-                "Показ страницы добавления it контракта"));
+                "Показ страницы добавления rsp контракта"));
 
         model.addAttribute(
                 "notifications",
@@ -98,7 +97,7 @@ public class ContractItController {
             Model model) {
 
         logiService.save(new Logi(user.getLogin(), "View",
-                "Показ страницы изменения it контракта с id = " + id));
+                "Показ страницы изменения new контракта с id = " + id));
 
         model.addAttribute(
                 "notifications",

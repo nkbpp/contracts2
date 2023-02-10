@@ -58,11 +58,18 @@
                         <a class="nav-link" href="#" id="menuaxocontract">Контракты АХО</a>
                     </li>
 
+                    <li sec:authorize="hasAnyRole('ROLE_UPDATERSP','ROLE_READRSP')" class="nav-item">
+                        <a class="nav-link" href="#" id="menurspcontract">Контракты РСП</a>
+                    </li>
+
                     <li sec:authorize="hasAnyRole('ROLE_UPDATEIT')" class="nav-item">
                         <a class="nav-link" href="#" id="menuitaddcontract">Добавить контракт</a>
                     </li>
                     <li sec:authorize="hasAnyRole('ROLE_UPDATEAXO')" class="nav-item">
                         <a class="nav-link" href="#" id="menuaxoaddcontract">Добавить контракт</a>
+                    </li>
+                    <li sec:authorize="hasAnyRole('ROLE_UPDATERSP')" class="nav-item">
+                        <a class="nav-link" href="#" id="menurspaddcontract">Добавить контракт</a>
                     </li>
                 </ul>
                 <form

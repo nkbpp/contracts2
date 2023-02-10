@@ -11,6 +11,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class NotificationService {
 
     final NotificationRepository notificationRepository;
@@ -19,7 +20,7 @@ public class NotificationService {
         return notificationRepository.findAll();
     }
 
-    @Transactional
+
     public void delete(Long id) {
         notificationRepository.deleteById(id);
     }

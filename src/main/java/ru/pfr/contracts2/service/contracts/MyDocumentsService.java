@@ -10,15 +10,15 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class MyDocumentsService {
     private final MyDocumentsRepository myDocumentsRepository;
 
-    @Transactional
+
     public void save(MyDocuments myDocuments) {
         myDocumentsRepository.save(myDocuments);
     }
 
-    @Transactional
     public void delete(Long id) {
         myDocumentsRepository.deleteById(id);
     }

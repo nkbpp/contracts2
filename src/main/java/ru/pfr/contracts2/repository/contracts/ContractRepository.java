@@ -14,9 +14,6 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
 
     List<Contract> findAllByOrderByIdDesc();
 
-    List<Contract> findByNomGKAndKontragentInn(String nom, String inn);
-
-
     @Query(
             value = "SELECT * FROM contract " +
                     "WHERE (?1 is null or nomgk like ?1%) and ( contract.kontragent_id in " +
