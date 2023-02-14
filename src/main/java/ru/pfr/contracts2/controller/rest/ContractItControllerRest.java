@@ -1,6 +1,9 @@
 package ru.pfr.contracts2.controller.rest;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -10,15 +13,14 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.pfr.contracts2.entity.contractIT.ContractIT;
-import ru.pfr.contracts2.entity.contractIT.ItDocuments;
-import ru.pfr.contracts2.entity.contractIT.NaturalIndicator;
+import ru.pfr.contracts2.entity.contractIT.*;
 import ru.pfr.contracts2.entity.contractIT.dto.FilterContractIt;
 import ru.pfr.contracts2.entity.contractIT.mapper.ContractItMapper;
 import ru.pfr.contracts2.entity.log.Logi;
 import ru.pfr.contracts2.entity.user.User;
 import ru.pfr.contracts2.global.ConverterDate;
 import ru.pfr.contracts2.global.Translit;
+import ru.pfr.contracts2.repository.it.BudgetClassificationRepository;
 import ru.pfr.contracts2.service.it.ContractItService;
 import ru.pfr.contracts2.service.it.ItDocumentsService;
 import ru.pfr.contracts2.service.it.NaturalIndicatorService;
@@ -26,10 +28,8 @@ import ru.pfr.contracts2.service.log.LogiService;
 import ru.pfr.contracts2.service.zir.ZirServise;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,11 +44,12 @@ public class ContractItControllerRest {
     private final NaturalIndicatorService naturalIndicatorService;//todo
 
     private final ZirServise zirServise;
+    private final BudgetClassificationRepository budgetClassificationRepository;
     private final LogiService logiService;
     private final ContractItMapper contractItMapper;
 
     @PostMapping("/upload")
-    public ResponseEntity upload(
+    public ResponseEntity<?> upload(
             @RequestParam(defaultValue = "undefined") String id,
             @RequestParam String nomGK,
             @RequestParam String kontragent,
@@ -58,6 +59,7 @@ public class ContractItControllerRest {
             @RequestParam(defaultValue = "") String statusGK,
             @RequestParam(defaultValue = "0") Double sum,
             @RequestParam(defaultValue = "0") Integer idzirot,
+            @RequestParam(defaultValue = "0") Long budgetClassificationId,
 
             @RequestParam(defaultValue = "0") Double January,
             @RequestParam(defaultValue = "0") Double February,
@@ -136,6 +138,15 @@ public class ContractItControllerRest {
             } catch (Exception e) {
             }
 
+            BudgetClassification budgetClassification = null;
+            try {
+                if (budgetClassificationId != null && !budgetClassificationId.equals(0L)) {
+                    budgetClassification = budgetClassificationRepository
+                            .findById(budgetClassificationId)
+                            .get();
+                }
+            } catch (Exception e) {
+            }
 
             if (id.equals("undefined")) { // Добавление
                 if (sumNaturalIndicators == -1) { //не обновлять если ничего не приходило
@@ -147,7 +158,7 @@ public class ContractItControllerRest {
                         January, February, March, April, May, June,
                         July, August, September, October, November, December,
                         sumNaturalIndicators, naturalIndicators1,
-                        doc.trim(), listDocuments, user, ROLE, idzirot, fio);
+                        doc.trim(), listDocuments, user, ROLE, idzirot, fio, budgetClassification);
                 logiService.save(new Logi(user.getLogin(), "Add",
                         "Добавление it контракта"));
             } else { // Изменения
@@ -175,6 +186,7 @@ public class ContractItControllerRest {
                 contract.setMonth12(December);
 
                 contract.setIdzirot(idzirot);
+                contract.setBudgetClassification(budgetClassification);
                 contract.setNameot(fio);
 
                 if (sumNaturalIndicators != -1) { //не обновлять если ничего не приходило
@@ -187,7 +199,7 @@ public class ContractItControllerRest {
                 logiService.save(new Logi(user.getLogin(), "Upd",
                         "Изменение контракта с id = " + id));
             }
-            contractItService.save(contract);
+            contractItService.save(contract); //todo
             return ResponseEntity.ok("Данные добавлены!");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Ошибка!");
@@ -196,7 +208,7 @@ public class ContractItControllerRest {
 
     @GetMapping("/download")
     public @ResponseBody
-    ResponseEntity download(
+    ResponseEntity<?> download(
             @RequestParam Long id,
             @AuthenticationPrincipal User user,
             Model model) {
@@ -248,7 +260,10 @@ public class ContractItControllerRest {
             @AuthenticationPrincipal User user,
             Model model) {
         try {
-            return new ResponseEntity<>(contractItMapper.toDto(contractItService.findById(id)), HttpStatus.OK);
+            return new ResponseEntity<>(
+                    contractItMapper.toDto(contractItService.findById(id)),
+                    HttpStatus.OK
+            );
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Ошибка!");
         }
@@ -256,19 +271,10 @@ public class ContractItControllerRest {
 
     @PostMapping(value = "/findTable")
     public ResponseEntity<?> findTable(
-
             @RequestBody FilterContractIt filterContractIt,
 
             @RequestParam(defaultValue = "1") Integer param,
             @RequestParam(defaultValue = "10") Integer col,
-
-            /*@RequestParam(defaultValue = "") String poleFindByNomGK,
-            @RequestParam(defaultValue = "") String poleFindByKontragent,
-            @RequestParam(defaultValue = "") String dateGK,
-            @RequestParam(defaultValue = "") String poleStatusGK,
-            @RequestParam(defaultValue = "0") Integer idot,
-            @RequestParam(defaultValue = "0") Integer sortk,
-            @RequestParam(defaultValue = "0") Integer sortd,*/
 
             @AuthenticationPrincipal User user,
             Authentication authentication
@@ -276,98 +282,56 @@ public class ContractItControllerRest {
 
         try {
 
-            /*Integer param = 0;
-            Integer col = 10;
-            FilterContractIt filterContractIt = new FilterContractIt(
-                    "",
-                    "",
-                    "",
-                    "",
-                    0,
-                    0,
-                    0
-            );*/
-
-            List<ContractIT> contracts;
-            if (filterContractIt.poleFindByNomGK().equals("") &&
-                    filterContractIt.poleFindByKontragent().equals("")) {
-                contracts = contractItService.findAllByRole(ROLE);
-            } else {
-                contracts = contractItService
-                        .findByNomGK(filterContractIt.poleFindByNomGK(),
-                                filterContractIt.poleFindByKontragent(), ROLE);
-            }
-
-            final Integer idot2 = filterContractIt.idot();
-            if (idot2 != null && !idot2.equals(0)) {
-                contracts = contracts
-                        .stream()
-                        .filter(contractIT ->
-                                contractIT.getIdzirot() != null && contractIT.getIdzirot().equals(idot2)
-                        )
-                        .collect(Collectors.toList());
-            }
             final Date dateGK2;
             if (filterContractIt.dateGK() != null && !filterContractIt.dateGK().equals("")) {
                 dateGK2 = ConverterDate.stringToDate(filterContractIt.dateGK().trim());
-                contracts = contracts
-                        .stream()
-                        .filter(contractIT ->
-                                contractIT.getDateGK() != null && contractIT.getDateGK().compareTo(dateGK2) == 0
-                        )
-                        .collect(Collectors.toList());
-            }
-            if (filterContractIt.poleStatusGK() != null && !filterContractIt.poleStatusGK().equals("")) {
-                contracts = contracts
-                        .stream()
-                        .filter(contractIT ->
-                                contractIT.getStatusGK() != null && contractIT.getStatusGK().compareTo(filterContractIt.poleStatusGK()) == 0
-                        )
-                        .collect(Collectors.toList());
+            } else {
+                dateGK2 = null;
             }
 
-            //фильтр
+            Sort sort = Sort.by("id").descending();
             if (filterContractIt.sortd() == 1) {
-                contracts = contracts
-                        .stream()
-                        .sorted(
-                                Comparator.comparing(ContractIT::getDateGK)
-                        )
-                        .collect(Collectors.toList());
+                sort = Sort.by("dateGK").and(Sort.by("id").descending());
             } else if (filterContractIt.sortd() == 2) {
-                contracts = contracts
-                        .stream()
-                        .sorted(
-                                Comparator.comparing(ContractIT::getDateGK).reversed()
-                        )
-                        .collect(Collectors.toList());
+                sort = Sort.by("dateGK").descending().and(Sort.by("id").descending());
+            }
+            if (filterContractIt.sortk() == 1) {
+                sort = Sort.by("kontragent").and(Sort.by("id").descending());
+            } else if (filterContractIt.sortk() == 2) {
+                sort = Sort.by("kontragent").descending().and(Sort.by("id").descending());
             }
 
-            if (filterContractIt.sortk() == 1) {
-                contracts = contracts
-                        .stream()
-                        .sorted(
-                                Comparator.comparing(ContractIT::getKontragent)
-                        )
-                        .collect(Collectors.toList());
-            } else if (filterContractIt.sortk() == 2) {
-                contracts = contracts
-                        .stream()
-                        .sorted(
-                                Comparator.comparing(ContractIT::getKontragent).reversed()
-                        )
-                        .collect(Collectors.toList());
-            }
+            List<ContractIT> contractsTest = contractItService.findAll(
+                    Specification.where(
+                            ContractITSpecification.roleEquals(ROLE)
+                                    .and(
+                                            ContractITSpecification.kontragentEquals(filterContractIt.poleFindByKontragent())
+                                    )
+                                    .and(
+                                            ContractITSpecification.nomGKEquals(filterContractIt.poleFindByNomGK())
+                                    )
+                                    .and(
+                                            ContractITSpecification.idotEquals(filterContractIt.idot())
+                                    )
+                                    .and(
+                                            ContractITSpecification.dateGKEquals(dateGK2)
+                                    )
+                                    .and(
+                                            ContractITSpecification.statusGKEquals(filterContractIt.poleStatusGK())
+                                    )
+                    ),
+
+                    PageRequest.of(
+                            param - 1, col,
+                            sort
+                    )
+            );
 
             return new ResponseEntity<>(
-                    contracts == null ? null : contracts
+                    (contractsTest == null) ? null : contractsTest
                             .stream()
                             .map(contractItMapper::toDto)
-                            .toList()
-                            .stream()
-                            .skip((long) col * (param - 1))
-                            .limit(col)
-                            .collect(Collectors.toList()),
+                            .toList(),
                     HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Ошибка!");

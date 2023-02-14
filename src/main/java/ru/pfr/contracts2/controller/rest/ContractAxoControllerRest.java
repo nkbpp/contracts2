@@ -23,7 +23,9 @@ import ru.pfr.contracts2.service.it.ItDocumentsService;
 import ru.pfr.contracts2.service.it.NaturalIndicatorService;
 import ru.pfr.contracts2.service.log.LogiService;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -35,6 +37,7 @@ public class ContractAxoControllerRest {
 
     private final ItDocumentsService itDocumentsService;
     private final NaturalIndicatorService naturalIndicatorService;//todo
+
 
     private final LogiService logiService;
 
@@ -51,6 +54,7 @@ public class ContractAxoControllerRest {
             @RequestParam(defaultValue = "") String statusGK,
             @RequestParam(defaultValue = "0") Double sum,
             @RequestParam(defaultValue = "0") Integer idzirot,
+            @RequestParam(defaultValue = "0") Long budgetClassificationId,
 
             @RequestParam(defaultValue = "0") Double January,
             @RequestParam(defaultValue = "0") Double February,
@@ -124,6 +128,7 @@ public class ContractAxoControllerRest {
                 naturalIndicators1.add(naturalIndicator);
             }
 
+
             if (id.equals("undefined")) { // Добавление
                 if (sumNaturalIndicators == -1) { //не обновлять если ничего не приходило
                     sumNaturalIndicators = 0D;
@@ -134,7 +139,7 @@ public class ContractAxoControllerRest {
                         January, February, March, April, May, June,
                         July, August, September, October, November, December,
                         sumNaturalIndicators, naturalIndicators1,
-                        doc.trim(), listDocuments, user, role, idzirot, "");
+                        doc.trim(), listDocuments, user, role, idzirot, "", null);
                 logiService.save(new Logi(user.getLogin(), "Add",
                         "Добавление axo контракта"));
             } else { // Изменения

@@ -35,7 +35,8 @@
                     </div>
                     <div class="col-3">
                         <label for="dateGK" class="form-label m-0">Дата</label>
-                        <input type="text" placeholder="дд.мм.гггг" class="form-control datepicker" id="dateGK" name="dateGK">
+                        <input type="text" placeholder="дд.мм.гггг" class="form-control datepicker" id="dateGK"
+                               name="dateGK">
                     </div>
                 </div>
                 <div class="col-12 row ">
@@ -55,11 +56,33 @@
                     <div class="col-2 align-self-center">Действие ГК</div>
                     <div class="col-3">
                         <label for="dateGKs" class="form-label m-0">дата c</label>
-                        <input type="text" placeholder="дд.мм.гггг" class="form-control datepicker" id="dateGKs" name="dateGKs">
+                        <input type="text" placeholder="дд.мм.гггг" class="form-control datepicker" id="dateGKs"
+                               name="dateGKs">
                     </div>
                     <div class="col-3">
                         <label for="dateGKpo" class="form-label m-0">дата по</label>
-                        <input type="text" placeholder="дд.мм.гггг" class="form-control datepicker" id="dateGKpo" name="dateGKpo">
+                        <input type="text" placeholder="дд.мм.гггг" class="form-control datepicker" id="dateGKpo"
+                               name="dateGKpo">
+                    </div>
+                </div>
+            </div>
+
+            <hr class="m-0">
+
+            <!--Бюджетная классификация-->
+            <div class="row mb-1 mt-3 ">
+                <div class="col-12 row ">
+                    <div class="col-2 align-self-center"></div>
+                    <div class="col-6">
+                        <label for="budgetClassification" class="form-label m-0">Бюджетная классификация</label>
+                        <select id="budgetClassification" class="form-select selectized">
+                            <option value="0" selected>Выберите бюджетную классификацию</option>
+                            <option
+                                    th:each="d : ${budgetClassification}"
+                                    th:text="${d.kod + ' ' + d.name}"
+                                    th:value="${d.id}"
+                            ></option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -295,24 +318,25 @@
                     <div class="col-10">
                         <div class="row">
                             <div class="col-4">
-                            <label for="sumNaturalIndicators" class="form-label m-0">Ожидаемый показатель</label>
-                            <input
-                                    class="form-control"
-                                    type="number"
-                                    id="sumNaturalIndicators"
-                                    name="sumNaturalIndicators"
-                                    min="0" step="1" data-bind="value:replyNumber"
-                                    onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
-                            />
+                                <label for="sumNaturalIndicators" class="form-label m-0">Ожидаемый показатель</label>
+                                <input
+                                        class="form-control"
+                                        type="number"
+                                        id="sumNaturalIndicators"
+                                        name="sumNaturalIndicators"
+                                        min="0" step="1" data-bind="value:replyNumber"
+                                        onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
+                                />
                             </div>
                         </div>
                         <hr class="mt-1 mb-0">
                         <div class="row">
-                            <label for="range" class="form-label">Количество месяцев <strong id="spanVal">0</strong></label>
+                            <label for="range" class="form-label">Количество месяцев <strong
+                                    id="spanVal">0</strong></label>
                             <input type="range" class="form-range" min="0" max="12" value="0" id="range">
                         </div>
                         <hr class="mt-1 mb-0">
-                        <div class="row" id="nt" >
+                        <div class="row" id="nt">
                             <div class="row">
                                 <div class="col-3  d-none">
                                     <label for="m1" class="form-label m-0">Месяц 1</label>
@@ -464,7 +488,7 @@
                     <div class="col-2 align-self-center">Ответственный</div>
                     <div class="col-6">
                         <label for="notificationsSelect" class="form-label m-0">ФИО</label>
-                        <select id="notificationsSelect"  class="form-select">
+                        <select id="notificationsSelect" class="form-select">
                             <option th:each="u : ${notifications}" th:text="${u.name}"
                                     th:value="${u.id_user}"></option>
                         </select>
@@ -474,18 +498,18 @@
             <hr class="m-0">
             <!--<hr class="m-0">-->
 
-<!--            <div class="row mb-1 mt-1 ">
-                <div class="col-12 row ">
-                    <div class="col-2 align-self-center">Документы</div>
-                    <div class="col">
-                        <textarea class="form-control mt-0"
-                                  name="doc" rows="2"></textarea>
-                    </div>
+            <!--            <div class="row mb-1 mt-1 ">
+                            <div class="col-12 row ">
+                                <div class="col-2 align-self-center">Документы</div>
+                                <div class="col">
+                                    <textarea class="form-control mt-0"
+                                              name="doc" rows="2"></textarea>
+                                </div>
 
-                </div>
-            </div>
+                            </div>
+                        </div>
 
-            <hr class="m-0">-->
+                        <hr class="m-0">-->
 
             <div class="row mb-1 mt-1 ">
                 <div class="col-12 row ">

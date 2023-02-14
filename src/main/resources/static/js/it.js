@@ -5,6 +5,8 @@ $(document).ready(function () {
     itbody.on('click', 'a', function () {
 
         if ($(this).attr('id') === "menuitcontract") { //Кнопка ИТ контракты
+            SORTK = 0;
+            SORTD = 0;
             let mainContainer = $("#mainContainer");
             mainContainer.html(getSpinner());
             mainContainer.load("/contract/it/vievTable", "", function () {
@@ -90,6 +92,7 @@ $(document).ready(function () {
                         $('input[name=November]').val(data.month11);
                         $('input[name=December]').val(data.month12);
                         $('#statusGK').val(data.statusGK);
+                        $('#budgetClassification').val(data.budgetClassification !== null ? data.budgetClassification.id : "0");
                         $('#notificationsSelect').val(data.idzirot);
 
                         for (let doc of data.documents) {
@@ -204,6 +207,7 @@ $(document).ready(function () {
                 param.append('id', encodeURIComponent($('#addContractIt').attr("data-id-contract")));
                 param.append('statusGK', $('#statusGK').val());
                 param.append('idzirot', $('#notificationsSelect').val());
+                param.append('budgetClassificationId', $('#budgetClassification').val());
 
                 let ntinput = $('#nt').find('.col-3:not(.d-none) input');
                 let strntinput = "";
@@ -262,15 +266,6 @@ function getContractItJson() {
 function getContractItParams() {
     return "param=" + activeList("#paginationItContract") +
         "&col=" + $("#col").val();
-    /*return "poleFindByNomGK=" + $("[data-name=poleFindByNomGK]").val() +
-        "&poleFindByKontragent=" + $("[data-name=poleFindByKontragent]").val() +
-        "&dateGK=" + $("#poleFindDateGK").val() +
-        "&poleStatusGK=" + $("#poleStatusGK").val() +
-        "&param=" + activeList("#paginationItContract") +
-        "&col=" + $("#col").val() +
-        "&idot=" + $("#poleFindnotificationsSelect").val() +
-        "&sortd=" + SORTD +
-        "&sortk=" + SORTK;*/
 }
 
 function ajaxContractIt(json, params) {
@@ -300,6 +295,12 @@ function ajaxContractIt(json, params) {
                         '<div><a class="btn btn-link" href="/contract/it/download?id=' + doc.id + '">' + replaceNull(doc.nameFile) + '</a></div>';
                 }
 
+                let bc = "";
+                if (item.budgetClassification === null || item.budgetClassification === "" || item.budgetClassification === undefined) {
+                } else {
+                    bc = replaceNull(item.budgetClassification.kod);
+                }
+
                 trHTML +=
                     '<tr class="' + (replaceNull(item.ostatoc) === "0.00" ? "table-success" : "") + '">' +
                     '<th>' + (start + +i + 1) + '</th>' +
@@ -311,6 +312,7 @@ function ajaxContractIt(json, params) {
                     '<td>' + replaceNull(item.dateGKpo) + '</td>' +
                     '<td>' + replaceNull(item.sum) + '</td>' +
                     '<td>' + replaceNull(item.statusGK) + '</td>' +
+                    '<td>' + bc + '</td>' +
                     '<td>' + replaceNull(item.month1) + '</td>' +
                     '<td>' + replaceNull(item.month2) + '</td>' +
                     '<td>' + replaceNull(item.month3) + '</td>' +

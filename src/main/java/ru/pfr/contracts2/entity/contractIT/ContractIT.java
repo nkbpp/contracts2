@@ -4,7 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import ru.pfr.contracts2.entity.user.User;
 import ru.pfr.contracts2.global.ConverterDate;
 import ru.pfr.contracts2.global.MyNumbers;
@@ -55,6 +56,10 @@ public class ContractIT {
     @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     private User user; //кто создал контракт
 
+    @ManyToOne
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private BudgetClassification budgetClassification;
+
     private Integer idzirot;
     private String nameot;//имя ответственного
     private String role;
@@ -64,27 +69,27 @@ public class ContractIT {
     private Date date_create;
 
     public String getDateGKRu() {
-        return dateGK==null?"":ConverterDate.datetostring_ddMMyyyy(dateGK);
+        return dateGK == null ? "" : ConverterDate.datetostring_ddMMyyyy(dateGK);
     }
 
     public String getDateGKEn() {
-        return dateGK==null?"":ConverterDate.datetostring_yyyyMMdd(dateGK);
+        return dateGK == null ? "" : ConverterDate.datetostring_yyyyMMdd(dateGK);
     }
 
     public String getDateGKsRu() {
-        return dateGKs==null?"":ConverterDate.datetostring_ddMMyyyy(dateGKs);
+        return dateGKs == null ? "" : ConverterDate.datetostring_ddMMyyyy(dateGKs);
     }
 
     public String getDateGKsEn() {
-        return dateGKs==null?"":ConverterDate.datetostring_yyyyMMdd(dateGKs);
+        return dateGKs == null ? "" : ConverterDate.datetostring_yyyyMMdd(dateGKs);
     }
 
     public String getDateGKpoRu() {
-        return dateGKpo==null?"":ConverterDate.datetostring_ddMMyyyy(dateGKpo);
+        return dateGKpo == null ? "" : ConverterDate.datetostring_ddMMyyyy(dateGKpo);
     }
 
     public String getDateGKpoEn() {
-        return dateGKpo==null?"":ConverterDate.datetostring_yyyyMMdd(dateGKpo);
+        return dateGKpo == null ? "" : ConverterDate.datetostring_yyyyMMdd(dateGKpo);
     }
 
     public String getSumOk() {
@@ -140,11 +145,11 @@ public class ContractIT {
     }
 
     public String getOstatoc() {
-        return MyNumbers.okrug(sum - (month1+month2+month3+month4+month5+month6+month7+month8+month9+month10+month11+month12));
+        return MyNumbers.okrug(sum - (month1 + month2 + month3 + month4 + month5 + month6 + month7 + month8 + month9 + month10 + month11 + month12));
     }
 
     public Double getOstatocDouble() {
-        return sum - (month1+month2+month3+month4+month5+month6+month7+month8+month9+month10+month11+month12);
+        return sum - (month1 + month2 + month3 + month4 + month5 + month6 + month7 + month8 + month9 + month10 + month11 + month12);
     }
 
     @OneToMany(mappedBy = "contractIT", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -164,7 +169,7 @@ public class ContractIT {
                       Double month8, Double month9, Double month10, Double month11, Double month12,
                       Double sumNaturalIndicators, List<NaturalIndicator> naturalIndicators,
                       String documentu, List<ItDocuments> itDocuments, User user, String role,
-                      Integer idzirot, String nameot) {
+                      Integer idzirot, String nameot, BudgetClassification budgetClassification) {
         this.nomGK = nomGK;
         this.kontragent = kontragent;
         this.statusGK = statusGK;
@@ -188,6 +193,7 @@ public class ContractIT {
         this.month12 = month12;
         this.documentu = documentu;
         this.user = user;
+        this.budgetClassification = budgetClassification;
 
         this.sumNaturalIndicators = sumNaturalIndicators;
         setAllNaturalIndicators(naturalIndicators);
@@ -227,7 +233,7 @@ public class ContractIT {
     }
 
     public void setAllNaturalIndicators(List<NaturalIndicator> naturalIndicators) {
-        while (this.naturalIndicators.size()>0){ //удаляем все что было
+        while (this.naturalIndicators.size() > 0) { //удаляем все что было
             removeNaturalIndicators(this.naturalIndicators.get(0));
         }
         for (NaturalIndicator d :
@@ -249,7 +255,7 @@ public class ContractIT {
         String s = "";
 
         for (int i = 0; i < naturalIndicators.size(); i++) {
-            s += (naturalIndicators.get(i).getSumOk() + ((i+1)!=naturalIndicators.size()?";":""));
+            s += (naturalIndicators.get(i).getSumOk() + ((i + 1) != naturalIndicators.size() ? ";" : ""));
         }
 
         return s;
@@ -258,10 +264,10 @@ public class ContractIT {
     public String getNaturalIndicatorsById(int i) {
         String s = "";
 
-        try{
+        try {
             s = naturalIndicators.get(i).getSumOk();
-        }catch (Exception e){
-            s=null;
+        } catch (Exception e) {
+            s = null;
         }
 
         return s;
@@ -270,7 +276,7 @@ public class ContractIT {
     public String getOstatocNaturalIndicator() {
         return MyNumbers.okrug(sumNaturalIndicators - naturalIndicators.stream()
                 .mapToDouble(value -> value.getSum())
-                .reduce((x,y) -> x + y).orElse(0));
+                .reduce((x, y) -> x + y).orElse(0));
     }
 
     public String getOjidRashodMonth() {
@@ -279,9 +285,9 @@ public class ContractIT {
 
     public String getFactRashodMonth() {
         return MyNumbers.okrug(naturalIndicators.stream()
-                        .mapToDouble(value -> value.getSum())
-                        .sum() / naturalIndicators.size()
-                );
+                .mapToDouble(value -> value.getSum())
+                .sum() / naturalIndicators.size()
+        );
     }
 
 }

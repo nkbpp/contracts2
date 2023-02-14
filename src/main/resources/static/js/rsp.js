@@ -5,10 +5,12 @@ $(document).ready(function () {
     itbody.on('click', 'a', function () {
 
         if ($(this).attr('id') === "menurspcontract") { //Кнопка ИТ контракты
+            SORTK = 0;
+            SORTD = 0;
             let mainContainer = $("#mainContainer");
             mainContainer.html(getSpinner());
             mainContainer.load("/contract/rsp/vievTable", "", function () {
-                ajaxContractIt("");
+                ajaxContractIt(getContractItJson(), "");
                 $('.datepicker').datepicker({
                     format: 'dd.mm.yyyy',
                     language: "ru"
@@ -42,7 +44,7 @@ $(document).ready(function () {
                         xhr.setRequestHeader(header, token);
                     },
                     success: function (data) {
-                        ajaxContractIt(getContractItParams())
+                        ajaxContractIt(getContractItJson(), getContractItParams())
                         initialToats("Удаление прошло успешно", data, "success").show();
                     },
                     error: function (textStatus) {
@@ -90,6 +92,7 @@ $(document).ready(function () {
                         $('input[name=November]').val(data.month11);
                         $('input[name=December]').val(data.month12);
                         $('#statusGK').val(data.statusGK);
+                        $('#budgetClassification').val(data.budgetClassification !== null ? data.budgetClassification.id : "0");
                         $('#notificationsSelect').val(data.idzirot);
 
                         for (let doc of data.documents) {
@@ -149,7 +152,7 @@ $(document).ready(function () {
                 $("#sortDspan").text("");
 
             }
-            ajaxContractIt(getContractItParams());
+            ajaxContractIt(getContractItJson(), getContractItParams());
         }
 
         return false;
@@ -158,10 +161,10 @@ $(document).ready(function () {
     itbody.on('click', 'button', function () {
 
         if ($(this).attr('name') === "findContractIt") { //поиск
-            SORTD=0;
-            SORTK=0;
+            SORTD = 0;
+            SORTK = 0;
             clearPagination($("#paginationItContract  a"))
-            ajaxContractIt(getContractItParams())
+            ajaxContractIt(getContractItJson(), getContractItParams())
             return false;
         }
 
@@ -204,6 +207,7 @@ $(document).ready(function () {
                 param.append('id', encodeURIComponent($('#addContractIt').attr("data-id-contract")));
                 param.append('statusGK', $('#statusGK').val());
                 param.append('idzirot', $('#notificationsSelect').val());
+                param.append('budgetClassificationId', $('#budgetClassification').val());
 
                 let ntinput = $('#nt').find('.col-3:not(.d-none) input');
                 let strntinput = "";
@@ -227,7 +231,7 @@ $(document).ready(function () {
                     success: function (data) {
                         //после добавления показать таблицу
                         $("#mainContainer").load("/contract/rsp/vievTable", "", function () {
-                            ajaxContractIt("");
+                            ajaxContractIt(getContractItJson(), "");
                         });
                         initialToats("Добавление прошло успешно", data, "success").show();
                     },
@@ -244,37 +248,40 @@ $(document).ready(function () {
 
 
 function fpagination() {
-    ajaxContractIt(getContractItParams())
+    ajaxContractIt(getContractItJson(), getContractItParams())
+}
+
+function getContractItJson() {
+    let object = {};
+    object['poleFindByNomGK'] = $("[data-name=poleFindByNomGK]").val();
+    object['poleFindByKontragent'] = $("[data-name=poleFindByKontragent]").val();
+    object['dateGK'] = $("#poleFindDateGK").val();
+    object['poleStatusGK'] = $("#poleStatusGK").val();
+    object['idot'] = $("#poleFindnotificationsSelect").val();
+    object['sortd'] = SORTD;
+    object['sortk'] = SORTK;
+    return JSON.stringify(object);
 }
 
 function getContractItParams() {
-    return "poleFindByNomGK=" + $("[data-name=poleFindByNomGK]").val() +
-        "&poleFindByKontragent=" + $("[data-name=poleFindByKontragent]").val() +
-        "&dateGK=" + $("#poleFindDateGK").val() +
-        "&poleStatusGK=" + $("#poleStatusGK").val() +
-        "&param=" + activeList("#paginationItContract") +
-        "&col=" + $("#col").val() +
-        "&idot=" + $("#poleFindnotificationsSelect").val() +
-        "&sortd=" + SORTD +
-        "&sortk=" + SORTK
-        ;
+    return "param=" + activeList("#paginationItContract") +
+        "&col=" + $("#col").val();
 }
 
-function ajaxContractIt(params) {
+function ajaxContractIt(json, params) {
 
     getSpinnerTable("tableContractIt")
     console.log("params = " + params)
+    console.log("json = " + json)
+    let token = $('#_csrf').attr('content');
+    let header = $('#_csrf_header').attr('content');
     $.ajax({
         url: "/contract/rsp/findTable?" + params,
-        data: "",
-        cache: false,
-        processData: false,
+        data: json,
+        type: 'post',
         contentType: "application/json",
-        dataType: 'json',
-        type: 'GET',
         beforeSend: function (xhr) {
-            xhr.setRequestHeader($('#_csrf').attr('content'),
-                $('#_csrf_header').attr('content'));
+            xhr.setRequestHeader(header, token);
         },
         success: function (response) {
             let trHTML = '';
@@ -288,6 +295,13 @@ function ajaxContractIt(params) {
                         '<div><a class="btn btn-link" href="/contract/rsp/download?id=' + doc.id + '">' + replaceNull(doc.nameFile) + '</a></div>';
                 }
 
+                let bc = "";
+                if (item.budgetClassification === null || item.budgetClassification === "" || item.budgetClassification === undefined) {
+
+                } else {
+                    bc = replaceNull(item.budgetClassification.kod);
+                }
+
                 trHTML +=
                     '<tr class="' + (replaceNull(item.ostatoc) === "0.00" ? "table-success" : "") + '">' +
                     '<th>' + (start + +i + 1) + '</th>' +
@@ -299,6 +313,7 @@ function ajaxContractIt(params) {
                     '<td>' + replaceNull(item.dateGKpo) + '</td>' +
                     '<td>' + replaceNull(item.sum) + '</td>' +
                     '<td>' + replaceNull(item.statusGK) + '</td>' +
+                    '<td>' + bc + '</td>' +
                     '<td>' + replaceNull(item.month1) + '</td>' +
                     '<td>' + replaceNull(item.month2) + '</td>' +
                     '<td>' + replaceNull(item.month3) + '</td>' +

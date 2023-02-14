@@ -4,14 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import ru.pfr.contracts2.entity.contractIT.BudgetClassificationResponseMapper;
 import ru.pfr.contracts2.entity.contractIT.ContractIT;
+import ru.pfr.contracts2.entity.contractIT.dto.BudgetClassificationDto;
 import ru.pfr.contracts2.entity.contractIT.mapper.ContractItMapper;
 import ru.pfr.contracts2.entity.log.Logi;
 import ru.pfr.contracts2.entity.user.User;
+import ru.pfr.contracts2.repository.it.BudgetClassificationRepository;
 import ru.pfr.contracts2.service.it.ContractItService;
 import ru.pfr.contracts2.service.log.LogiService;
 import ru.pfr.contracts2.service.zir.ZirServise;
@@ -30,6 +30,17 @@ public class ContractRspController {
     private final LogiService logiService;
     private final ContractItMapper contractItMapper;
 
+    private final BudgetClassificationRepository budgetClassificationRepository;
+    private final BudgetClassificationResponseMapper budgetClassificationResponseMapper;
+
+    @ModelAttribute(name = "budgetClassification")
+    public List<BudgetClassificationDto> budgetClassification() {
+        return budgetClassificationRepository.findByRole(ROLE)
+                .stream()
+                .map(budgetClassificationResponseMapper::apply)
+                .toList();
+    }
+
     @GetMapping("/vievTable")
     public String vievTable(
             @AuthenticationPrincipal User user,
@@ -40,7 +51,7 @@ public class ContractRspController {
         model.addAttribute("findContractName", "findContractIt");
         model.addAttribute(
                 "notifications",
-                zirServise.getNotification("148","149")
+                zirServise.getNotification("148", "149")
         );
         return "fragment/it/viev :: vievTable";
     }
@@ -84,7 +95,7 @@ public class ContractRspController {
 
         model.addAttribute(
                 "notifications",
-                zirServise.getNotification("148","149")
+                zirServise.getNotification("148", "149")
         );
 
         return "fragment/it/add :: addviev";
@@ -101,7 +112,7 @@ public class ContractRspController {
 
         model.addAttribute(
                 "notifications",
-                zirServise.getNotification("148","149")
+                zirServise.getNotification("148", "149")
         );
 
         return "fragment/it/add :: addviev";

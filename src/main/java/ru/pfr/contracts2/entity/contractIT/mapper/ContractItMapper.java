@@ -2,6 +2,7 @@ package ru.pfr.contracts2.entity.contractIT.mapper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import ru.pfr.contracts2.entity.contractIT.BudgetClassificationResponseMapper;
 import ru.pfr.contracts2.entity.contractIT.ContractIT;
 import ru.pfr.contracts2.entity.contractIT.dto.ContractITDto;
 
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 public class ContractItMapper {
 
     private final ItDocumentsMapper documentsMapper;
+    private final BudgetClassificationResponseMapper budgetClassificationResponseMapper;
 
     public ContractITDto toDto(ContractIT obj) {
         return ContractITDto.builder()
@@ -46,6 +48,11 @@ public class ContractItMapper {
                         .stream()
                         .map(documentsMapper::toDto)
                         .collect(Collectors.toList())
+                )
+                .budgetClassification(
+                        obj.getBudgetClassification() == null ?
+                                null :
+                                budgetClassificationResponseMapper.apply(obj.getBudgetClassification())
                 )
                 .build();
     }

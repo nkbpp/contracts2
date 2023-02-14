@@ -2,6 +2,8 @@ package ru.pfr.contracts2.service.it;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +28,14 @@ public class ContractItService {
 
     private List<ContractIT> findAll() {
         return contractItRepository.findAllByOrderByIdDesc();
+    }
+
+    public List<ContractIT> findAll(Specification<ContractIT> specification) {
+        return contractItRepository.findAll(specification);
+    }
+
+    public List<ContractIT> findAll(Specification<ContractIT> specification, Pageable pageable) {
+        return contractItRepository.findAll(specification, pageable).getContent();
     }
 
     public List<ContractIT> findAllByRole(String role) {

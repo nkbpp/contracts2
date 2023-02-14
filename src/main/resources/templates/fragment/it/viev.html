@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+>
 <body>
 
 <div th:fragment="vievTable">
@@ -64,7 +64,7 @@
                 </div>
                 <div class="col-3">
                     <label for="poleFindnotificationsSelect" class="form-label m-0">Ответственный</label>
-                    <select id="poleFindnotificationsSelect"  class="form-select m-1">
+                    <select id="poleFindnotificationsSelect" class="form-select m-1">
                         <option th:each="u : ${notifications}" th:text="${u.name}"
                                 th:value="${u.id_user}"></option>
                     </select>
@@ -160,8 +160,8 @@
                     </caption>
                     <thead>
                     <tr>
-                        <th  rowspan="2">№</th>
-                        <th colspan="7">Государственный контракт</th>
+                        <th rowspan="2">№</th>
+                        <th colspan="8">Государственный контракт</th>
                         <th colspan="3">1-й квартал</th>
                         <th colspan="3">2-й квартал</th>
                         <th colspan="3">3-й квартал</th>
@@ -180,6 +180,7 @@
                         <th>Действие ГК по</th>
                         <th>Сумма</th>
                         <th>Статус</th>
+                        <th>Доп. классификатор</th>
 
                         <th>Январь</th>
                         <th>Февраль</th>
