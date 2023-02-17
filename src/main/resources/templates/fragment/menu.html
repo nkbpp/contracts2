@@ -1,113 +1,124 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
-                xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
 <body>
 
 
 <nav th:fragment="menu" class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" th:href="@{/contract/main}">Главная</a>
-            <button
-                    class="navbar-toggler"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation"
-            >
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li sec:authorize="hasRole('ROLE_UPDATE')"
-                        class="nav-item">
-                        <a class="nav-link" aria-current="page" href="#" id="menuAdd">Добавить</a>
-                    </li>
-                    <li sec:authorize="hasRole('ROLE_UPDATE')" class="nav-item">
-                        <a class="nav-link position-relative" href="#" id="menuViev">Просмотр
-                            <!--<span id="viewBadge" th:class="'position-absolute top-25 start-100 translate-middle badge rounded-pill bg-danger ' + (${notispolnenosrok<=4 && notispolnenosrok>=0}? '':' fade')">-->
-                            <span id="viewBadge" class="position-absolute top-25 start-100
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/contract/main}">Главная</a>
+        <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li sec:authorize="hasRole('ROLE_UPDATE')"
+                    class="nav-item">
+                    <a class="nav-link" aria-current="page" href="#" id="menuAdd">Добавить</a>
+                </li>
+                <li sec:authorize="hasRole('ROLE_UPDATE')" class="nav-item">
+                    <a class="nav-link position-relative" href="#" id="menuViev">Просмотр
+                        <!--<span id="viewBadge" th:class="'position-absolute top-25 start-100 translate-middle badge rounded-pill bg-danger ' + (${notispolnenosrok<=4 && notispolnenosrok>=0}? '':' fade')">-->
+                        <span id="viewBadge" class="position-absolute top-25 start-100
                             translate-middle badge rounded-pill bg-danger fade">
                             </span>
-                        </a>
-                    </li>
-                    <li sec:authorize="hasRole('ROLE_UPDATE')" class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Справочники
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="#" id="vidObespSpisokViev">Вид обеспечения</a></li>
-                            <li><a class="dropdown-item" href="#" id="kontragentSpisokViev">Контрагент</a></li>
-                        </ul>
-                    </li>
+                    </a>
+                </li>
 
-                    <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
-                        <a class="nav-link" th:href="@{/contract/admin/admin}">Админка</a>
-                    </li>
-                    <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
-                        <a class="nav-link" th:href="@{/contract/admin/juraudit}">Журнал аудита</a>
-                    </li>
 
-                    <li sec:authorize="hasAnyRole('ROLE_UPDATEIT','ROLE_READIT')" class="nav-item">
-                        <a class="nav-link" href="#" id="menuitcontract">Контракты IT</a>
-                    </li>
+                <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
+                    <a class="nav-link" th:href="@{/contract/admin/admin}">Админка</a>
+                </li>
+                <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
+                    <a class="nav-link" th:href="@{/contract/admin/juraudit}">Журнал аудита</a>
+                </li>
 
-                    <li sec:authorize="hasAnyRole('ROLE_UPDATEAXO','ROLE_READAXO')" class="nav-item">
-                        <a class="nav-link" href="#" id="menuaxocontract">Контракты АХО</a>
-                    </li>
+                <li sec:authorize="hasAnyRole('ROLE_UPDATEIT','ROLE_READIT')" class="nav-item">
+                    <a class="nav-link" href="#" id="menuitcontract" name="menudopcontract">Контракты IT</a>
+                </li>
 
-                    <li sec:authorize="hasAnyRole('ROLE_UPDATERSP','ROLE_READRSP')" class="nav-item">
-                        <a class="nav-link" href="#" id="menurspcontract">Контракты РСП</a>
-                    </li>
+                <li sec:authorize="hasAnyRole('ROLE_UPDATEAXO','ROLE_READAXO')" class="nav-item">
+                    <a class="nav-link" href="#" id="menuaxocontract">Контракты АХО</a>
+                </li>
 
-                    <li sec:authorize="hasAnyRole('ROLE_UPDATEIT')" class="nav-item">
-                        <a class="nav-link" href="#" id="menuitaddcontract">Добавить контракт</a>
-                    </li>
-                    <li sec:authorize="hasAnyRole('ROLE_UPDATEAXO')" class="nav-item">
-                        <a class="nav-link" href="#" id="menuaxoaddcontract">Добавить контракт</a>
-                    </li>
-                    <li sec:authorize="hasAnyRole('ROLE_UPDATERSP')" class="nav-item">
-                        <a class="nav-link" href="#" id="menurspaddcontract">Добавить контракт</a>
-                    </li>
-                </ul>
-                <form
-                        class="d-flex"
-                        id="logout"
-                        name="logout"
-                        th:action="@{/logout}"
-                        method="post"
-                >
-                    <div class="text-center text-success align-self-center mx-2">Пользователь:
-                        <span sec:authorize="isAuthenticated()"  sec:authentication="principal.login"></span>
-                        <!--<span sec:authentication="principal.authorities"></span>-->
-                        <!--<a class="btn btn-link dropdown-toggle"
-                           href="#" role="button"
-                           id="dropdownMenuLink"
-                           data-bs-toggle="dropdown"
-                           aria-expanded="false"
-                           sec:authorize="isAuthenticated()"  sec:authentication="principal.login"
-                        ></a>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                            fgsdgfsdgsdfgsdg
-                        </ul>-->
-                    </div>
-                    <button class="btn btn-outline-success" type="submit">Выйти</button>
+                <li sec:authorize="hasAnyRole('ROLE_UPDATERSP','ROLE_READRSP')" class="nav-item">
+                    <a class="nav-link" href="#" id="menurspcontract" name="menudopcontract">Контракты РСП</a>
+                </li>
 
-                    <!--<span sec:authorize="isAuthenticated()">
-                        Logged user: <span sec:authentication="name"></span>
-                        Roles: <span sec:authentication="principal.authorities"></span>
-                        Отображение: <span sec:authorize="hasRole('ROLE_UPDATE')">Увидят только пользователи с ролью ROLE_UPDATE</span>
-                    </span>--><!--Для примера-->
+                <li sec:authorize="hasAnyRole('ROLE_UPDATEIT')" class="nav-item">
+                    <a class="nav-link" href="#" id="menuitaddcontract" name="menudopaddcontract">Добавить контракт</a>
+                </li>
+                <li sec:authorize="hasAnyRole('ROLE_UPDATEAXO')" class="nav-item">
+                    <a class="nav-link" href="#" id="menuaxoaddcontract">Добавить контракт</a>
+                </li>
+                <li sec:authorize="hasAnyRole('ROLE_UPDATERSP')" class="nav-item">
+                    <a class="nav-link" href="#" id="menurspaddcontract" name="menudopaddcontract">Добавить контракт</a>
+                </li>
 
-                </form>
-            </div>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        Справочники
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
+                        <li sec:authorize="hasRole('ROLE_UPDATE')"><a class="dropdown-item" href="#"
+                                                                      id="vidObespSpisokViev">Вид обеспечения</a></li>
+                        <li sec:authorize="hasRole('ROLE_UPDATE')"><a class="dropdown-item" href="#"
+                                                                      id="kontragentSpisokViev">Контрагент</a></li>
+                        <!--<li sec:authorize="hasAnyRole('ROLE_UPDATEIT','ROLE_UPDATERSP')">
+                            <a class="dropdown-item"
+                               href="#"
+                               id="budgetClassificationViev">Бюджетный классификатор</a>
+                        </li>-->
+                    </ul>
+                </li>
+
+            </ul>
+            <form
+                    class="d-flex"
+                    id="logout"
+                    name="logout"
+                    th:action="@{/logout}"
+                    method="post"
+            >
+                <div class="text-center text-success align-self-center mx-2">Пользователь:
+                    <span sec:authorize="isAuthenticated()" sec:authentication="principal.login"></span>
+                    <!--<span sec:authentication="principal.authorities"></span>-->
+                    <!--<a class="btn btn-link dropdown-toggle"
+                       href="#" role="button"
+                       id="dropdownMenuLink"
+                       data-bs-toggle="dropdown"
+                       aria-expanded="false"
+                       sec:authorize="isAuthenticated()"  sec:authentication="principal.login"
+                    ></a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        fgsdgfsdgsdfgsdg
+                    </ul>-->
+                </div>
+                <button class="btn btn-outline-success" type="submit">Выйти</button>
+
+                <!--<span sec:authorize="isAuthenticated()">
+                    Logged user: <span sec:authentication="name"></span>
+                    Roles: <span sec:authentication="principal.authorities"></span>
+                    Отображение: <span sec:authorize="hasRole('ROLE_UPDATE')">Увидят только пользователи с ролью ROLE_UPDATE</span>
+                </span>--><!--Для примера-->
+
+            </form>
         </div>
+    </div>
     <script sec:authorize="hasRole('ROLE_UPDATE')">
         viewBadgeFade();
 
-        function viewBadgeFade(){
+        function viewBadgeFade() {
 
             let token = $('#_csrf').attr('content');
             let header = $('#_csrf_header').attr('content');
@@ -123,8 +134,8 @@
                     xhr.setRequestHeader(header, token);
                 },
                 success: function (data) {
-                    console.log("timer ",data)
-                    if(data>0){
+                    console.log("timer ", data)
+                    if (data > 0) {
                         $("#viewBadge").removeClass('fade');
                     } else {
                         $("#viewBadge").addClass('fade');
@@ -144,7 +155,7 @@
             interval = setInterval(() => viewBadgeFade(), 4000);
         })
     </script>
-    </nav>
+</nav>
 
 </body>
 </html>

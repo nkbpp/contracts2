@@ -3,50 +3,113 @@ package ru.pfr.contracts2.controller.rest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.pfr.contracts2.entity.contractIT.*;
+import ru.pfr.contracts2.entity.contractIT.ContractIT;
+import ru.pfr.contracts2.entity.contractIT.ContractITSpecification;
+import ru.pfr.contracts2.entity.contractIT.ItDocuments;
+import ru.pfr.contracts2.entity.contractIT.dto.ContractDopRequest;
 import ru.pfr.contracts2.entity.contractIT.dto.FilterContractIt;
 import ru.pfr.contracts2.entity.contractIT.mapper.ContractItMapper;
+import ru.pfr.contracts2.entity.contractIT.mapper.ItDocumentsMapper;
 import ru.pfr.contracts2.entity.log.Logi;
 import ru.pfr.contracts2.entity.user.User;
-import ru.pfr.contracts2.global.ConverterDate;
+import ru.pfr.contracts2.global.GetOtdel;
 import ru.pfr.contracts2.global.Translit;
-import ru.pfr.contracts2.repository.it.BudgetClassificationRepository;
 import ru.pfr.contracts2.service.it.ContractItService;
 import ru.pfr.contracts2.service.it.ItDocumentsService;
 import ru.pfr.contracts2.service.log.LogiService;
-import ru.pfr.contracts2.service.zir.ZirServise;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = {"/contract/rsp"})
-public class ContractRspControllerRest {
+@RequestMapping(value = {"/contract/dop"})
+public class ContractDopControllerRest {
 
-    private static final String ROLE = "RSP";
     private final ContractItService contractItService;
 
     private final ItDocumentsService itDocumentsService;
-
-    private final BudgetClassificationRepository budgetClassificationRepository;
-
-    private final ZirServise zirServise;
+    private final ItDocumentsMapper documentsMapper;
     private final LogiService logiService;
     private final ContractItMapper contractItMapper;
 
-    @PostMapping("/upload")
+    @PostMapping(
+            value = "",
+            consumes = {
+                    MediaType.MULTIPART_FORM_DATA_VALUE
+            }
+    )
+    public ResponseEntity<?> add(
+            @RequestPart("file") List<MultipartFile> documents,
+            @RequestPart("contract") ContractDopRequest contractDopRequest,
+
+            @AuthenticationPrincipal User user,
+            Authentication authentication) {
+        try {
+
+            //проход по документам
+            List<ItDocuments> listDocuments = documents
+                    .stream()
+                    .map(documentsMapper::fromMultipart)
+                    .filter(Objects::nonNull)
+                    .toList();
+
+            ContractIT contract = contractItMapper
+                    .fromContractDopRequest(contractDopRequest);
+            contract.setRole(GetOtdel.get(authentication));
+            contract.setAllDocuments(listDocuments);
+            contract.setUser(user);
+
+            contractItService.save(contract);
+            return ResponseEntity.ok("Данные добавлены!");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Ошибка!");
+        }
+    }
+
+    @PutMapping(
+            value = "",
+            consumes = {
+                    MediaType.MULTIPART_FORM_DATA_VALUE
+            }
+    )
+    public ResponseEntity<?> update(
+            @RequestPart("file") List<MultipartFile> documents,
+            @RequestPart("contract") ContractDopRequest contractDopRequest,
+
+            @AuthenticationPrincipal User user,
+            Authentication authentication) {
+        try {
+
+            //проход по документам
+            List<ItDocuments> listDocuments = documents
+                    .stream()
+                    .map(documentsMapper::fromMultipart)
+                    .filter(Objects::nonNull)
+                    .toList();
+
+            ContractIT contract = contractItMapper
+                    .fromContractDopRequest(contractDopRequest);
+            contract.setRole(GetOtdel.get(authentication));
+            contract.setAllDocuments(listDocuments);
+            contract.setUser(user);
+
+            contractItService.save(contract);
+            return ResponseEntity.ok("Данные изменены!");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Ошибка!");
+        }
+    }
+
+    /*@PostMapping("/upload")
     public ResponseEntity<?> upload(
             @RequestParam(defaultValue = "undefined") String id,
             @RequestParam String nomGK,
@@ -77,9 +140,10 @@ public class ContractRspControllerRest {
             @RequestParam(defaultValue = "") String naturalIndicators,
 
             @RequestParam(defaultValue = "") String doc,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal User user,
+            Authentication authentication,
+            Model model) {
         try {
-
 
             //проход по документам
             List<ItDocuments> listDocuments = new ArrayList<>();
@@ -147,13 +211,14 @@ public class ContractRspControllerRest {
                 if (sumNaturalIndicators == -1) { //не обновлять если ничего не приходило
                     sumNaturalIndicators = 0D;
                 }
-                contract = new ContractIT(
+                contract = new ContractIT(null,
                         nomGK.trim(), kontragent.trim(), statusGK,
                         dateGK2, dateGKs2, dateGKpo2, sum,
                         January, February, March, April, May, June,
                         July, August, September, October, November, December,
                         sumNaturalIndicators, naturalIndicators1,
-                        doc.trim(), listDocuments, user, ROLE, idzirot, fio, budgetClassification);
+                        doc.trim(), listDocuments, user, GetOtdel.get(authentication),
+                        idzirot, fio, budgetClassification);
                 logiService.save(new Logi(user.getLogin(), "Add",
                         "Добавление it контракта"));
             } else { // Изменения
@@ -181,8 +246,8 @@ public class ContractRspControllerRest {
                 contract.setMonth12(December);
 
                 contract.setIdzirot(idzirot);
-                contract.setNameot(fio);
                 contract.setBudgetClassification(budgetClassification);
+                contract.setNameot(fio);
 
                 if (sumNaturalIndicators != -1) { //не обновлять если ничего не приходило
                     contract.setSumNaturalIndicators(sumNaturalIndicators);
@@ -194,19 +259,20 @@ public class ContractRspControllerRest {
                 logiService.save(new Logi(user.getLogin(), "Upd",
                         "Изменение контракта с id = " + id));
             }
-            contractItService.save(contract);
+            contractItService.save(contract); //todo
             return ResponseEntity.ok("Данные добавлены!");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Ошибка!");
         }
-    }
+    }*/
 
+    //todo перенести
     @GetMapping("/download")
     public @ResponseBody
-    ResponseEntity download(
+    ResponseEntity<?> download(
             @RequestParam Long id,
-            @AuthenticationPrincipal User user,
-            Model model) {
+            @AuthenticationPrincipal User user
+    ) {
         ItDocuments itDocuments = itDocumentsService.findById(id);
         logiService.save(new Logi(user.getLogin(), "Скачивание документа id = " + id));
         return ResponseEntity.ok()
@@ -216,11 +282,15 @@ public class ContractRspControllerRest {
                 .body(itDocuments.getDokument());
     }
 
-    @PostMapping("/delItDoc")
-    public ResponseEntity delItDoc(
-            @RequestParam Long id,
-            @AuthenticationPrincipal User user,
-            Model model) {
+    /**
+     * Удалить документ
+     */
+    //todo перенести
+    @DeleteMapping("/delItDoc/{id}")
+    public ResponseEntity<?> delItDoc(
+            @PathVariable("id") Long id,
+            @AuthenticationPrincipal User user
+    ) {
         try {
             String myDocumentsName = itDocumentsService.findById(id).getNameFile();
             itDocumentsService.delete(id);
@@ -234,11 +304,14 @@ public class ContractRspControllerRest {
         }
     }
 
-    @PostMapping("/deleteContract")
-    public ResponseEntity deleteContract(
-            @RequestParam Long id,
-            @AuthenticationPrincipal User user,
-            Model model) {
+    /**
+     * Удалить контракт по id +?
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteContract(
+            @PathVariable("id") Long id,
+            @AuthenticationPrincipal User user
+    ) {
         try {
             contractItService.delete(id);
             logiService.save(new Logi(user.getLogin(), "Del",
@@ -249,38 +322,36 @@ public class ContractRspControllerRest {
         }
     }
 
-    @PostMapping("/getContract/{id}")
+    /**
+     * Получить контракт по id +?
+     */
+    @GetMapping("/getContract/{id}")
     public ResponseEntity<?> getContract(
-            @PathVariable Long id,
-            @AuthenticationPrincipal User user,
-            Model model) {
+            @PathVariable Long id
+    ) {
         try {
-            return new ResponseEntity<>(contractItMapper.toDto(contractItService.findById(id)), HttpStatus.OK);
+            return new ResponseEntity<>(
+                    contractItMapper.toDto(contractItService.findById(id)),
+                    HttpStatus.OK
+            );
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Ошибка!");
         }
     }
 
+    /**
+     * Фильтр +?
+     */
     @PostMapping(value = "/findTable")
     public ResponseEntity<?> findTable(
             @RequestBody FilterContractIt filterContractIt,
 
             @RequestParam(defaultValue = "1") Integer param,
             @RequestParam(defaultValue = "10") Integer col,
-
-            @AuthenticationPrincipal User user,
             Authentication authentication
     ) {
 
         try {
-
-            final Date dateGK2;
-            if (filterContractIt.dateGK() != null && !filterContractIt.dateGK().equals("")) {
-                dateGK2 = ConverterDate.stringToDate(filterContractIt.dateGK().trim());
-            } else {
-                dateGK2 = null;
-            }
-
             Sort sort = Sort.by("id").descending();
             if (filterContractIt.sortd() == 1) {
                 sort = Sort.by("dateGK").and(Sort.by("id").descending());
@@ -293,26 +364,10 @@ public class ContractRspControllerRest {
                 sort = Sort.by("kontragent").descending().and(Sort.by("id").descending());
             }
 
-            List<ContractIT> contractsTest = contractItService.findAll(
-                    Specification.where(
-                            ContractITSpecification.roleEquals(ROLE)
-                                    .and(
-                                            ContractITSpecification.kontragentEquals(filterContractIt.poleFindByKontragent())
-                                    )
-                                    .and(
-                                            ContractITSpecification.nomGKEquals(filterContractIt.poleFindByNomGK())
-                                    )
-                                    .and(
-                                            ContractITSpecification.idotEquals(filterContractIt.idot())
-                                    )
-                                    .and(
-                                            ContractITSpecification.dateGKEquals(dateGK2)
-                                    )
-                                    .and(
-                                            ContractITSpecification.statusGKEquals(filterContractIt.poleStatusGK())
-                                    )
+            List<ContractIT> contracts = contractItService.findAll(
+                    ContractITSpecification.filterContractIt(
+                            filterContractIt, GetOtdel.get(authentication)
                     ),
-
                     PageRequest.of(
                             param - 1, col,
                             sort
@@ -320,7 +375,7 @@ public class ContractRspControllerRest {
             );
 
             return new ResponseEntity<>(
-                    (contractsTest == null) ? null : contractsTest
+                    (contracts == null) ? null : contracts
                             .stream()
                             .map(contractItMapper::toDto)
                             .toList(),

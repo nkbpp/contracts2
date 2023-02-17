@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<body>
+
+<div th:fragment="budgetClassification">
+    <form id="addBudgetClassification">
+        <div class="row mb-2 mt-2">
+            <div class="col-3">
+                <label for="addKodBudgetClassification" class="form-label m-0">Код</label>
+                <input type="text" class="form-control" id="addKodBudgetClassification" name="kod">
+            </div>
+            <div class="col-3">
+                <label for="addNameBudgetClassification" class="form-label m-0">Наименование</label>
+                <input type="text" class="form-control" id="addNameBudgetClassification" name="name">
+            </div>
+            <div class="col-2 d-flex align-items-end">
+                <a class="btn btn-secondary" id="buttonAddBudgetClassification">Добавить</a>
+            </div>
+        </div>
+    </form>
+
+    <table class="table table-block table-secondary table-striped table-hover
+    table-bordered text-center caption-top table-sm">
+        <caption>Бюджетный классификатор</caption>
+        <thead>
+        <tr>
+            <th>Номер п.п</th>
+            <th>Код</th>
+            <th>Наименование</th>
+            <th>Удалить</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="bc,iterStat : ${budgetClassifications}">
+            <th th:text="${iterStat.count}">
+            </th>
+            <td>
+                <input class="form-control"
+                       th:data-disabledInputBudgetClassification-id="${bc.id}"
+                       th:value="${bc.kod}"
+                       name="disabledInputBudgetClassificationKod"
+                       type="text"
+                       disabled readonly>
+            </td>
+            <td>
+                <input class="form-control"
+                       th:data-disabledInputBudgetClassification-id="${bc.id}"
+                       th:value="${bc.name}"
+                       name="disabledInputBudgetClassificationName"
+                       type="text"
+                       disabled readonly>
+            </td>
+            <td>
+                <a name="delSpisokBudgetClassification" th:id="${bc.id}"
+                   class="btn btn-secondary">X</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

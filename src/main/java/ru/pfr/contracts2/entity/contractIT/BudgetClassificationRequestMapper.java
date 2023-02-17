@@ -3,7 +3,7 @@ package ru.pfr.contracts2.entity.contractIT;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.pfr.contracts2.entity.contractIT.dto.BudgetClassificationDto;
-import ru.pfr.contracts2.repository.it.BudgetClassificationRepository;
+import ru.pfr.contracts2.repository.budgetClassification.BudgetClassificationRepository;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -26,7 +26,8 @@ public class BudgetClassificationRequestMapper implements Function<BudgetClassif
             }
             department = optionalDepartment.get();
         }
-        //department.name = request.name();
+        department.name = request.name();
+        department.kod = request.kod();
         return Optional.of(department);
     }
 

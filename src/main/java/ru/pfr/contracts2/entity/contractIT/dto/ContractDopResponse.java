@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ContractITDto {
+public class ContractDopResponse {
 
     private Long id;
     private String nomGK; //номер ГК
@@ -31,39 +31,41 @@ public class ContractITDto {
     @JsonDeserialize(using = CustomDateDeserializerRuAndEn.class)
     @JsonSerialize(using = CustomDateSerializerRu.class)
     private Date dateGKpo; //действие ГК по
+    private String statusGK; //Статус ГК
     @JsonSerialize(using = OkrugSerializer.class)
     private Double sum; //сумма
-    @JsonSerialize(using = OkrugSerializer.class)
-    private Double month1;
-    @JsonSerialize(using = OkrugSerializer.class)
-    private Double month2;
-    @JsonSerialize(using = OkrugSerializer.class)
-    private Double month3;
-    @JsonSerialize(using = OkrugSerializer.class)
-    private Double month4;
-    @JsonSerialize(using = OkrugSerializer.class)
-    private Double month5;
-    @JsonSerialize(using = OkrugSerializer.class)
-    private Double month6;
-    @JsonSerialize(using = OkrugSerializer.class)
-    private Double month7;
-    @JsonSerialize(using = OkrugSerializer.class)
-    private Double month8;
-    @JsonSerialize(using = OkrugSerializer.class)
-    private Double month9;
-    @JsonSerialize(using = OkrugSerializer.class)
-    private Double month10;
-    @JsonSerialize(using = OkrugSerializer.class)
-    private Double month11;
-    @JsonSerialize(using = OkrugSerializer.class)
-    private Double month12;
-    private String statusGK; //Статус ГК
     private Integer idzirot; // id ответственного в зире
-    private String nameot;//имя ответственного
+    private BudgetClassificationDto budgetClassification; //Бюджетная классификация
+
     @JsonSerialize(using = OkrugSerializer.class)
-    private Double ostatoc; //остаток
+    private Double January;
+    @JsonSerialize(using = OkrugSerializer.class)
+    private Double February;
+    @JsonSerialize(using = OkrugSerializer.class)
+    private Double March;
+    @JsonSerialize(using = OkrugSerializer.class)
+    private Double April;
+    @JsonSerialize(using = OkrugSerializer.class)
+    private Double May;
+    @JsonSerialize(using = OkrugSerializer.class)
+    private Double June;
+    @JsonSerialize(using = OkrugSerializer.class)
+    private Double July;
+    @JsonSerialize(using = OkrugSerializer.class)
+    private Double August;
+    @JsonSerialize(using = OkrugSerializer.class)
+    private Double September;
+    @JsonSerialize(using = OkrugSerializer.class)
+    private Double October;
+    @JsonSerialize(using = OkrugSerializer.class)
+    private Double November;
+    @JsonSerialize(using = OkrugSerializer.class)
+    private Double December;
     private List<ItDocumentsDto> documents;
 
-    /*private BudgetClassificationDto budgetClassification;*/
+
+/*    @JsonSerialize(using = OkrugSerializer.class)
+    private Double ostatoc; //остаток*/
+
 
 }

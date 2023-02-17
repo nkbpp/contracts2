@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 import ru.pfr.contracts2.entity.user.User;
 import ru.pfr.contracts2.global.ConverterDate;
 import ru.pfr.contracts2.global.MyNumbers;
@@ -56,9 +54,9 @@ public class ContractIT {
     @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     private User user; //кто создал контракт
 
-    @ManyToOne
+    /*@ManyToOne
     @LazyCollection(LazyCollectionOption.FALSE)
-    private BudgetClassification budgetClassification;
+    private BudgetClassification budgetClassification;*/
 
     private Integer idzirot;
     private String nameot;//имя ответственного
@@ -163,13 +161,14 @@ public class ContractIT {
     private List<NaturalIndicator> naturalIndicators = new ArrayList<>();
 
     @Builder
-    public ContractIT(String nomGK, String kontragent, String statusGK,
+    public ContractIT(Long id, String nomGK, String kontragent, String statusGK,
                       Date dateGK, Date dateGKs, Date dateGKpo, Double sum, Double month1, Double month2,
                       Double month3, Double month4, Double month5, Double month6, Double month7,
                       Double month8, Double month9, Double month10, Double month11, Double month12,
                       Double sumNaturalIndicators, List<NaturalIndicator> naturalIndicators,
                       String documentu, List<ItDocuments> itDocuments, User user, String role,
-                      Integer idzirot, String nameot, BudgetClassification budgetClassification) {
+                      Integer idzirot, String nameot/*, BudgetClassification budgetClassification*/) {
+        this.id = id;
         this.nomGK = nomGK;
         this.kontragent = kontragent;
         this.statusGK = statusGK;
@@ -193,7 +192,7 @@ public class ContractIT {
         this.month12 = month12;
         this.documentu = documentu;
         this.user = user;
-        this.budgetClassification = budgetClassification;
+        /*this.budgetClassification = budgetClassification;*/
 
         this.sumNaturalIndicators = sumNaturalIndicators;
         setAllNaturalIndicators(naturalIndicators);
@@ -214,10 +213,13 @@ public class ContractIT {
 /*        while (itDocuments.size()>0){
             removeDocuments(itDocuments.get(0));
         }*/
-        for (ItDocuments d :
-                myDocs) {
-            addDocuments(d);
+        if (myDocs != null) {
+            for (ItDocuments d :
+                    myDocs) {
+                addDocuments(d);
+            }
         }
+
     }
 
     public void removeDocuments(ItDocuments myDoc) {

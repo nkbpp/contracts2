@@ -133,13 +133,13 @@ public class ContractAxoControllerRest {
                 if (sumNaturalIndicators == -1) { //не обновлять если ничего не приходило
                     sumNaturalIndicators = 0D;
                 }
-                contract = new ContractIT(
+                contract = new ContractIT(null,
                         nomGK.trim(), kontragent.trim(), statusGK,
                         dateGK2, dateGKs2, dateGKpo2, sum,
                         January, February, March, April, May, June,
                         July, August, September, October, November, December,
                         sumNaturalIndicators, naturalIndicators1,
-                        doc.trim(), listDocuments, user, role, idzirot, "", null);
+                        doc.trim(), listDocuments, user, role, idzirot, ""/*, null*/);
                 logiService.save(new Logi(user.getLogin(), "Add",
                         "Добавление axo контракта"));
             } else { // Изменения

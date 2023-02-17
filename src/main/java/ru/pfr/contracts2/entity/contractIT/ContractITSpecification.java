@@ -1,6 +1,8 @@
 package ru.pfr.contracts2.entity.contractIT;
 
 import org.springframework.data.jpa.domain.Specification;
+import ru.pfr.contracts2.entity.contractIT.dto.FilterContractIt;
+import ru.pfr.contracts2.global.ConverterDate;
 
 import java.util.Date;
 
@@ -68,11 +70,22 @@ public class ContractITSpecification {
     }
 
     //todo
-/*    public static Specification<ContractIT> filterContractIt(FilterContractIt filter, String role) {
-
-        return (root, query, criteriaBuilder) ->
-                criteriaBuilder.like(root.get("kontragent"), "%" + kontragent + "%");
-    }*/
+    public static Specification<ContractIT> filterContractIt(FilterContractIt filter, String role) {
+        final Date dateGK2;
+        if (filter.dateGK() != null && !filter.dateGK().equals("")) {
+            dateGK2 = ConverterDate.stringToDate(filter.dateGK().trim());
+        } else {
+            dateGK2 = null;
+        }
+        return Specification.where(
+                roleEquals(role)
+                        .and(kontragentEquals(filter.poleFindByKontragent()))
+                        .and(nomGKEquals(filter.poleFindByNomGK()))
+                        .and(idotEquals(filter.idot()))
+                        .and(dateGKEquals(dateGK2))
+                        .and(statusGKEquals(filter.poleStatusGK()))
+        );
+    }
 
 /*    public static Specification<Product> expired() {
         return (root, query, criteriaBuilder) ->

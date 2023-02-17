@@ -12,7 +12,8 @@
     <script type="text/javascript" src="/webjars/jquery/3.3.1/jquery.js"></script>
 
     <script type="text/javascript" src="/webjars/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-    <script type="text/javascript" src="/webjars/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.ru.min.js"></script>
+    <script type="text/javascript"
+            src="/webjars/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.ru.min.js"></script>
     <link type="text/css" rel="stylesheet" href="/webjars/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"/>
 
     <script type="text/javascript" src="/webjars/jquery-maskedinput/1.4.1/src/jquery.maskedinput.js"></script>
@@ -33,23 +34,23 @@
     <script type="text/javascript" th:src="@{/js/spinner.js}"></script>
     <script type="text/javascript" th:src="@{/js/globalFunction.js}"></script>
 
-<!--    <style>
-        .table-fixed thead {
-            width: 97%;
-        }
-        .table-fixed tbody {
-            height: 230px;
-            overflow-y: auto;
-            width: 100%;
-        }
-        .table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
-            display: block;
-        }
-        .table-fixed tbody td, .table-fixed thead > tr> th {
-            float: left;
-            border-bottom-width: 0;
-        }
-    </style>-->
+    <!--    <style>
+            .table-fixed thead {
+                width: 97%;
+            }
+            .table-fixed tbody {
+                height: 230px;
+                overflow-y: auto;
+                width: 100%;
+            }
+            .table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
+                display: block;
+            }
+            .table-fixed tbody td, .table-fixed thead > tr> th {
+                float: left;
+                border-bottom-width: 0;
+            }
+        </style>-->
 
     <script type="text/javascript">
 
@@ -57,7 +58,7 @@
 
             let body = $("body");
 
-            body.on('keyup', 'input', function() {
+            body.on('keyup', 'input', function () {
                 let param = "name=" + $("#nameModalKontragent").val() +
                     "&inn=" + $("#innModalKontragent").val();
                 if ($(this).attr('id') === "nameModalKontragent") {
@@ -83,23 +84,23 @@
 
                 if ($(this).attr('data-name-doc') === "delDoc") {
                     let id = $(this).attr('data-id-doc');
-                    let param = "id="+id;
+                    let param = "id=" + id;
                     let token = $('#_csrf').attr('content');
                     let header = $('#_csrf_header').attr('content');
                     $.ajax({
                         url: '/contract/main/delDoc',
                         method: 'post',
                         data: param,
-                        beforeSend: function(xhr) {
+                        beforeSend: function (xhr) {
                             xhr.setRequestHeader(header, token);
                         },
-                        success: function(data){
-                            $("div[data-id-doc="+id+"]").remove();
-                            $("a[data-id-doc="+id+"]").remove();
-                            initialToats("Удаление прошло успешно",data,"success").show();
+                        success: function (data) {
+                            $("div[data-id-doc=" + id + "]").remove();
+                            $("a[data-id-doc=" + id + "]").remove();
+                            initialToats("Удаление прошло успешно", data, "success").show();
                         },
-                        error: function(textStatus){
-                            initialToats("Ошибка при удалении документа!!!",textStatus,"err").show();
+                        error: function (textStatus) {
+                            initialToats("Ошибка при удалении документа!!!", textStatus, "err").show();
                             console.log('ОШИБКИ AJAX запроса при удалении документа: ' + textStatus);
                         }
                     });
@@ -129,7 +130,7 @@
                 if ($(this).attr('id') === "notificationsVibor") {
                     console.log("notificationsVibor");
                     let val = $("#notificationsSelect").val();
-                    if($("#notifications div").is('#' + val)){
+                    if ($("#notifications div").is('#' + val)) {
                         alert("Вы уже добавили этого человека!");
                     } else {
                         let notif = $("#notifications");
@@ -160,26 +161,26 @@
 
                 if ($(this).attr('id') === "deleteContract") { //Удалить контракт
                     if (confirm("Вы точно хотите удалить заявление c порядковым номером = " +
-                        $(this).parents("#" + $(this).attr('name')).children().eq(0).text())){
+                        $(this).parents("#" + $(this).attr('name')).children().eq(0).text())) {
 
-                        let param = "id="+$(this).attr('name');
+                        let param = "id=" + $(this).attr('name');
                         let token = $('#_csrf').attr('content');
                         let header = $('#_csrf_header').attr('content');
                         $.ajax({
                             url: '/contract/main/deleteContract',
                             method: 'post',
                             data: param,
-                            beforeSend: function(xhr) {
+                            beforeSend: function (xhr) {
                                 xhr.setRequestHeader(header, token);
                             },
-                            success: function(data){
+                            success: function (data) {
                                 param = "param=" + activeList("#pagination");//чтобы при удалении осталась текущая страница
                                 $("#tableContainer").load("/contract/main/getTable", param, function () {
                                 });
-                                initialToats("Удаление прошло успешно",data,"success").show();
+                                initialToats("Удаление прошло успешно", data, "success").show();
                             },
-                            error: function(textStatus){
-                                initialToats("Ошибка!!!",textStatus,"err").show();
+                            error: function (textStatus) {
+                                initialToats("Ошибка!!!", textStatus, "err").show();
                                 //console.log('ОШИБКИ AJAX запроса: ' + textStatus);
                             }
                         });
@@ -197,11 +198,11 @@
                         $.ajax({
                             url: '/contract/main/dopnotification',
                             method: 'post',
-                            beforeSend: function(xhr) {
+                            beforeSend: function (xhr) {
                                 xhr.setRequestHeader(header, token);
                             },
-                            success: function(data) {
-                                if(!$.isEmptyObject(data)) {
+                            success: function (data) {
+                                if (!$.isEmptyObject(data)) {
                                     for (let notif of data.notifications) {
                                         let dv = $("#notifications");
                                         dv.html(
@@ -210,7 +211,7 @@
                                     }
                                 }
                             },
-                            error: function(textStatus){
+                            error: function (textStatus) {
                             }
                         });
                     });
@@ -219,7 +220,7 @@
 
                 if ($(this).attr('id') === "updateContract") {
                     console.log("update");
-                    let param = "id="+$(this).attr('name');
+                    let param = "id=" + $(this).attr('name');
 
                     $("#mainContainer").load("/contract/main/updateViev", param, function () {
                         $("#containerNotification").load("/contract/main/getnotification", "", function () {
@@ -230,33 +231,33 @@
                                 url: '/contract/main/getContract',
                                 method: 'post',
                                 data: param,
-                                beforeSend: function(xhr) {
+                                beforeSend: function (xhr) {
                                     xhr.setRequestHeader(header, token);
                                 },
-                                success: function(data){
-                                    $("#addContracts").attr("data-id-contract",data.contract.id)
+                                success: function (data) {
+                                    $("#addContracts").attr("data-id-contract", data.contract.id)
                                     $('input[name=receipt_date]').val(data.contract.receipt_date);
                                     $('input[name=plat_post]').val(data.contract.plat_post);
                                     $('input[name=nomGK]').val(data.contract.nomGK);
                                     $('input[name=dateGK]').val(data.contract.dateGK);
                                     $('[name=predmet_contract]').val(data.contract.predmet_contract);
 
-                                    console.log("predmet_contract",data.contract.predmet_contract);
+                                    console.log("predmet_contract", data.contract.predmet_contract);
 
                                     let kontragent = data.contract.kontragent;
-                                    if(kontragent!==""){
-                                        $("#kontragent option[value="+data.contract.kontragent+"]").prop("selected","true");
+                                    if (kontragent !== "") {
+                                        $("#kontragent option[value=" + data.contract.kontragent + "]").prop("selected", "true");
                                     }
                                     let vidObesp = data.contract.vidObesp;
-                                    if(vidObesp!==""){
-                                        $("#vidObesp option[value="+data.contract.vidObesp+"]").prop("selected","true");
+                                    if (vidObesp !== "") {
+                                        $("#vidObesp option[value=" + data.contract.vidObesp + "]").prop("selected", "true");
                                     }
                                     $('input[name=sum]').val(data.contract.sum);
                                     $('input[name=date_ispolnenija_GK]').val(data.contract.date_ispolnenija_GK);
                                     $('input[name=col_days]').val(data.contract.col_days);
                                     $('input[name=nomerZajavkiNaVozvrat]').val(data.contract.nomerZajavkiNaVozvrat);
                                     $('input[name=dateZajavkiNaVozvrat]').val(data.contract.dateZajavkiNaVozvrat);
-                                    $('#checkboxAddUpdate').prop("checked", data.contract.ispolneno==="true");
+                                    $('#checkboxAddUpdate').prop("checked", data.contract.ispolneno === "true");
 
                                     $('#addContracts').text("Изменить");
 
@@ -271,15 +272,15 @@
                                         let dv = $("#documentsViev");
                                         dv.html(
                                             dv.html() +
-                                            "<div class='mb-1' data-id-doc='" + doc.id + "'>"+doc.nameFile + " " +
+                                            "<div class='mb-1' data-id-doc='" + doc.id + "'>" + doc.nameFile + " " +
                                             "<button class='btn btn-secondary btn-sm' " +
                                             "data-id-doc='" + doc.id + "' data-name-doc='delDoc'>X</button>" +
                                             "</div>"
                                         );
                                     }
                                 },
-                                error: function(textStatus){
-                                    initialToats("Ошибка!!!",textStatus,"err").show();
+                                error: function (textStatus) {
+                                    initialToats("Ошибка!!!", textStatus, "err").show();
                                     console.log('ОШИБКИ AJAX запроса: ' + textStatus);
                                 }
                             });
@@ -288,8 +289,8 @@
                     return false;
                 }
 
-                if ($(this).attr('data-a-dop-modal')==="dataADopModal") {
-                    let param = "id="+$(this).attr('name');
+                if ($(this).attr('data-a-dop-modal') === "dataADopModal") {
+                    let param = "id=" + $(this).attr('name');
                     $("#modalDopContainerContent").load("/contract/main/dopTable", param, function () {
                     });
                     return false;
@@ -297,7 +298,7 @@
 
                 //переключатели страниц pagination
                 if ($(this).parents("#pagination").attr("id") === "pagination") {
-                    let list = clickPagination($(this),"#pagination");
+                    let list = clickPagination($(this), "#pagination");
                     let param = "param=" + list;
                     $("#tableContainer").load("/contract/main/getTable", param, function () {
                     });
@@ -305,7 +306,7 @@
 
                 //переключатели страниц MKpagination
                 if ($(this).parents("#MKpagination").attr("id") === "MKpagination") {
-                    let list = clickPagination($(this),"#MKpagination");
+                    let list = clickPagination($(this), "#MKpagination");
                     let param = "param=" + list;
                     $("#dliazamenyKontragentTable").load("/contract/main/kontragent/modalKontragentViev", param, function () {
                     });
@@ -328,17 +329,17 @@
                         url: '/contract/main/setIspolneno',
                         method: 'post',
                         data: param,
-                        beforeSend: function(xhr) {
+                        beforeSend: function (xhr) {
                             xhr.setRequestHeader(header, token);
                         },
-                        success: function(data){
+                        success: function (data) {
                             param = "id=" + id;
                             $("[data-progress-id=" + id + "]").load("/contract/main/getProgress", param, function () {
                             });
-                            initialToats("Изменение статуса прошло успешно",data,"success").show();
+                            initialToats("Изменение статуса прошло успешно", data, "success").show();
                         },
-                        error: function(textStatus){
-                            initialToats("Ошибка в изменении статуса!!!",textStatus,"err").show();
+                        error: function (textStatus) {
+                            initialToats("Ошибка в изменении статуса!!!", textStatus, "err").show();
                             console.log('ОШИБКИ AJAX запроса: ' + textStatus);
                         }
                     });
@@ -371,13 +372,14 @@
                 "</div>" +
                 "</div>";
         }
+
         function getSpinnerButton() {
             return '<span class="spinner-border spinner-border-sm mx-2" role="status" aria-hidden="true"></span>';
         }
 
 
-        function loadMenuView(param){
-            console.log('param = ',param);
+        function loadMenuView(param) {
+            console.log('param = ', param);
             let mainContainer = $("#mainContainer");
             mainContainer.html(getSpinner());
             mainContainer.load("/contract/main/vievTable", "", function () {
@@ -390,8 +392,8 @@
 
         function logObj(obj) { //для вывода обьектов в лог
             let str = "";
-            for(k in obj) {
-                str += k+": "+ obj[k]+"\r\n";
+            for (k in obj) {
+                str += k + ": " + obj[k] + "\r\n";
             }
             console.log(str);
         }
@@ -401,19 +403,22 @@
     <script type="text/javascript" th:src="@{/js/pagination.js}"></script>
     <script type="text/javascript" th:src="@{/js/documents.js}"></script>
     <script type="text/javascript" th:src="@{/js/spisok.js}"></script>
-    <script type="text/javascript" th:src="@{/js/kontragent.js}"></script>
+    <script sec:authorize="hasRole('ROLE_UPDATE')" type="text/javascript" th:src="@{/js/kontragent.js}"></script>
     <script type="text/javascript" th:src="@{/js/wrapper.js}"></script>
     <script sec:authorize="hasRole('ROLE_UPDATE')" type="text/javascript" th:src="@{/js/stat.js}"></script>
-    <script sec:authorize="hasAnyRole('ROLE_UPDATEIT','ROLE_READIT')" type="text/javascript" th:src="@{/js/it.js}"></script>
-    <script sec:authorize="hasAnyRole('ROLE_UPDATERSP','ROLE_READRSP')" type="text/javascript" th:src="@{/js/rsp.js}"></script>
-    <script sec:authorize="hasAnyRole('ROLE_UPDATEAXO','ROLE_READAXO')" type="text/javascript" th:src="@{/js/axo.js}"></script>
+    <script sec:authorize="hasAnyRole('ROLE_UPDATEIT','ROLE_READIT','ROLE_UPDATERSP','ROLE_READRSP')"
+            type="text/javascript" th:src="@{/js/dop.js}"></script>
+    <!--<script sec:authorize="hasAnyRole('ROLE_UPDATEIT','ROLE_UPDATERSP')" type="text/javascript"
+            th:src="@{/js/budgetClassification.js}"></script>-->
+    <script sec:authorize="hasAnyRole('ROLE_UPDATEAXO','ROLE_READAXO')" type="text/javascript"
+            th:src="@{/js/axo.js}"></script>
 
     <title>Обеспечение исполнения контрактов</title>
     <!--<link rel="stylesheet" th:href="@{/styles/full.css}">--><!--мои локальные стили-->
 </head>
 <body class="bg-dark" style="--bs-bg-opacity: .05;">
 
-<div class="container-fluid p-0" ><!--container-xxl-->
+<div class="container-fluid p-0"><!--container-xxl-->
 
     <div th:insert="fragment/menu :: menu"></div>
 
@@ -426,21 +431,20 @@
 </div>
 
 
-
 <script type="text/javascript" src="/webjars/bootstrap/5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     let options = {
-        animation : true,
-        autohide : false,
-        delay : 2000,
+        animation: true,
+        autohide: false,
+        delay: 2000,
     };
 
     function initialToats(header, message, type) {
         let i = 0;
         let tcs = $(".toast-container .show");
         let tc = $(".toast-container");
-        if(tcs.last().attr('id') !== undefined) {
-            i = +(tcs.last().attr('id').slice(-1))+1;
+        if (tcs.last().attr('id') !== undefined) {
+            i = +(tcs.last().attr('id').slice(-1)) + 1;
         } else {
             tc.html(""); //очистить контейнер
         }
@@ -448,43 +452,43 @@
 
         //console.log("i = ",i);
 
-        let myToast = $("#myToast"+i);
+        let myToast = $("#myToast" + i);
 
         const date = new Date();
-        $('#myToastTime'+i).text(date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds());
-        $('#myToastHeaderMes'+i).text(header);
-        $('#myToastMessage'+i).text(message);
+        $('#myToastTime' + i).text(date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds());
+        $('#myToastHeaderMes' + i).text(header);
+        $('#myToastMessage' + i).text(message);
 
         switch (type) {
             case "err":
                 myToast.addClass("bg-danger");
-                $('#myToastHeader'+i).addClass("bg-danger");
-            break;
+                $('#myToastHeader' + i).addClass("bg-danger");
+                break;
             case "success":
                 myToast.addClass("bg-success");
-                $('#myToastHeader'+i).addClass("bg-success");
-            break;
+                $('#myToastHeader' + i).addClass("bg-success");
+                break;
         }
 
         let toast = new bootstrap.Toast(myToast, options);
 
         //myToastHide();
-        myToastHide("#myToast"+i);
+        myToastHide("#myToast" + i);
 
         return toast;
     }
 
-    function myToastHide(myToast){
-        setTimeout( function () {
+    function myToastHide(myToast) {
+        setTimeout(function () {
             $(myToast).removeClass("show");
         }, 7000);
     }
 
-/*    function myToastHide(){
-        setTimeout( function () {
-            $(".toast-container .show").first().removeClass("show");
-        }, 7000);
-    }*/
+    /*    function myToastHide(){
+            setTimeout( function () {
+                $(".toast-container .show").first().removeClass("show");
+            }, 7000);
+        }*/
 
     function getToats(id) {
         return "<div id='myToast" + id + "' class='toast hide' role='alert' aria-live='assertive' aria-atomic='true' style='--bs-bg-opacity: .2;'>" +
