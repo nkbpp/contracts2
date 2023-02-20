@@ -33,13 +33,11 @@ $(document).ready(function () {
             if (confirm("Вы точно хотите удалить заявление c порядковым номером = " +
                 $(this).parents("tr").children().eq(0).text())) {
 
-                //let param = "id=" + $(this).attr('name');
                 let token = $('#_csrf').attr('content');
                 let header = $('#_csrf_header').attr('content');
                 $.ajax({
                     url: '/contract/dop/' + $(this).attr('name'),
                     method: 'delete',
-                    //data: param,
                     beforeSend: function (xhr) {
                         xhr.setRequestHeader(header, token);
                     },
@@ -70,7 +68,6 @@ $(document).ready(function () {
                         xhr.setRequestHeader(header, token);
                     },
                     success: function (data) {
-                        console.log(data)
                         $("#addContractIt").attr("data-id-contract", data.id)
 
                         $('textarea[name=nomGK]').val(data.nomGK);
@@ -125,7 +122,7 @@ $(document).ready(function () {
 
         //переключатели страниц pagination
         if ($(this).parents("#paginationItContract").attr("id") === "paginationItContract") {
-            let list = clickPagination($(this), "#paginationItContract");
+            clickPagination($(this), "#paginationItContract");
             fpagination()
         }
 
@@ -169,13 +166,11 @@ $(document).ready(function () {
 
         if ($(this).attr('data-name-doc') === "delItDoc") {
             let id = $(this).attr('data-id-doc');
-            //let param = "id=" + id;
             let token = $('#_csrf').attr('content');
             let header = $('#_csrf_header').attr('content');
             $.ajax({
                 url: '/contract/dop/delItDoc/' + id,
                 method: 'delete',
-                //data: param,
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader(header, token);
                 },
@@ -199,13 +194,14 @@ $(document).ready(function () {
             ) {
                 alert("Не все обязательные поля (отмеченные *) заполнены!")
             } else {
+                let addContractIt = $('#addContractIt').attr("data-id-contract");
+
                 $(this).prop("disabled", true);//делаем кнопку не активной
                 $(this).prepend(getSpinnerButton());// крутилкa
 
                 let form = new FormData($('#formItContract')[0]);
                 let jsonData = Object.fromEntries(form.entries());
-                let id = $('#addContractIt').attr("data-id-contract")
-                jsonData.id = id;
+                jsonData.id = addContractIt;
                 jsonData.statusGK = $('#statusGK').val();
                 jsonData.idzirot = $('#notificationsSelect').val();
                 /*let bc = {};
@@ -218,6 +214,7 @@ $(document).ready(function () {
 
                 let formDataFile = new FormData();
 
+                console.log(JSON.stringify(jsonData))
                 const blob = new Blob([JSON.stringify(jsonData)], {
                     type: 'application/json'
                 });
@@ -239,7 +236,7 @@ $(document).ready(function () {
                 let header = $('#_csrf_header').attr('content');
 
                 //ДОБАВЛЕНИЕ
-                if ($('#addContractIt').attr("data-id-contract") === undefined) {
+                if (addContractIt === undefined) {
                     $.ajax({
                         url: "/contract/dop",
                         data: formDataFile,
@@ -259,7 +256,7 @@ $(document).ready(function () {
                             });
                             initialToats("Добавление прошло успешно", data, "success").show();
                         },
-                        error: function (jqXHR, textStatus) {
+                        error: function (jqXHR) {
                             initialToats("Ошибка при добавлении!!!", jqXHR.responseText, "err").show();
                         }
                     });
@@ -283,32 +280,12 @@ $(document).ready(function () {
                             });
                             initialToats("Изменение прошло успешно", data, "success").show();
                         },
-                        error: function (jqXHR, textStatus) {
+                        error: function (jqXHR) {
                             initialToats("Ошибка при изменении!!!", jqXHR.responseText, "err").show();
                         }
                     });
                 }
 
-                /*$.post({
-                    url: "/contract/dop/upload",
-                    data: param,
-                    cache: false,
-                    processData: false, // Не обрабатываем файлы (Don't process the files)
-                    contentType: false, // Так jQuery скажет серверу что это строковой запрос
-                    beforeSend: function (xhr) {
-                        xhr.setRequestHeader(header, token);
-                    },
-                    success: function (data) {
-                        //после добавления показать таблицу
-                        $("#mainContainer").load("/contract/dop/vievTable", "", function () {
-                            ajaxContractIt(getContractItJson(), "");
-                        });
-                        initialToats("Добавление прошло успешно", data, "success").show();
-                    },
-                    error: function (jqXHR, textStatus) {
-                        initialToats("Ошибка при добавлении!!!", jqXHR.responseText, "err").show();
-                    }
-                });*/
             }
             return false;
         }
@@ -364,24 +341,16 @@ function ajaxContractIt(json, params) {
                         '<div><a class="btn btn-link" href="/contract/dop/download?id=' + doc.id + '">' + replaceNull(doc.nameFile) + '</a></div>';
                 }
 
-                /*let bc = "";
-                if (item.budgetClassification === null || item.budgetClassification === "" || item.budgetClassification === undefined) {
-                } else {
-                    bc = replaceNull(item.budgetClassification.kod);
-                }*/
                 let tecdate = new Date();
                 let mydate1 = new Date(replaceNull(item.dateGKpo).replace(/(\d+).(\d+).(\d+)/, '$3/$2/$1'));
                 let bDate = (tecdate.getTime() > mydate1.getTime()) && (replaceNull(item.statusGK) === "Действующий")
-                console.log(tecdate)
-                console.log(mydate1)
-                console.log(bDate)
+
                 trHTML +=
                     '<tr class="' + (replaceNull(item.ostatoc) === "0.00" ?
                             "table-success" :
                             bDate ? "table-danger" : ""
                     ) + '">' +
                     '<th>' + (start + +i + 1) + '</th>' +
-                    /*'<td>' + replaceNull(item.id) + '</td>' +*/
                     '<td class="fix">' + replaceNull(item.nomGK) + '</td>' +
                     '<td>' + replaceNull(item.kontragent) + '</td>' +
                     '<td>' + replaceNull(item.dateGK) + '</td>' +
@@ -411,9 +380,10 @@ function ajaxContractIt(json, params) {
                     '</td>' +
                     '</tr>';
             });
-            $('#tableContractIt').append(trHTML);
-            $('#wrapper1 .div1').attr('style', 'width: ' + $('#tableContractIt').width() + 'px;');
-            $('#wrapper2 .div2').attr('style', 'width: ' + $('#tableContractIt').width() + 'px;');
+            let tableContractIt = $('#tableContractIt');
+            tableContractIt.append(trHTML);
+            $('#wrapper1 .div1').attr('style', 'width: ' + tableContractIt.width() + 'px;');
+            $('#wrapper2 .div2').attr('style', 'width: ' + tableContractIt.width() + 'px;');
         },
         error: function (response) {
             initialToats("Ошибка!", response.responseJSON.message, "err").show();

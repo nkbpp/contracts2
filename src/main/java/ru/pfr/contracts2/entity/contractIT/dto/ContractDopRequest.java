@@ -6,11 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.pfr.contracts2.entity.annotations.date.CustomDateDeserializerRuAndEnNull;
-import ru.pfr.contracts2.entity.annotations.date.CustomDateSerializerRu;
+import ru.pfr.contracts2.entity.annotations.date.CustomLocalDateTimeDeserializerRuAndEnOrNull;
+import ru.pfr.contracts2.entity.annotations.date.CustomLocalDateTimeSerializerRu;
 import ru.pfr.contracts2.entity.annotations.okrug.OkrugSerializer;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data //@ToString, @EqualsAndHashCode, @Getter, @Setter, @RequiredArgsConstructor
 @AllArgsConstructor
@@ -21,15 +21,15 @@ public class ContractDopRequest {
     private Long id;
     private String nomGK; //номер ГК
     private String kontragent; //Контрагент
-    @JsonDeserialize(using = CustomDateDeserializerRuAndEnNull.class)
-    @JsonSerialize(using = CustomDateSerializerRu.class)
-    private Date dateGK; //дата ГК
-    @JsonDeserialize(using = CustomDateDeserializerRuAndEnNull.class)
-    @JsonSerialize(using = CustomDateSerializerRu.class)
-    private Date dateGKs; //действие ГК с
-    @JsonDeserialize(using = CustomDateDeserializerRuAndEnNull.class)
-    @JsonSerialize(using = CustomDateSerializerRu.class)
-    private Date dateGKpo; //действие ГК по
+    @JsonDeserialize(using = CustomLocalDateTimeDeserializerRuAndEnOrNull.class)
+    @JsonSerialize(using = CustomLocalDateTimeSerializerRu.class)
+    private LocalDateTime dateGK; //дата ГК
+    @JsonDeserialize(using = CustomLocalDateTimeDeserializerRuAndEnOrNull.class)
+    @JsonSerialize(using = CustomLocalDateTimeSerializerRu.class)
+    private LocalDateTime dateGKs; //действие ГК с
+    @JsonDeserialize(using = CustomLocalDateTimeDeserializerRuAndEnOrNull.class)
+    @JsonSerialize(using = CustomLocalDateTimeSerializerRu.class)
+    private LocalDateTime dateGKpo; //действие ГК по
     private String statusGK; //Статус ГК
     @JsonSerialize(using = OkrugSerializer.class)
     private Double sum; //сумма

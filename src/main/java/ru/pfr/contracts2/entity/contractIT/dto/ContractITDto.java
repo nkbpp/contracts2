@@ -6,11 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.pfr.contracts2.entity.annotations.date.CustomDateDeserializerRuAndEn;
-import ru.pfr.contracts2.entity.annotations.date.CustomDateSerializerRu;
+import ru.pfr.contracts2.entity.annotations.date.CustomLocalDateTimeDeserializerRuAndEn;
+import ru.pfr.contracts2.entity.annotations.date.CustomLocalDateTimeDeserializerRuAndEnOrNull;
+import ru.pfr.contracts2.entity.annotations.date.CustomLocalDateTimeSerializerRu;
 import ru.pfr.contracts2.entity.annotations.okrug.OkrugSerializer;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data //@ToString, @EqualsAndHashCode, @Getter, @Setter, @RequiredArgsConstructor
@@ -22,15 +23,15 @@ public class ContractITDto {
     private Long id;
     private String nomGK; //номер ГК
     private String kontragent; //Контрагент
-    @JsonDeserialize(using = CustomDateDeserializerRuAndEn.class)
-    @JsonSerialize(using = CustomDateSerializerRu.class)
-    private Date dateGK; //дата ГК
-    @JsonDeserialize(using = CustomDateDeserializerRuAndEn.class)
-    @JsonSerialize(using = CustomDateSerializerRu.class)
-    private Date dateGKs; //действие ГК с
-    @JsonDeserialize(using = CustomDateDeserializerRuAndEn.class)
-    @JsonSerialize(using = CustomDateSerializerRu.class)
-    private Date dateGKpo; //действие ГК по
+    @JsonDeserialize(using = CustomLocalDateTimeDeserializerRuAndEn.class)
+    @JsonSerialize(using = CustomLocalDateTimeSerializerRu.class)
+    private LocalDateTime dateGK; //дата ГК
+    @JsonDeserialize(using = CustomLocalDateTimeDeserializerRuAndEnOrNull.class)
+    @JsonSerialize(using = CustomLocalDateTimeSerializerRu.class)
+    private LocalDateTime dateGKs; //действие ГК с
+    @JsonDeserialize(using = CustomLocalDateTimeDeserializerRuAndEnOrNull.class)
+    @JsonSerialize(using = CustomLocalDateTimeSerializerRu.class)
+    private LocalDateTime dateGKpo; //действие ГК по
     @JsonSerialize(using = OkrugSerializer.class)
     private Double sum; //сумма
     @JsonSerialize(using = OkrugSerializer.class)

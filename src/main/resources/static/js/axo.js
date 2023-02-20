@@ -12,15 +12,15 @@ $(document).ready(function () {
                 $.ajax({
                     url: '/contract/axo/getContract/' + param,
                     method: 'post',
-                    beforeSend: function(xhr) {
+                    beforeSend: function (xhr) {
                         xhr.setRequestHeader(header, token);
                     },
-                    success: function(data){
-                        $("#addContractAxo").attr("data-id-contract",data.id)
+                    success: function (data) {
+                        $("#addContractAxo").attr("data-id-contract", data.id)
                         $('textarea[name=nomGK]').val(data.nomGK);
                         $('textarea[name=kontragent]').val(data.kontragent);
                         $('input[name=dateGK]').val(data.dateGK);
-                        $('input[name=sum]').val(data.sum.replace(',','.'));
+                        $('input[name=sum]').val(data.sum.replace(',', '.'));
                         $('input[name=January]').val(data.month1);
                         $('input[name=February]').val(data.month2);
                         $('input[name=March]').val(data.month3);
@@ -51,7 +51,7 @@ $(document).ready(function () {
                             let dv = $("#documentsAxoViev");
                             dv.html(
                                 dv.html() +
-                                "<div class='mb-1' data-id-doc='" + doc.id + "'>"+doc.nameFile + " " +
+                                "<div class='mb-1' data-id-doc='" + doc.id + "'>" + doc.nameFile + " " +
                                 "<button class='btn btn-secondary btn-sm' " +
                                 "data-id-doc='" + doc.id + "' data-name-doc='delAxoDoc'>X</button>" +
                                 "</div>"
@@ -63,8 +63,8 @@ $(document).ready(function () {
                         });
                         $('#addContractAxo').text("Изменить");
                     },
-                    error: function(textStatus){
-                        initialToats("Ошибка!!!",textStatus,"err").show();
+                    error: function (textStatus) {
+                        initialToats("Ошибка!!!", textStatus, "err").show();
                     }
                 });
             });
@@ -94,25 +94,25 @@ $(document).ready(function () {
 
         if ($(this).attr('id') === "deleteAxoContract") { //Удалить контракт
             if (confirm("Вы точно хотите удалить заявление c порядковым номером = " +
-                $(this).parents("tr").children().eq(0).text())){
+                $(this).parents("tr").children().eq(0).text())) {
 
-                let param = "id="+$(this).attr('name');
+                //let param = "id=" + $(this).attr('name');
                 let token = $('#_csrf').attr('content');
                 let header = $('#_csrf_header').attr('content');
                 $.ajax({
-                    url: '/contract/axo/deleteContract',
-                    method: 'post',
-                    data: param,
-                    beforeSend: function(xhr) {
+                    url: '/contract/axo/deleteContract/' + $(this).attr('name'),
+                    method: 'delete',
+                    //data: param,
+                    beforeSend: function (xhr) {
                         xhr.setRequestHeader(header, token);
                     },
-                    success: function(data){
+                    success: function (data) {
                         ajaxContractAxo()
 
-                        initialToats("Удаление прошло успешно",data,"success").show();
+                        initialToats("Удаление прошло успешно", data, "success").show();
                     },
-                    error: function(textStatus){
-                        initialToats("Ошибка!!!",textStatus,"err").show();
+                    error: function (textStatus) {
+                        initialToats("Ошибка!!!", textStatus, "err").show();
                     }
                 });
             }
@@ -121,14 +121,14 @@ $(document).ready(function () {
 
         //переключатели страниц pagination
         if ($(this).parents("#paginationAxoContract").attr("id") === "paginationAxoContract") {
-            let list = clickPagination($(this),"#paginationAxoContract");
+            let list = clickPagination($(this), "#paginationAxoContract");
             ajaxContractAxo()
         }
 
     })
 
     //сколько выводить на странице
-    axobody.on('change','#col',function(){
+    axobody.on('change', '#col', function () {
         ajaxContractAxo()
     });
 
@@ -143,12 +143,12 @@ $(document).ready(function () {
 
         if ($(this).attr('id') === "addContractAxo") {
             // проверка заполнения основных полей
-            if(
+            if (
                 !$("#nomGK").val().trim()
-            ){
+            ) {
                 alert("Не все обязательные поля (отмеченные *) заполнены!")
             } else {
-                $(this).prop("disabled",true);//делаем кнопку не активной
+                $(this).prop("disabled", true);//делаем кнопку не активной
                 $(this).prepend(getSpinnerButton());// крутилкa
 
                 let param = new FormData($('#formAxoContract')[0]);
@@ -157,7 +157,7 @@ $(document).ready(function () {
                 let ntinput = $('#nt').find('.col-3:not(.d-none) input');
                 let strntinput = "";
                 for (let i = 0; i < ntinput.length; i++) {
-                    strntinput += (ntinput.eq(i).val() + (((i+1)!=ntinput.length)?';':''));
+                    strntinput += (ntinput.eq(i).val() + (((i + 1) != ntinput.length) ? ';' : ''));
                 }
                 param.append('naturalIndicators', strntinput);
 
@@ -178,10 +178,10 @@ $(document).ready(function () {
                         $("#mainContainer").load("/contract/axo/vievTable", "", function () {
                             ajaxContractAxoNoNatural("");
                         });
-                        initialToats("Добавление прошло успешно",data,"success").show();
+                        initialToats("Добавление прошло успешно", data, "success").show();
                     },
                     error: function (jqXHR, textStatus) {
-                        initialToats("Ошибка при добавлении!!!",jqXHR.responseText,"err").show();
+                        initialToats("Ошибка при добавлении!!!", jqXHR.responseText, "err").show();
                     }
                 });
             }
@@ -191,23 +191,23 @@ $(document).ready(function () {
 
         if ($(this).attr('data-name-doc') === "delAxoDoc") {
             let id = $(this).attr('data-id-doc');
-            let param = "id="+id;
+            //let param = "id="+id;
             let token = $('#_csrf').attr('content');
             let header = $('#_csrf_header').attr('content');
             $.ajax({
-                url: '/contract/axo/delAxoDoc',
-                method: 'post',
-                data: param,
-                beforeSend: function(xhr) {
+                url: '/contract/axo/delAxoDoc/' + id,
+                method: 'delete',
+                //data: param,
+                beforeSend: function (xhr) {
                     xhr.setRequestHeader(header, token);
                 },
-                success: function(data){
-                    $("div[data-id-doc="+id+"]").remove();
-                    $("a[data-id-doc="+id+"]").remove();
-                    initialToats("Удаление прошло успешно",data,"success").show();
+                success: function (data) {
+                    $("div[data-id-doc=" + id + "]").remove();
+                    $("a[data-id-doc=" + id + "]").remove();
+                    initialToats("Удаление прошло успешно", data, "success").show();
                 },
-                error: function(textStatus){
-                    initialToats("Ошибка при удалении документа!!!",textStatus,"err").show();
+                error: function (textStatus) {
+                    initialToats("Ошибка при удалении документа!!!", textStatus, "err").show();
                     console.log('ОШИБКИ AJAX запроса при удалении документа: ' + textStatus);
                 }
             });
@@ -222,8 +222,8 @@ $(document).ready(function () {
 
     })
 
-    axobody.on('input','input', function() { //range
-        if($(this).attr('id')==='range'){
+    axobody.on('input', 'input', function () { //range
+        if ($(this).attr('id') === 'range') {
             let value = +$(this).val();
             inputAddClassDnone(value);
         }
@@ -237,14 +237,14 @@ function inputAddClassDnone(value) {
     $('#spanVal').text(value)
     let inputs = $('#nt').find('.col-3');
     for (let i = 0; i < inputs.length; i++) {
-        if(i<value)
+        if (i < value)
             inputs.eq(i).removeClass('d-none');
         else
             inputs.eq(i).addClass('d-none');
     }
 }
 
-function ajaxContractAxoNoNatural(params){
+function ajaxContractAxoNoNatural(params) {
 
     $("#tableContractAxo thead").html(
         "<tr>" +
@@ -300,18 +300,18 @@ function ajaxContractAxoNoNatural(params){
         success: function (response) {
             let trHTML = '';
             $('#tableContractAxo tbody').html("");
-            let start = (+activeList("#paginationAxoContract")-1)*$("#col").val();
+            let start = (+activeList("#paginationAxoContract") - 1) * $("#col").val();
             console.log("ststartr=" + start)
             $.each(response, function (i, item) {
                 let docum = "";
                 for (let doc of item.documents) {
                     docum +=
-                        '<div><a class="btn btn-link" href="/contract/it/download?id=' + doc.id + '">' + replaceNull(doc.nameFile) + '</a></div>';
+                        '<div><a class="btn btn-link" href="/contract/dop/download?id=' + doc.id + '">' + replaceNull(doc.nameFile) + '</a></div>';
                 }
 
                 trHTML +=
-                    '<tr class="' + (replaceNull(item.ostatoc)==="0.00"?"table-success":"") + '">' +
-                    '<th>' + (start + +i+1) + '</th>' +
+                    '<tr class="' + (replaceNull(item.ostatoc) === "0.00" ? "table-success" : "") + '">' +
+                    '<th>' + (start + +i + 1) + '</th>' +
                     /*'<td>' + replaceNull(item.id) + '</td>' +*/
                     '<td class="fix">' + replaceNull(item.nomGK) + '</td>' +
                     '<td>' + replaceNull(item.kontragent) + '</td>' +
@@ -340,17 +340,17 @@ function ajaxContractAxoNoNatural(params){
             });
 
             $('#tableContractAxo').append(trHTML);
-            $('#wrapper1 .div1').attr('style','width: ' + $('#tableContractAxo').width() + 'px;');
-            $('#wrapper2 .div2').attr('style','width: ' + $('#tableContractAxo').width() + 'px;');
+            $('#wrapper1 .div1').attr('style', 'width: ' + $('#tableContractAxo').width() + 'px;');
+            $('#wrapper2 .div2').attr('style', 'width: ' + $('#tableContractAxo').width() + 'px;');
         },
         error: function (response) {
-            initialToats("Ошибка!", response.responseJSON.message , "err").show();
+            initialToats("Ошибка!", response.responseJSON.message, "err").show();
             $('#tableContractAxo tbody').html("");
         }
     });
 }
 
-function ajaxContractAxoNatural(params){
+function ajaxContractAxoNatural(params) {
 
     $("#tableContractAxo thead").html(
         "<tr>" +
@@ -405,29 +405,29 @@ function ajaxContractAxoNatural(params){
         success: function (response) {
             let trHTML = '';
             $('#tableContractAxo tbody').html("");
-            let start = (+activeList("#paginationAxoContract")-1)*$("#col").val();
+            let start = (+activeList("#paginationAxoContract") - 1) * $("#col").val();
             $.each(response, function (i, item) {
 
                 trHTML +=
-                    '<tr class="' + (replaceNull(item.ostatoc)==="0.00"?"table-success":"") + '">' +
-                    '<th>' + (start + +i+1) + '</th>' +
+                    '<tr class="' + (replaceNull(item.ostatoc) === "0.00" ? "table-success" : "") + '">' +
+                    '<th>' + (start + +i + 1) + '</th>' +
                     /*'<td>' + replaceNull(item.id) + '</td>' +*/
                     '<td class="fix">' + replaceNull(item.nomGK) + '</td>' +
                     '<td>' + replaceNull(item.kontragent) + '</td>' +
                     '<td>' + replaceNull(item.dateGK) + '</td>' +
                     '<td>' + replaceNull(item.sumNaturalIndicators) + '</td>' +
-                    '<td>' + (item.naturalIndicators[0]===null || item.naturalIndicators[0]===undefined ? '' : replaceNull(item.naturalIndicators[0].sum)) + '</td>' +
-                    '<td>' + (item.naturalIndicators[1]===null || item.naturalIndicators[1]===undefined ? '' : replaceNull(item.naturalIndicators[1].sum)) + '</td>' +
-                    '<td>' + (item.naturalIndicators[2]===null || item.naturalIndicators[2]===undefined ? '' : replaceNull(item.naturalIndicators[2].sum)) + '</td>' +
-                    '<td>' + (item.naturalIndicators[3]===null || item.naturalIndicators[3]===undefined ? '' : replaceNull(item.naturalIndicators[3].sum)) + '</td>' +
-                    '<td>' + (item.naturalIndicators[4]===null || item.naturalIndicators[4]===undefined ? '' : replaceNull(item.naturalIndicators[4].sum)) + '</td>' +
-                    '<td>' + (item.naturalIndicators[5]===null || item.naturalIndicators[5]===undefined ? '' : replaceNull(item.naturalIndicators[5].sum)) + '</td>' +
-                    '<td>' + (item.naturalIndicators[6]===null || item.naturalIndicators[6]===undefined ? '' : replaceNull(item.naturalIndicators[6].sum)) + '</td>' +
-                    '<td>' + (item.naturalIndicators[7]===null || item.naturalIndicators[7]===undefined ? '' : replaceNull(item.naturalIndicators[7].sum)) + '</td>' +
-                    '<td>' + (item.naturalIndicators[8]===null || item.naturalIndicators[8]===undefined ? '' : replaceNull(item.naturalIndicators[8].sum)) + '</td>' +
-                    '<td>' + (item.naturalIndicators[9]===null || item.naturalIndicators[9]===undefined ? '' : replaceNull(item.naturalIndicators[9].sum)) + '</td>' +
-                    '<td>' + (item.naturalIndicators[10]===null || item.naturalIndicators[10]===undefined ? '' : replaceNull(item.naturalIndicators[10].sum)) + '</td>' +
-                    '<td>' + (item.naturalIndicators[11]===null || item.naturalIndicators[11]===undefined ? '' : replaceNull(item.naturalIndicators[11].sum)) + '</td>' +
+                    '<td>' + (item.naturalIndicators[0] === null || item.naturalIndicators[0] === undefined ? '' : replaceNull(item.naturalIndicators[0].sum)) + '</td>' +
+                    '<td>' + (item.naturalIndicators[1] === null || item.naturalIndicators[1] === undefined ? '' : replaceNull(item.naturalIndicators[1].sum)) + '</td>' +
+                    '<td>' + (item.naturalIndicators[2] === null || item.naturalIndicators[2] === undefined ? '' : replaceNull(item.naturalIndicators[2].sum)) + '</td>' +
+                    '<td>' + (item.naturalIndicators[3] === null || item.naturalIndicators[3] === undefined ? '' : replaceNull(item.naturalIndicators[3].sum)) + '</td>' +
+                    '<td>' + (item.naturalIndicators[4] === null || item.naturalIndicators[4] === undefined ? '' : replaceNull(item.naturalIndicators[4].sum)) + '</td>' +
+                    '<td>' + (item.naturalIndicators[5] === null || item.naturalIndicators[5] === undefined ? '' : replaceNull(item.naturalIndicators[5].sum)) + '</td>' +
+                    '<td>' + (item.naturalIndicators[6] === null || item.naturalIndicators[6] === undefined ? '' : replaceNull(item.naturalIndicators[6].sum)) + '</td>' +
+                    '<td>' + (item.naturalIndicators[7] === null || item.naturalIndicators[7] === undefined ? '' : replaceNull(item.naturalIndicators[7].sum)) + '</td>' +
+                    '<td>' + (item.naturalIndicators[8] === null || item.naturalIndicators[8] === undefined ? '' : replaceNull(item.naturalIndicators[8].sum)) + '</td>' +
+                    '<td>' + (item.naturalIndicators[9] === null || item.naturalIndicators[9] === undefined ? '' : replaceNull(item.naturalIndicators[9].sum)) + '</td>' +
+                    '<td>' + (item.naturalIndicators[10] === null || item.naturalIndicators[10] === undefined ? '' : replaceNull(item.naturalIndicators[10].sum)) + '</td>' +
+                    '<td>' + (item.naturalIndicators[11] === null || item.naturalIndicators[11] === undefined ? '' : replaceNull(item.naturalIndicators[11].sum)) + '</td>' +
                     '<td>' + replaceNull(item.ojidRashodMonth) + '</td>' +
                     '<td>' + replaceNull(item.factRashodMonth) + '</td>' +
                     '<td>' + replaceNull(item.ostatoc) + '</td>' +
@@ -439,11 +439,11 @@ function ajaxContractAxoNatural(params){
             });
 
             $('#tableContractAxo').append(trHTML);
-            $('#wrapper1 .div1').attr('style','width: ' + $('#tableContractAxo').width() + 'px;');
-            $('#wrapper2 .div2').attr('style','width: ' + $('#tableContractAxo').width() + 'px;');
+            $('#wrapper1 .div1').attr('style', 'width: ' + $('#tableContractAxo').width() + 'px;');
+            $('#wrapper2 .div2').attr('style', 'width: ' + $('#tableContractAxo').width() + 'px;');
         },
         error: function (response) {
-            initialToats("Ошибка!", response.responseJSON.message , "err").show();
+            initialToats("Ошибка!", response.responseJSON.message, "err").show();
             $('#tableContractAxo tbody').html("");
         }
     });
@@ -458,9 +458,9 @@ function getContractAxoParams() {
 
 function ajaxContractAxo() {
     let bool = $("#flexCheckChecked").prop("checked");
-    if(bool){
+    if (bool) {
         ajaxContractAxoNatural(getContractAxoParams())
-    }else{
+    } else {
         ajaxContractAxoNoNatural(getContractAxoParams())
     }
 }

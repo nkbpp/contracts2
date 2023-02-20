@@ -1,9 +1,7 @@
 package ru.pfr.contracts2.controller.rest;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,16 +15,13 @@ import ru.pfr.contracts2.entity.contractIT.mapper.ContractAxoMapper;
 import ru.pfr.contracts2.entity.log.Logi;
 import ru.pfr.contracts2.entity.user.User;
 import ru.pfr.contracts2.global.ConverterDate;
-import ru.pfr.contracts2.global.Translit;
 import ru.pfr.contracts2.service.it.ContractItService;
-import ru.pfr.contracts2.service.it.ItDocumentsService;
 import ru.pfr.contracts2.service.it.NaturalIndicatorService;
 import ru.pfr.contracts2.service.log.LogiService;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,13 +29,8 @@ import java.util.stream.Collectors;
 public class ContractAxoControllerRest {
 
     private final ContractItService contractItService;
-
-    private final ItDocumentsService itDocumentsService;
     private final NaturalIndicatorService naturalIndicatorService;//todo
-
-
     private final LogiService logiService;
-
     private final ContractAxoMapper contractAxoMapper;
 
     @PostMapping("/upload")
@@ -54,7 +44,7 @@ public class ContractAxoControllerRest {
             @RequestParam(defaultValue = "") String statusGK,
             @RequestParam(defaultValue = "0") Double sum,
             @RequestParam(defaultValue = "0") Integer idzirot,
-            @RequestParam(defaultValue = "0") Long budgetClassificationId,
+            //@RequestParam(defaultValue = "0") Long budgetClassificationId,
 
             @RequestParam(defaultValue = "0") Double January,
             @RequestParam(defaultValue = "0") Double February,
@@ -106,19 +96,19 @@ public class ContractAxoControllerRest {
 
             ContractIT contract;
 
-            Date dateGK2;
-            dateGK2 = ConverterDate.stringToDate(dateGK.trim());
-            Date dateGKs2;
-            dateGKs2 = ConverterDate.stringToDate(dateGKs.trim());
-            Date dateGKpo2;
-            dateGKpo2 = ConverterDate.stringToDate(dateGKpo.trim());
+            LocalDateTime dateGK2;
+            dateGK2 = ConverterDate.stringToLocalDateTime(dateGK.trim());
+            LocalDateTime dateGKs2;
+            dateGKs2 = ConverterDate.stringToLocalDateTime(dateGKs.trim());
+            LocalDateTime dateGKpo2;
+            dateGKpo2 = ConverterDate.stringToLocalDateTime(dateGKpo.trim());
 
             //проход по натуральным показателям
             List<NaturalIndicator> naturalIndicators1 = new ArrayList<>();
             List<Double> naturalIndicatorsDoubles =
                     naturalIndicators.length() > 0 ?
                             List.of(naturalIndicators.split(";")).stream()
-                                    .mapToDouble(d -> Double.parseDouble(d))
+                                    .mapToDouble(Double::parseDouble)
                                     .boxed()
                                     .toList() : new ArrayList<>();
 
@@ -185,44 +175,11 @@ public class ContractAxoControllerRest {
         }
     }
 
-    @GetMapping("/download")
-    public @ResponseBody
-    ResponseEntity download(
-            @RequestParam Long id,
-            @AuthenticationPrincipal User user,
-            Model model) {
-        ItDocuments itDocuments = itDocumentsService.findById(id);
-        logiService.save(new Logi(user.getLogin(), "Скачивание документа id = " + id));
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType("application/octet-stream"))
-                .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=\"" + Translit.cyr2lat(itDocuments.getNameFile()) + "\"")
-                .body(itDocuments.getDokument());
-    }
-
-    @PostMapping("/delAxoDoc")
-    public ResponseEntity delAxoDoc(
-            @RequestParam Long id,
-            @AuthenticationPrincipal User user,
-            Model model) {
-        try {
-            String myDocumentsName = itDocumentsService.findById(id).getNameFile();
-            itDocumentsService.delete(id);
-            logiService.save(new Logi(user.getLogin(), "Del",
-                    "Удаление документа с id = " + id));
-            return ResponseEntity.ok(
-                    "Документ с именем " + myDocumentsName + " успешно удален!");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(
-                    "Ошибка при удалении файла с ID = " + id + " !");
-        }
-    }
-
-    @PostMapping("/deleteContract")
-    public ResponseEntity deleteContract(
-            @RequestParam Long id,
-            @AuthenticationPrincipal User user,
-            Model model) {
+    @DeleteMapping("/deleteContract/{id}")
+    public ResponseEntity<?> deleteContract(
+            @PathVariable("id") Long id,
+            @AuthenticationPrincipal User user
+    ) {
         try {
             contractItService.delete(id);
             logiService.save(new Logi(user.getLogin(), "Del",
@@ -272,11 +229,11 @@ public class ContractAxoControllerRest {
                     contracts == null ? null : contracts
                             .stream()
                             .map(contractAxoMapper::toDto)
-                            .collect(Collectors.toList())
+                            .toList()
                             .stream()
                             .skip((long) col * (param - 1))
                             .limit(col)
-                            .collect(Collectors.toList()),
+                            .toList(),
                     HttpStatus.OK);
 
         } catch (Exception e) {

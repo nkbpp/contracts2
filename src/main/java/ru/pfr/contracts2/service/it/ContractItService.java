@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.pfr.contracts2.entity.contractIT.ContractIT;
 import ru.pfr.contracts2.repository.it.ContractItRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -68,6 +69,11 @@ public class ContractItService {
     }
 
     public void save(ContractIT contractIT) {
+        contractItRepository.save(contractIT);
+    }
+
+    public void update(ContractIT contractIT) {
+        contractIT.setDate_update(LocalDateTime.now());
         contractItRepository.save(contractIT);
     }
 

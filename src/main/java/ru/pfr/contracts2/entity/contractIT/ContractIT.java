@@ -5,12 +5,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.pfr.contracts2.entity.user.User;
-import ru.pfr.contracts2.global.ConverterDate;
 import ru.pfr.contracts2.global.MyNumbers;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Data
@@ -27,10 +26,10 @@ public class ContractIT {
 
     private String kontragent; //Контрагент
 
-    private Date dateGK; //дата ГК
+    private LocalDateTime dateGK; //дата ГК
 
-    private Date dateGKs; //действие ГК с
-    private Date dateGKpo; //действие ГК по
+    private LocalDateTime dateGKs; //действие ГК с
+    private LocalDateTime dateGKpo; //действие ГК по
 
     private String statusGK; //Статус ГК
     private Double sum; //сумма
@@ -62,11 +61,11 @@ public class ContractIT {
     private String nameot;//имя ответственного
     private String role;
 
-    private Date date_update;
+    private LocalDateTime date_update;
 
-    private Date date_create;
+    private LocalDateTime date_create = LocalDateTime.now();
 
-    public String getDateGKRu() {
+/*    public String getDateGKRu() {
         return dateGK == null ? "" : ConverterDate.datetostring_ddMMyyyy(dateGK);
     }
 
@@ -141,6 +140,8 @@ public class ContractIT {
     public String getMonth12Ok() {
         return MyNumbers.okrug(month12);
     }
+    */
+
 
     public String getOstatoc() {
         return MyNumbers.okrug(sum - (month1 + month2 + month3 + month4 + month5 + month6 + month7 + month8 + month9 + month10 + month11 + month12));
@@ -162,7 +163,7 @@ public class ContractIT {
 
     @Builder
     public ContractIT(Long id, String nomGK, String kontragent, String statusGK,
-                      Date dateGK, Date dateGKs, Date dateGKpo, Double sum, Double month1, Double month2,
+                      LocalDateTime dateGK, LocalDateTime dateGKs, LocalDateTime dateGKpo, Double sum, Double month1, Double month2,
                       Double month3, Double month4, Double month5, Double month6, Double month7,
                       Double month8, Double month9, Double month10, Double month11, Double month12,
                       Double sumNaturalIndicators, List<NaturalIndicator> naturalIndicators,
@@ -201,7 +202,6 @@ public class ContractIT {
 
         this.role = role;
 
-        date_create = new Date();
     }
 
     public void addDocuments(ItDocuments myDoc) {
