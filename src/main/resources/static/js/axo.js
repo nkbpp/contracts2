@@ -292,7 +292,7 @@ function ajaxContractAxoNoNatural(params) {
         processData: false,
         contentType: "application/json",
         dataType: 'json',
-        type: 'GET',
+        type: 'POST',
         beforeSend: function (xhr) {
             xhr.setRequestHeader($('#_csrf').attr('content'),
                 $('#_csrf_header').attr('content'));

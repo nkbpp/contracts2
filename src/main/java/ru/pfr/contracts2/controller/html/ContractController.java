@@ -5,15 +5,16 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.pfr.contracts2.entity.contracts.Contract;
-import ru.pfr.contracts2.entity.log.Logi;
+import ru.pfr.contracts2.entity.contracts.Kontragent;
+import ru.pfr.contracts2.entity.contracts.VidObesp;
 import ru.pfr.contracts2.entity.user.User;
 import ru.pfr.contracts2.service.contracts.ContractService;
 import ru.pfr.contracts2.service.contracts.KontragentService;
 import ru.pfr.contracts2.service.contracts.VidObespService;
-import ru.pfr.contracts2.service.log.LogiService;
 import ru.pfr.contracts2.service.zir.ZirServise;
 
 import java.util.ArrayList;
@@ -29,7 +30,20 @@ public class ContractController {
     private final KontragentService kontragentService;
     private final ZirServise zirServise;
 
-    private final LogiService logiService;
+    @ModelAttribute(name = "vidObesp")
+    public List<VidObesp> vidObesp() {
+        return vidObespService.findAllwithPusto();
+    }
+
+    @ModelAttribute(name = "kontragent")
+    public List<Kontragent> kontragent() {
+        return kontragentService.findAllwithPusto();
+    }
+
+    @ModelAttribute(name = "kontragent2")
+    public List<Kontragent> kontragent2() {
+        return kontragentService.findAll();
+    }
 
     @GetMapping("/getTable")  //Перелистывания
     public String getTable(
@@ -39,10 +53,7 @@ public class ContractController {
             @RequestParam(defaultValue = "0") String statNotIspolnenoSrok,
             @RequestParam(defaultValue = "0") String statNodate,
             @RequestParam(defaultValue = "0") String statProsrocheno,
-            @AuthenticationPrincipal User user,
             Model model) {
-
-        logiService.save(new Logi(user.getLogin(), "View", "Показ таблицы контрактов на странице " + param));
 
         param = param == null ? 0 : param - 1;
 
@@ -71,10 +82,7 @@ public class ContractController {
     @GetMapping("/dopTable")  //дополнительная информация
     public String dopTable(
             @RequestParam(defaultValue = "") Long id,
-            @AuthenticationPrincipal User user,
             Model model) {
-
-        logiService.save(new Logi(user.getLogin(), "Запрос дополнительной информации по ID = " + id));
 
         Contract contract = contractService.findById(id);
         model.addAttribute("contract", contract);
@@ -87,10 +95,7 @@ public class ContractController {
             @RequestParam(defaultValue = "") String poleFindByINN,
             @RequestParam(defaultValue = "") Boolean poleFindByIspolneno,
             @RequestParam(defaultValue = "") Boolean poleFindByNotIspolneno,
-            @AuthenticationPrincipal User user,
             Model model) {
-
-        logiService.save(new Logi(user.getLogin(), "Find", "Поиск в таблице контрактов"));
 
         List<Contract> contracts;
         if (poleFindByNomGK.equals("") && poleFindByINN.equals("")) {
@@ -100,7 +105,7 @@ public class ContractController {
         }
         List<Contract> contracts2 = new ArrayList<>();
         contracts.forEach(contract -> {
-            if (!poleFindByIspolneno && !poleFindByNotIspolneno) {
+            if (!poleFindByIspolneno && !poleFindByNotIspolneno) { //todo
             } else if (contract.getIspolneno() == poleFindByIspolneno) {
                 contracts2.add(contract);
             } else if (contract.getIspolneno() == !poleFindByNotIspolneno) {
@@ -114,19 +119,13 @@ public class ContractController {
     }
 
     @GetMapping("/vievTable")
-    public String vievTable(@AuthenticationPrincipal User user) {
-        logiService.save(new Logi(user.getLogin(), "View", "Показ таблицы контрактов"));
+    public String vievTable() {
         return "fragment/table :: vievTable";
     }
 
     @GetMapping("/add")
     public String add(@AuthenticationPrincipal User user,
                       Model model) {
-        logiService.save(new Logi(user.getLogin(), "View", "Показ страницы добавления контракта"));
-
-        model.addAttribute("kontragent", kontragentService.findAllwithPusto());
-        model.addAttribute("kontragent2", kontragentService.findAll());
-        model.addAttribute("vidObesp", vidObespService.findAllwithPusto());
 
         model.addAttribute("nameBoss",
                 zirServise.getNameBossById(Integer.parseInt(String.valueOf(user.getId_user_zir()))));
@@ -137,14 +136,7 @@ public class ContractController {
     @GetMapping("/updateViev")
     public String updateViev(
             @RequestParam Long id,
-            @AuthenticationPrincipal User user,
             Model model) {
-
-        logiService.save(new Logi(user.getLogin(), "View", "Показ страницы изменения контракта с id = " + id));
-
-        model.addAttribute("kontragent", kontragentService.findAllwithPusto());
-        model.addAttribute("kontragent2", kontragentService.findAll());
-        model.addAttribute("vidObesp", vidObespService.findAllwithPusto());
         model.addAttribute("contract", contractService.findById(id));
 
         return "fragment/contractAdd :: contractAdd";
@@ -168,7 +160,6 @@ public class ContractController {
     @GetMapping("/getProgress")
     public String getProgress(
             @RequestParam Long id,
-            @AuthenticationPrincipal User user,
             Model model) {
 
         model.addAttribute("c", contractService.findById(id));
@@ -178,7 +169,6 @@ public class ContractController {
 
     @GetMapping("/stat")
     public String stat(
-            @AuthenticationPrincipal User user,
             Model model) {
 
         model.addAttribute("size", contractService.getColSize());

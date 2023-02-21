@@ -17,11 +17,9 @@ import ru.pfr.contracts2.entity.contractIT.dto.ContractDopRequest;
 import ru.pfr.contracts2.entity.contractIT.dto.FilterContractIt;
 import ru.pfr.contracts2.entity.contractIT.mapper.ContractItMapper;
 import ru.pfr.contracts2.entity.contractIT.mapper.ItDocumentsMapper;
-import ru.pfr.contracts2.entity.log.Logi;
 import ru.pfr.contracts2.entity.user.User;
 import ru.pfr.contracts2.global.GetOtdel;
 import ru.pfr.contracts2.service.it.ContractItService;
-import ru.pfr.contracts2.service.log.LogiService;
 
 import java.util.List;
 import java.util.Objects;
@@ -33,7 +31,6 @@ public class ContractDopControllerRest {
 
     private final ContractItService contractItService;
     private final ItDocumentsMapper documentsMapper;
-    private final LogiService logiService;
     private final ContractItMapper contractItMapper;
 
     /**
@@ -119,13 +116,10 @@ public class ContractDopControllerRest {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteContract(
-            @PathVariable("id") Long id,
-            @AuthenticationPrincipal User user
+            @PathVariable("id") Long id
     ) {
         try {
             contractItService.delete(id);
-            logiService.save(new Logi(user.getLogin(), "Del",
-                    "Удаление контракта с id = " + id));
             return ResponseEntity.ok("Контракт с ID = " + id + " успешно удален!");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Ошибка!");

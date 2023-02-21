@@ -3,14 +3,9 @@ package ru.pfr.contracts2.controller.html;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ru.pfr.contracts2.entity.log.Logi;
 import ru.pfr.contracts2.entity.user.ROLE_ENUM;
-import ru.pfr.contracts2.entity.user.User;
-import ru.pfr.contracts2.service.log.LogiService;
 
 
 @Controller
@@ -18,21 +13,17 @@ import ru.pfr.contracts2.service.log.LogiService;
 @RequestMapping(value = {"/", "/contract"})
 public class AuthController {
 
-    private final LogiService logiService;
-
     @RequestMapping
     public String mains(
-            @AuthenticationPrincipal User user,
-            Authentication authentication,
-            Model model) {
-        logiService.save(new Logi(user.getLogin(),"Авторизация прошла успешно MainController mains()"));
+            Authentication authentication
+    ) {
 
-        boolean update = false;
+
         boolean admin = false;
-        for (GrantedAuthority g:
+        for (GrantedAuthority g :
                 authentication.getAuthorities()) {
-            if(g.getAuthority().equals(ROLE_ENUM.ROLE_UPDATE.getString()))update=true;
-            if(g.getAuthority().equals(ROLE_ENUM.ROLE_ADMIN.getString()))admin=true;
+            //if(g.getAuthority().equals(ROLE_ENUM.ROLE_UPDATE.getString())){}
+            if (g.getAuthority().equals(ROLE_ENUM.ROLE_ADMIN.getString())) admin = true;
         }
 
         if (admin) return "redirect:/contract/admin/admin";

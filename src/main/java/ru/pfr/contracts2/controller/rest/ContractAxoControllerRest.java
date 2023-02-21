@@ -3,25 +3,21 @@ package ru.pfr.contracts2.controller.rest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.pfr.contracts2.entity.contractIT.ContractIT;
 import ru.pfr.contracts2.entity.contractIT.ItDocuments;
 import ru.pfr.contracts2.entity.contractIT.NaturalIndicator;
 import ru.pfr.contracts2.entity.contractIT.mapper.ContractAxoMapper;
-import ru.pfr.contracts2.entity.log.Logi;
 import ru.pfr.contracts2.entity.user.User;
 import ru.pfr.contracts2.global.ConverterDate;
 import ru.pfr.contracts2.service.it.ContractItService;
-import ru.pfr.contracts2.service.it.NaturalIndicatorService;
-import ru.pfr.contracts2.service.log.LogiService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,12 +25,10 @@ import java.util.List;
 public class ContractAxoControllerRest {
 
     private final ContractItService contractItService;
-    private final NaturalIndicatorService naturalIndicatorService;//todo
-    private final LogiService logiService;
     private final ContractAxoMapper contractAxoMapper;
 
     @PostMapping("/upload")
-    public ResponseEntity upload(
+    public ResponseEntity<?> upload(
             @RequestParam(defaultValue = "undefined") String id,
             @RequestParam String nomGK,
             @RequestParam String kontragent,
@@ -64,9 +58,8 @@ public class ContractAxoControllerRest {
             @RequestParam(defaultValue = "") String naturalIndicators,
 
             @RequestParam(defaultValue = "") String doc,
-            @AuthenticationPrincipal User user,
-            Authentication authentication,
-            Model model) {
+            @AuthenticationPrincipal User user
+    ) {
         try {
 
             //String role = User.getRole(authentication);
@@ -107,7 +100,7 @@ public class ContractAxoControllerRest {
             List<NaturalIndicator> naturalIndicators1 = new ArrayList<>();
             List<Double> naturalIndicatorsDoubles =
                     naturalIndicators.length() > 0 ?
-                            List.of(naturalIndicators.split(";")).stream()
+                            Stream.of(naturalIndicators.split(";"))
                                     .mapToDouble(Double::parseDouble)
                                     .boxed()
                                     .toList() : new ArrayList<>();
@@ -130,8 +123,7 @@ public class ContractAxoControllerRest {
                         July, August, September, October, November, December,
                         sumNaturalIndicators, naturalIndicators1,
                         doc.trim(), listDocuments, user, role, idzirot, ""/*, null*/);
-                logiService.save(new Logi(user.getLogin(), "Add",
-                        "Добавление axo контракта"));
+
             } else { // Изменения
                 contract = contractItService.findById(Long.valueOf(id));
                 contract.setNomGK(nomGK.trim());
@@ -165,8 +157,6 @@ public class ContractAxoControllerRest {
 
                 contract.setDocumentu(doc.trim());
                 contract.setAllDocuments(listDocuments);
-                logiService.save(new Logi(user.getLogin(), "Upd",
-                        "Изменение контракта с id = " + id));
             }
             contractItService.save(contract);
             return ResponseEntity.ok("Данные добавлены!");
@@ -177,13 +167,10 @@ public class ContractAxoControllerRest {
 
     @DeleteMapping("/deleteContract/{id}")
     public ResponseEntity<?> deleteContract(
-            @PathVariable("id") Long id,
-            @AuthenticationPrincipal User user
+            @PathVariable("id") Long id
     ) {
         try {
             contractItService.delete(id);
-            logiService.save(new Logi(user.getLogin(), "Del",
-                    "Удаление контракта с id = " + id));
             return ResponseEntity.ok("Контракт с ID = " + id + " успешно удален!");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Ошибка!");
@@ -192,9 +179,8 @@ public class ContractAxoControllerRest {
 
     @PostMapping("/getContract/{id}")
     public ResponseEntity<?> getContract(
-            @PathVariable Long id,
-            @AuthenticationPrincipal User user,
-            Model model) {
+            @PathVariable Long id
+    ) {
         try {
 
             return new ResponseEntity<>(contractAxoMapper.toDto(contractItService.findById(id)), HttpStatus.OK);
@@ -204,15 +190,13 @@ public class ContractAxoControllerRest {
         }
     }
 
-    @GetMapping("/findTable")
+    @PostMapping("/findTable")
     public ResponseEntity<?> findTable(
             @RequestParam(defaultValue = "") String poleFindByNomGK,
             @RequestParam(defaultValue = "") String poleFindByKontragent,
             @RequestParam(defaultValue = "1") Integer param,
-            @RequestParam(defaultValue = "10") Integer col,
-            Authentication authentication,
-            @AuthenticationPrincipal User user,
-            Model model) {
+            @RequestParam(defaultValue = "10") Integer col
+    ) {
 
         try {
             String role = "AXO";

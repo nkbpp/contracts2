@@ -6,11 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.pfr.contracts2.entity.contracts.*;
-import ru.pfr.contracts2.entity.log.Logi;
 import ru.pfr.contracts2.entity.user.User;
 import ru.pfr.contracts2.global.ConverterDate;
 import ru.pfr.contracts2.global.Translit;
@@ -18,7 +16,6 @@ import ru.pfr.contracts2.service.contracts.ContractService;
 import ru.pfr.contracts2.service.contracts.KontragentService;
 import ru.pfr.contracts2.service.contracts.MyDocumentsService;
 import ru.pfr.contracts2.service.contracts.VidObespService;
-import ru.pfr.contracts2.service.log.LogiService;
 import ru.pfr.contracts2.service.zir.ZirServise;
 
 import java.util.*;
@@ -34,10 +31,8 @@ public class ContractControllerRest {
     private final MyDocumentsService myDocumentsService;
     private final ZirServise zirServise;
 
-    private final LogiService logiService;
-
     @PostMapping("/upload")
-    public ResponseEntity upload(
+    public ResponseEntity<?> upload(
             @RequestParam String id,
             @RequestParam String receipt_date,
             @RequestParam String plat_post,
@@ -54,8 +49,8 @@ public class ContractControllerRest {
             @RequestParam String nomerZajavkiNaVozvrat,
             @RequestParam String dateZajavkiNaVozvrat,
             @RequestParam Boolean ispolneno,
-            @AuthenticationPrincipal User user,
-            Model model) {
+            @AuthenticationPrincipal User user
+    ) {
         try {
             VidObesp vidObesp1 = vidObespService.findById(vidObesp);
             Kontragent kontragent1 = kontragentService.findById(kontragent);
@@ -81,15 +76,15 @@ public class ContractControllerRest {
                 }
             }
             List<Notification> notifications1 = new ArrayList<>();
-            for (String n:
-                 notifications) {
-                try{
-                    if(!n.equals("undefined") && !n.equals("")){
+            for (String n :
+                    notifications) {
+                try {
+                    if (!n.equals("undefined") && !n.equals("")) {
                         notifications1.add(
                                 new Notification(Long.valueOf(n),
                                         zirServise.getNameUserById(Integer.parseInt(n))));
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                 }
             }
 
@@ -100,15 +95,14 @@ public class ContractControllerRest {
             Date dateZajavkiNaVozvrat2 = ConverterDate.stringToDate(dateZajavkiNaVozvrat);
             Date date_ispolnenija_GK2 = ConverterDate.stringToDate(date_ispolnenija_GK);
 
-            if(id.equals("undefined")){ // Добавление
+            if (id.equals("undefined")) { // Добавление
                 contract = new Contract(receipt_date2, plat_post, kontragent1,
                         nomGK, dateGK2, predmet_contract, vidObesp1, sum,
                         date_ispolnenija_GK2, col_days,
                         notifications1, ispolneno, listDocuments,
                         nomerZajavkiNaVozvrat, dateZajavkiNaVozvrat2, user);
-                logiService.save(new Logi(user.getLogin(),"Add","Добавление контракта"));
-            }else{ // Изменения
-                contract=contractService.findById(Long.valueOf(id));
+            } else { // Изменения
+                contract = contractService.findById(Long.valueOf(id));
                 contract.setPlat_post(plat_post);
                 contract.setReceipt_date(receipt_date2);
                 contract.setKontragent(kontragent1);
@@ -127,7 +121,6 @@ public class ContractControllerRest {
 
                 contract.setAllNotification(notifications1);
                 contract.setAllDocuments(listDocuments);
-                logiService.save(new Logi(user.getLogin(),"Upd","Изменение контракта с id = " + id));
             }
             contractService.save(contract);
             return ResponseEntity.ok("Данные добавлены!");
@@ -138,12 +131,10 @@ public class ContractControllerRest {
 
     @GetMapping("/download")
     public @ResponseBody
-    ResponseEntity download(
-            @RequestParam Long id,
-            @AuthenticationPrincipal User user,
-            Model model) {
+    ResponseEntity<?> download(
+            @RequestParam Long id
+    ) {
         MyDocuments myDocuments = myDocumentsService.findById(id);
-        logiService.save(new Logi(user.getLogin(),"Скачивание документа id = " + id));
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + Translit.cyr2lat(myDocuments.getNameFile()) + "\"")
@@ -151,13 +142,11 @@ public class ContractControllerRest {
     }
 
     @PostMapping("/deleteContract")
-    public ResponseEntity deleteContract(
-            @RequestParam Long id,
-            @AuthenticationPrincipal User user,
-            Model model) {
+    public ResponseEntity<?> deleteContract(
+            @RequestParam Long id
+    ) {
         try {
             contractService.delete(id);
-            logiService.save(new Logi(user.getLogin(),"Del","Удаление контракта с id = " + id));
             return ResponseEntity.ok("Контракт с ID = " + id + " успешно удален!");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Ошибка!");
@@ -166,9 +155,8 @@ public class ContractControllerRest {
 
     @PostMapping("/getContract")
     public ResponseEntity<?> getContract(
-            @RequestParam Long id,
-            @AuthenticationPrincipal User user,
-            Model model) {
+            @RequestParam Long id
+    ) {
         try {
             Contract contract = contractService.findById(id);
 
@@ -191,14 +179,14 @@ public class ContractControllerRest {
             map.put("dateZajavkiNaVozvrat", contract.getDateZajavkiNaVozvratEn());
 
             Map<String, Object> map2 = new HashMap<>();
-            map2.put("contract",map);
+            map2.put("contract", map);
             List<MyDocuments> myDocuments = contract.getMyDocuments();
-            for (MyDocuments d:
-                 myDocuments) {
+            for (MyDocuments d :
+                    myDocuments) {
                 d.setDokument(null);
             }
-            map2.put("documents",contract.getMyDocuments());
-            map2.put("notifications",contract.getNotifications());
+            map2.put("documents", contract.getMyDocuments());
+            map2.put("notifications", contract.getNotifications());
             return new ResponseEntity<>(map2, HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Ошибка!");
@@ -206,17 +194,14 @@ public class ContractControllerRest {
     }
 
     @PostMapping("/setIspolneno")
-    public ResponseEntity setIspolneno(
+    public ResponseEntity<?> setIspolneno(
             @RequestParam Long id,
-            @RequestParam Boolean ispolneno,
-            @AuthenticationPrincipal User user,
-            Model model) {
+            @RequestParam Boolean ispolneno
+    ) {
         try {
             Contract contract = contractService.findById(id);
             contract.setIspolneno(ispolneno);
             contractService.save(contract);
-
-            logiService.save(new Logi(user.getLogin(),"Отметка исполнено установлена в значение ispolneno у контракта с id = " + id));
             return ResponseEntity.ok("Отметка добавлена!");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Ошибка при изменении отметки об исполнении ID = " + id + "!");
@@ -224,14 +209,12 @@ public class ContractControllerRest {
     }
 
     @PostMapping("/delDoc")
-    public ResponseEntity delDoc(
-            @RequestParam Long id,
-            @AuthenticationPrincipal User user,
-            Model model) {
+    public ResponseEntity<?> delDoc(
+            @RequestParam Long id
+    ) {
         try {
             String myDocumentsName = myDocumentsService.findById(id).getNameFile();
             myDocumentsService.delete(id);
-            logiService.save(new Logi(user.getLogin(),"Del","Удаление документа с id = " + id));
             return ResponseEntity.ok("Документ с именем " + myDocumentsName + " успешно удален!");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Ошибка при удалении файла с ID = " + id + " !");
@@ -240,28 +223,26 @@ public class ContractControllerRest {
 
 
     @PostMapping("/dopnotification")
-    public ResponseEntity<?> dopnotification(
-            @AuthenticationPrincipal User user,
-            Model model) {
+    public ResponseEntity<?> dopnotification() {
         try {
             Map<String, Object> map2 = new HashMap<>();
 //            if (user.getId_ondel_zir().longValue() == Long.valueOf("148").longValue()) {//147
 
-                List<String> notifications = zirServise.getAllIdUserByIdOtdel("147");
+            List<String> notifications = zirServise.getAllIdUserByIdOtdel("147");
                 /*List<String> notifications = new ArrayList<>();
                 notifications.add("1270");//Нехаева
                 notifications.add("1089");//Бессонова
                 notifications.add("1681");//Алясина
                 notifications.add("3225");//Георгобиани*/
 
-                List<Notification> notifications1 = new ArrayList<>();
-                for (String n:
-                        notifications) {
-                    if(!n.equals("undefined") && !n.equals("")){
-                        notifications1.add(new Notification(Long.valueOf(n),zirServise.getNameUserById(Integer.parseInt(n))));
-                    }
+            List<Notification> notifications1 = new ArrayList<>();
+            for (String n :
+                    notifications) {
+                if (!n.equals("undefined") && !n.equals("")) {
+                    notifications1.add(new Notification(Long.valueOf(n), zirServise.getNameUserById(Integer.parseInt(n))));
                 }
-                map2.put("notifications",notifications1);
+            }
+            map2.put("notifications", notifications1);
 /*            } else {
             }*/
 
@@ -272,11 +253,10 @@ public class ContractControllerRest {
     }
 
     @PostMapping("/viewBadge")
-    public ResponseEntity<?> viewBadge(@AuthenticationPrincipal User user,
-                            Model model){
-        try{
+    public ResponseEntity<?> viewBadge() {
+        try {
             return ResponseEntity.ok(contractService.getColNotispolnenosrok());
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body("Ошибка!");
         }
 

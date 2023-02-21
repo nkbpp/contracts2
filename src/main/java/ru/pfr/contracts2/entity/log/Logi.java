@@ -1,6 +1,7 @@
 package ru.pfr.contracts2.entity.log;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -32,15 +33,14 @@ public class Logi {
         this.text = text;
     }
 
+    @Builder
     public Logi(String user, String type, String text) {
-        date = new Date();
-        this.user = user;
+        this(user, text);
         this.type = type;
-        this.text = text;
     }
 
     public String getDateStr() {
         //return "sdf";
-        return date==null?"":date.toString();
+        return date == null ? "" : date.toString();
     }
 }

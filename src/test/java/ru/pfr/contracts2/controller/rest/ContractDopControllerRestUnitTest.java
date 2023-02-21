@@ -1,16 +1,24 @@
 package ru.pfr.contracts2.controller.rest;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import ru.pfr.contracts2.authconfig.AuthProvider;
 import ru.pfr.contracts2.entity.contractIT.ContractIT;
 import ru.pfr.contracts2.entity.contractIT.mapper.ContractItMapper;
 import ru.pfr.contracts2.entity.contractIT.mapper.ItDocumentsMapper;
 import ru.pfr.contracts2.service.it.ContractItService;
+import ru.pfr.contracts2.service.log.LogiService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,8 +26,10 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 
 import static org.apache.http.entity.ContentType.DEFAULT_BINARY;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-//@WebMvcTest // создаст только бин контроллера, а репозиторий создавать не будет.
+@Disabled
+@WebMvcTest // создаст только бин контроллера, а репозиторий создавать не будет.
 class ContractDopControllerRestUnitTest {
 
     @Autowired
@@ -36,6 +46,9 @@ class ContractDopControllerRestUnitTest {
     private AuthProvider authProvider;
     @MockBean
     private ContractItService contractItService;
+
+    @MockBean
+    private LogiService logiService;
 
     private ContractIT oldContractIT;
 
@@ -95,13 +108,9 @@ class ContractDopControllerRestUnitTest {
 
 
     @Test
-    @WithMockUser(
-            username = "testuser",
-            password = "testpass",
-            authorities = {"ROLE_READ_IT", "ROLE_UPDATE_IT"}
-    )
+    @WithMockUser(value = "testUser")
     void update() throws Exception {
-        /*MockMultipartFile contractJson = new MockMultipartFile(
+        MockMultipartFile contractJson = new MockMultipartFile(
                 "contract",
                 null,
                 "application/json",
@@ -152,6 +161,6 @@ class ContractDopControllerRestUnitTest {
                         .file(A_FILE1)
                         .file(contractJson)
                 )
-                .andExpect(status().isOk());*/
+                .andExpect(status().isOk());
     }
 }

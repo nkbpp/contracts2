@@ -36,7 +36,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -80,14 +84,15 @@ public class AuthProvider implements AuthenticationProvider {
             //для количества попыток-----------------------------
             Adminparam adminparam = adminparamService.findByAdminparam();
 
-            long datenow = new Date().getTime() + 10800000L; //избавление от погрешности во времени
+            LocalDateTime datenow = LocalDateTime.now().plusHours(3);
+            //long datenow = new Date().getTime() + 10800000L; //избавление от погрешности во времени
 
             if (logerr.getActive() >= adminparam.getKolpopitok() &&
-                    logerr.getActive() < adminparam.getBlock() &&
+                    logerr.getActive() < adminparam.getBlock() /*todo &&
                     (datenow - logerr.getDate_last_entry().getTime()) <=
-                            (600000L + ((adminparam.getKolpopitok() - 2) * adminparam.getKoefpopitok() * 60000L))) {
+                            (600000L + ((adminparam.getKolpopitok() - 2) * adminparam.getKoefpopitok() * 60000L))*/) {
                 logerr.setActive(logerr.getActive() + 1);
-                logerr.setDate_last_entry(new Date(datenow));
+                logerr.setDate_last_entry(datenow);
                 userService.save(logerr);
                 logiService.save(new Logi(username,
                         "Попытка авторизации превышен лимит попыток. Количество попыток"
@@ -103,7 +108,7 @@ public class AuthProvider implements AuthenticationProvider {
 
             if (headers.length == 0) {
                 logerr.setActive(logerr.getActive() + 1);
-                logerr.setDate_last_entry(new Date(datenow));
+                logerr.setDate_last_entry(datenow);
                 userService.save(logerr);
                 logiService.save(new Logi(
                         username,
@@ -111,7 +116,7 @@ public class AuthProvider implements AuthenticationProvider {
                 throw new BadCredentialsException("Пароль неверен");
             } else {
                 logerr.setActive(0L);
-                logerr.setDate_last_entry(new Date(datenow));
+                logerr.setDate_last_entry(datenow);
                 userService.save(logerr);
 
                 String response = headers[0].getValue();

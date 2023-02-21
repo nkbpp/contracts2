@@ -2,18 +2,17 @@ package ru.pfr.contracts2.controller.html;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.pfr.contracts2.entity.contractIT.ContractIT;
 import ru.pfr.contracts2.entity.contractIT.mapper.ContractItMapper;
 import ru.pfr.contracts2.entity.contracts.Notification;
-import ru.pfr.contracts2.entity.log.Logi;
-import ru.pfr.contracts2.entity.user.User;
 import ru.pfr.contracts2.global.GetOtdel;
 import ru.pfr.contracts2.service.it.ContractItService;
-import ru.pfr.contracts2.service.log.LogiService;
 import ru.pfr.contracts2.service.zir.ZirServise;
 
 import java.util.List;
@@ -26,7 +25,6 @@ public class ContractDopController {
 
     private final ContractItService contractItService;
     private final ZirServise zirServise;
-    private final LogiService logiService;
     private final ContractItMapper contractItMapper;
 
 /*    private final BudgetClassificationService budgetClassificationService;
@@ -56,11 +54,8 @@ public class ContractDopController {
 
     @GetMapping("/vievTable")
     public String vievTable(
-            @AuthenticationPrincipal User user,
             Model model
     ) {
-        logiService.save(new Logi(user.getLogin(), "View",
-                "Показ таблицы it контрактов"));
         model.addAttribute("findContractName", "findContractIt");
         return "fragment/it/viev :: vievTable";
     }
@@ -69,12 +64,8 @@ public class ContractDopController {
     public String getTable(
             @RequestParam(defaultValue = "") Integer param,
             @RequestParam(defaultValue = "10") Integer col,
-            @AuthenticationPrincipal User user,
             Authentication authentication,
             Model model) {
-
-        logiService.save(new Logi(user.getLogin(), "View",
-                "Показ таблицы it контрактов на странице " + param));
 
         int skip = col * (param == null ? 0 : param - 1);
         List<ContractIT> contractITs = contractItService.findAll(GetOtdel.get(authentication))
@@ -83,7 +74,7 @@ public class ContractDopController {
                 .limit(col)
                 .toList();
 
-        model.addAttribute("contracts", contractITs == null ? null : contractITs
+        model.addAttribute("contracts", contractITs
                 .stream()
                 .map(contractItMapper::toDto)
                 .collect(Collectors.toList()));
@@ -97,22 +88,12 @@ public class ContractDopController {
     }
 
     @GetMapping("/add")
-    public String add(@AuthenticationPrincipal User user) {
-
-        logiService.save(new Logi(user.getLogin(), "View",
-                "Показ страницы добавления it контракта"));
-
+    public String add() {
         return "fragment/it/add :: addviev";
     }
 
     @GetMapping("/updateViev/{id}")
-    public String updateViev(
-            @PathVariable Long id,
-            @AuthenticationPrincipal User user) {
-
-        logiService.save(new Logi(user.getLogin(), "View",
-                "Показ страницы изменения it контракта с id = " + id));
-
+    public String updateViev() {
         return "fragment/it/add :: addviev";
     }
 

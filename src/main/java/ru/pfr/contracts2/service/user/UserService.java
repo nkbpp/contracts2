@@ -2,10 +2,9 @@ package ru.pfr.contracts2.service.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.pfr.contracts2.repository.user.UserRepository;
 import ru.pfr.contracts2.entity.user.User;
+import ru.pfr.contracts2.repository.user.UserRepository;
 
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -16,7 +15,6 @@ public class UserService {
     private final UserRepository userRepository;
 
     public void save(User user) {
-        user.setDate_update(new Date());
         userRepository.save(user);
     }
 

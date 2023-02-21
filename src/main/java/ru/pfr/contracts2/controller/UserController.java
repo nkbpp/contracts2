@@ -6,14 +6,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = { "/contract/user"})
+@RequestMapping(value = {"/contract/user"})
 public class UserController {
 
     @GetMapping("/")
-    public ResponseEntity registration(){
+    public ResponseEntity<?> registration() {
         try {
             return ResponseEntity.ok("Пашет!");
-        } catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body("Ошибка!");
         }
     }

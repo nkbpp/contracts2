@@ -1,6 +1,7 @@
 package ru.pfr.contracts2.authconfig;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -8,6 +9,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import ru.pfr.contracts2.entity.user.ROLE_ENUM;
 
 @Configuration
@@ -72,5 +76,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(authProvider);
+    }
+
+    @Bean
+    public InMemoryUserDetailsManager userDetailsService() {
+        UserDetails user = User.withUsername("testUser")
+                .password("secret")
+                .roles(
+                        ROLE_ENUM.ROLE_UPDATE_IT.getStringNoRole(),
+                        ROLE_ENUM.ROLE_READ_IT.getStringNoRole()
+                )
+                .build();
+        return new InMemoryUserDetailsManager(user);
     }
 }
