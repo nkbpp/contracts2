@@ -1,7 +1,6 @@
 package ru.pfr.contracts2.authconfig;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -9,9 +8,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import ru.pfr.contracts2.entity.user.ROLE_ENUM;
 
 @Configuration
@@ -66,6 +62,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout()//включаем логаут
                 .permitAll();//разрешаем пользоваться всем
+        //http.csrf().disable();
+        //http.headers().disable();
     }
 
     @Override
@@ -78,7 +76,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.authenticationProvider(authProvider);
     }
 
-    @Bean
+/*    @Bean
     public InMemoryUserDetailsManager userDetailsService() {
         UserDetails user = User.withUsername("testUser")
                 .password("secret")
@@ -88,5 +86,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 )
                 .build();
         return new InMemoryUserDetailsManager(user);
-    }
+    }*/
 }

@@ -73,7 +73,8 @@ public class ContractController {
         }
 
         model.addAttribute("contracts", contracts);
-        model.addAttribute("paramstart", (param) * contractService.getCOL());
+        model.addAttribute("paramstart",
+                (param) * contractService.getCOL());
 
         return "fragment/table :: table";
     }
@@ -101,7 +102,9 @@ public class ContractController {
         if (poleFindByNomGK.equals("") && poleFindByINN.equals("")) {
             contracts = contractService.findAll();
         } else {
-            contracts = contractService.findByfindByNomGK(poleFindByNomGK, poleFindByINN);
+            contracts = contractService.findByfindByNomGK(
+                    poleFindByNomGK, poleFindByINN
+            );
         }
         List<Contract> contracts2 = new ArrayList<>();
         contracts.forEach(contract -> {
@@ -128,7 +131,9 @@ public class ContractController {
                       Model model) {
 
         model.addAttribute("nameBoss",
-                zirServise.getNameBossById(Integer.parseInt(String.valueOf(user.getId_user_zir()))));
+                zirServise.getNameBossById
+                        (Integer.parseInt(String.valueOf(user.getId_user_zir())))
+        );
 
         return "fragment/contractAdd :: contractAdd";
     }
@@ -171,12 +176,18 @@ public class ContractController {
     public String stat(
             Model model) {
 
-        model.addAttribute("size", contractService.getColSize());
-        model.addAttribute("ispolneno", contractService.getColIspolneno());
-        model.addAttribute("notispolneno", contractService.getColNotispolneno());
-        model.addAttribute("notispolnenosrok", contractService.getColNotispolnenosrok());
-        model.addAttribute("nodate", contractService.getColNodate());
-        model.addAttribute("prosrocheno", contractService.getColProsrocheno());
+        model.addAttribute("size",
+                contractService.getColSize());
+        model.addAttribute("ispolneno",
+                contractService.getColIspolneno());
+        model.addAttribute("notispolneno",
+                contractService.getColNotispolneno());
+        model.addAttribute("notispolnenosrok",
+                contractService.getColNotispolnenosrok());
+        model.addAttribute("nodate",
+                contractService.getColNodate());
+        model.addAttribute("prosrocheno",
+                contractService.getColProsrocheno());
 
         return "fragment/stat :: stat";
     }

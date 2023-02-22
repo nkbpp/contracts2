@@ -4,7 +4,8 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
@@ -13,12 +14,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
-import ru.pfr.contracts2.authconfig.AuthProvider;
 import ru.pfr.contracts2.entity.contractIT.ContractIT;
 import ru.pfr.contracts2.entity.contractIT.mapper.ContractItMapper;
 import ru.pfr.contracts2.entity.contractIT.mapper.ItDocumentsMapper;
 import ru.pfr.contracts2.service.it.ContractItService;
-import ru.pfr.contracts2.service.log.LogiService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -29,7 +28,9 @@ import static org.apache.http.entity.ContentType.DEFAULT_BINARY;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Disabled
-@WebMvcTest // создаст только бин контроллера, а репозиторий создавать не будет.
+@SpringBootTest
+@AutoConfigureMockMvc//запускается полный контекст приложения Spring, но без сервера
+//@WebMvcTest(ContractDopControllerRest.class) // создаст только бин контроллера, а репозиторий создавать не будет.
 class ContractDopControllerRestUnitTest {
 
     @Autowired
@@ -41,14 +42,8 @@ class ContractDopControllerRestUnitTest {
     @Autowired
     private MockMvc mockMvc;
 
-
-    @MockBean
-    private AuthProvider authProvider;
     @MockBean
     private ContractItService contractItService;
-
-    @MockBean
-    private LogiService logiService;
 
     private ContractIT oldContractIT;
 
@@ -108,7 +103,8 @@ class ContractDopControllerRestUnitTest {
 
 
     @Test
-    @WithMockUser(value = "testUser")
+    @WithMockUser(value = "testUser", roles = {"UPDATE_IT", "READ_IT"})
+        //@WithMockCustomUser
     void update() throws Exception {
         MockMultipartFile contractJson = new MockMultipartFile(
                 "contract",
@@ -116,26 +112,26 @@ class ContractDopControllerRestUnitTest {
                 "application/json",
                 """ 
                             {
-                                \"nomGK\":\"Наименование\",
-                                \"dateGK\":\"01.02.2023\",
-                                \"kontragent\":\"Контрагент\",
-                                \"dateGKs\":\"02.02.2023\",
-                                \"dateGKpo\":\"03.02.2023\",
-                                \"sum\":\"1000\",
-                                \"january\":\"10\",
-                                \"february\":\"20\",
-                                \"march\":\"30\",
-                                \"april\":\"40\",
-                                \"may\":\"50\",
-                                \"june\":\"60\",
-                                \"july\":\"70\",
-                                \"august\":\"80\",
-                                \"september\":\"90\",
-                                \"october\":\"100\",
-                                \"november\":\"110\",
-                                \"december\":\"120\",
-                                \"statusGK\":\"Исполнен\",
-                                \"idzirot\":\"1997\"
+                                "nomGK":"Наименование",
+                                "dateGK":"01.02.2023",
+                                "kontragent":"Контрагент",
+                                "dateGKs":"02.02.2023",
+                                "dateGKpo":"03.02.2023",
+                                "sum":"1000",
+                                "january":"10",
+                                "february":"20",
+                                "march":"30",
+                                "april":"40",
+                                "may":"50",
+                                "june":"60",
+                                "july":"70",
+                                "august":"80",
+                                "september":"90",
+                                "october":"100",
+                                "november":"110",
+                                "december":"120",
+                                "statusGK":"Исполнен",
+                                "idzirot":"1997"
                             }
                         """.getBytes()
         );

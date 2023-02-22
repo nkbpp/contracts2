@@ -16,6 +16,7 @@ public class VidObespController {
 
     @GetMapping("/vidObespSpisokViev")
     public String vidObespSpisokViev(
+            //@AuthenticationPrincipal User user,
             Model model) {
         model.addAttribute("vidObesps", vidObespService.findAll());
         model.addAttribute("type", "vidObesp");
