@@ -25,12 +25,12 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 
 import static org.apache.http.entity.ContentType.DEFAULT_BINARY;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Disabled
 @SpringBootTest
 @AutoConfigureMockMvc//запускается полный контекст приложения Spring, но без сервера
-//@WebMvcTest(ContractDopControllerRest.class) // создаст только бин контроллера, а репозиторий создавать не будет.
 class ContractDopControllerRestUnitTest {
 
     @Autowired
@@ -89,16 +89,17 @@ class ContractDopControllerRestUnitTest {
     @Test
     @WithMockCustomUser(login = "IT", roles = {"ROLE_UPDATE_IT", "ROLE_READ_IT"})
     void delete() throws Exception {
-        //Mockito.doNothing().when(contractItService.delete());
         mockMvc.perform(
                         MockMvcRequestBuilders.delete("/contract/dop/999999")
+                                .with(csrf())//Чтобы указать допустимый токен CSRF в качестве параметра запроса
+                        //.with(csrf().asHeader())//включить CSRF-токен в заголовок
+                        //.with(csrf().useInvalidToken()) //предоставление недопустимого токена CSRF
                 )
                 .andExpect(status().isOk());
     }
 
 
     @Test
-    //@WithMockUser(value = "testUser", roles = {"UPDATE_IT", "READ_IT"})
     @WithMockCustomUser(login = "IT", roles = {"ROLE_UPDATE_IT", "ROLE_READ_IT"})
     void update() throws Exception {
         MockMultipartFile contractJson = new MockMultipartFile(
@@ -151,6 +152,7 @@ class ContractDopControllerRestUnitTest {
         mockMvc.perform(builder
                         .file(A_FILE1)
                         .file(contractJson)
+                        .with(csrf())
                 )
                 .andExpect(status().isOk());
     }

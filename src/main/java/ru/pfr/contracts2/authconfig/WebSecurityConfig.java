@@ -16,7 +16,6 @@ import ru.pfr.contracts2.entity.user.ROLE_ENUM;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-
     private final AuthProvider authProvider;
 
     @Override
@@ -69,7 +68,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout()//включаем логаут
                 .permitAll();//разрешаем пользоваться всем
-        /*http.csrf().disable();
+        /*
+        // отключает csrf
+        http.csrf().disable();
         http.headers().disable();*/
     }
 
