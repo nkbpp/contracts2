@@ -30,4 +30,13 @@ public enum ROLE_ENUM {
     public String getOtdel() {
         return code.replace("READ", "").replace("UPDATE", "");
     }
+
+    public static ROLE_ENUM customValueOf(String value) {
+        if (value.matches(".*UPDATE.+") || value.matches(".*READ.+")) {
+            value = value
+                    .replaceAll("UPDATE", "UPDATE_")
+                    .replaceAll("READ", "READ_");
+        }
+        return ROLE_ENUM.valueOf(value);
+    }
 }

@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.pfr.contracts2.config.sec.WithMockCustomUser;
 import ru.pfr.contracts2.service.contracts.VidObespService;
 
 import java.util.List;
@@ -29,7 +29,8 @@ class VidObespControllerTest {
     private MockMvc mvc;
 
     @Test
-    @WithMockUser(value = "testUser", roles = {"UPDATE_IT", "READ_IT"})
+    //@WithMockUser(value = "testUser", roles = {"UPDATE_IT", "READ_IT"})
+    @WithMockCustomUser
     void vidObespSpisokViev() throws Exception {
         Mockito.when(vidObespService.findAll())
                 .thenReturn(List.of());

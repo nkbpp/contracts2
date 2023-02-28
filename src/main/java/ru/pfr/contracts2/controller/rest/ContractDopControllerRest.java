@@ -116,7 +116,8 @@ public class ContractDopControllerRest {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteContract(
-            @PathVariable("id") Long id
+            @PathVariable("id") Long id,
+            @AuthenticationPrincipal User user
     ) {
         try {
             contractItService.delete(id);

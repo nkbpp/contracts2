@@ -45,6 +45,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/contract/it/**").hasAnyRole(
                         ROLE_ENUM.ROLE_UPDATE_IT.getStringNoRole(),
                         ROLE_ENUM.ROLE_READ_IT.getStringNoRole())
+                .antMatchers("/contract/dop/**").hasAnyRole(
+                        ROLE_ENUM.ROLE_UPDATE_IT.getStringNoRole(),
+                        ROLE_ENUM.ROLE_READ_IT.getStringNoRole(),
+                        ROLE_ENUM.ROLE_READ_AXO.getStringNoRole(),
+                        ROLE_ENUM.ROLE_UPDATE_AXO.getStringNoRole(),
+                        ROLE_ENUM.ROLE_READ_RSP.getStringNoRole(),
+                        ROLE_ENUM.ROLE_UPDATE_RSP.getStringNoRole())
                 .antMatchers("/contract/rsp/**").hasAnyRole(
                         ROLE_ENUM.ROLE_UPDATE_RSP.getStringNoRole(),
                         ROLE_ENUM.ROLE_READ_RSP.getStringNoRole())
@@ -62,8 +69,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout()//включаем логаут
                 .permitAll();//разрешаем пользоваться всем
-        //http.csrf().disable();
-        //http.headers().disable();
+        /*http.csrf().disable();
+        http.headers().disable();*/
     }
 
     @Override

@@ -45,7 +45,7 @@ public class VidObespControllerRest {
     }
 
     @PostMapping("/delette")
-    public ResponseEntity<?> delette(
+    public ResponseEntity<?> delete(
             @RequestParam Long id
     ) {
         try {

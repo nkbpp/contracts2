@@ -190,6 +190,7 @@ public class AuthProvider implements AuthenticationProvider {
                 user.setName_ondel_zir(namepod);
                 user.setEmail(email);
                 user.setRayon(rayonService.findByKod(upfrCode.toString()));
+                user.setUserRoles(roleList);
                 userService.save(user);
 
                 a = new UsernamePasswordAuthenticationToken(user, "", roleList);

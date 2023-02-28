@@ -16,7 +16,7 @@ $(document).ready(function () {
                         xhr.setRequestHeader(header, token);
                     },
                     success: function (data) {
-                        $("#addContractAxo").attr("data-id-contract", data.id)
+                        $("#addContractAxo").attr("data-id-contract", data.id);
                         $('textarea[name=nomGK]').val(data.nomGK);
                         $('textarea[name=kontragent]').val(data.kontragent);
                         $('input[name=dateGK]').val(data.dateGK);

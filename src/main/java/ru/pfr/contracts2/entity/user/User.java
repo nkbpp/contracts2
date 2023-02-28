@@ -5,18 +5,21 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Data
-// 	генерация всех служебных методов, заменяет сразу команды @ToString, @EqualsAndHashCode, Getter, Setter, @RequiredArgsConstructor
+// генерация всех служебных методов, заменяет сразу команды @ToString, @EqualsAndHashCode, Getter, Setter, @RequiredArgsConstructor
 @NoArgsConstructor // создания пустого конструктора
 @AllArgsConstructor // конструктора включающего все возможные поля
 @Entity
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -35,6 +38,7 @@ public class User {
 
     private String email;
 
+
     @LastModifiedDate
     private LocalDateTime date_update;
 
@@ -44,6 +48,29 @@ public class User {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     Rayon rayon;
 
+    public void setUserRoles(Collection<GrantedAuthority> userRoles) {
+        List<UserRole> roles = new ArrayList<>();
+        for (var role :
+                userRoles) {
+            roles.add(
+                    new UserRole(
+                            ROLE_ENUM.customValueOf(role.getAuthority())
+                    )
+            );
+        }
+        this.userRoles = roles;
+    }
+
+    public void setUserRoles(List<UserRole> userRoles) {
+        this.userRoles = userRoles;
+    }
+
+    // указывает, что свойство не нужно записывать. Значения под этой аннотацией
+    // не записываются в базу данных (также не участвуют в сериализации).
+    // static и final переменные экземпляра всегда transient.
+    @Transient
+    List<UserRole> userRoles;
+
     public User(String login, Rayon rayon) {
         this.login = login;
         this.active = 1L;
@@ -51,7 +78,7 @@ public class User {
         this.rayon = rayon;
     }
 
-    public static String getRole(Authentication authentication) {
+/*    public static String getRole(Authentication authentication) {
         String role = null;
         for (GrantedAuthority g :
                 authentication.getAuthorities()) {
@@ -70,6 +97,40 @@ public class User {
         }
 
         return role;
+    }*/
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return userRoles;
     }
 
+    @Override
+    public String getPassword() {
+        return "";
+    }
+
+    @Override
+    public String getUsername() {
+        return this.login;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

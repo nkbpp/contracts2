@@ -9,11 +9,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
+import ru.pfr.contracts2.config.sec.WithMockCustomUser;
 import ru.pfr.contracts2.entity.contractIT.ContractIT;
 import ru.pfr.contracts2.entity.contractIT.mapper.ContractItMapper;
 import ru.pfr.contracts2.entity.contractIT.mapper.ItDocumentsMapper;
@@ -38,13 +38,10 @@ class ContractDopControllerRestUnitTest {
 
     @Autowired
     private ItDocumentsMapper documentsMapper;
-
     @Autowired
     private MockMvc mockMvc;
-
     @MockBean
     private ContractItService contractItService;
-
     private ContractIT oldContractIT;
 
     private final MockMultipartFile A_FILE1 = new MockMultipartFile(
@@ -90,21 +87,19 @@ class ContractDopControllerRestUnitTest {
     }
 
     @Test
-    void add() {
-
-
-/*        MockMultipartFile employeeJson = new MockMultipartFile(
-                "employee",
-                null,
-                "application/json",
-                "{\"name\": \"Emp Name\"}".getBytes());*/
-
+    @WithMockCustomUser(login = "IT", roles = {"ROLE_UPDATE_IT", "ROLE_READ_IT"})
+    void delete() throws Exception {
+        //Mockito.doNothing().when(contractItService.delete());
+        mockMvc.perform(
+                        MockMvcRequestBuilders.delete("/contract/dop/999999")
+                )
+                .andExpect(status().isOk());
     }
 
 
     @Test
-    @WithMockUser(value = "testUser", roles = {"UPDATE_IT", "READ_IT"})
-        //@WithMockCustomUser
+    //@WithMockUser(value = "testUser", roles = {"UPDATE_IT", "READ_IT"})
+    @WithMockCustomUser(login = "IT", roles = {"ROLE_UPDATE_IT", "ROLE_READ_IT"})
     void update() throws Exception {
         MockMultipartFile contractJson = new MockMultipartFile(
                 "contract",
@@ -159,4 +154,6 @@ class ContractDopControllerRestUnitTest {
                 )
                 .andExpect(status().isOk());
     }
+
+
 }
