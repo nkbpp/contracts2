@@ -6,8 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ru.pfr.contracts2.entity.contractIT.BudgetClassificationResponseMapper;
 import ru.pfr.contracts2.entity.contractIT.dto.BudgetClassificationDto;
+import ru.pfr.contracts2.entity.contractIT.entity.BudgetClassificationResponseMapper;
 import ru.pfr.contracts2.global.GetOtdel;
 import ru.pfr.contracts2.service.budgetClassification.BudgetClassificationService;
 

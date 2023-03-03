@@ -10,11 +10,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.pfr.contracts2.entity.contractIT.ContractIT;
-import ru.pfr.contracts2.entity.contractIT.ContractITSpecification;
-import ru.pfr.contracts2.entity.contractIT.ItDocuments;
 import ru.pfr.contracts2.entity.contractIT.dto.ContractDopRequest;
 import ru.pfr.contracts2.entity.contractIT.dto.FilterContractIt;
+import ru.pfr.contracts2.entity.contractIT.entity.ContractIT;
+import ru.pfr.contracts2.entity.contractIT.entity.ContractITSpecification;
+import ru.pfr.contracts2.entity.contractIT.entity.ItDocuments;
 import ru.pfr.contracts2.entity.contractIT.mapper.ContractItMapper;
 import ru.pfr.contracts2.entity.contractIT.mapper.ItDocumentsMapper;
 import ru.pfr.contracts2.entity.user.User;
@@ -99,9 +99,12 @@ public class ContractDopControllerRest {
             ContractIT contract = contractItMapper
                     .fromContractDopRequest(contractDopRequest);
             contract.setRole(GetOtdel.get(authentication));
+
             contract.setAllDocuments(oldContract.getItDocuments());
-            contract.setDate_create(oldContract.getDate_create());
             contract.setAllDocuments(listDocuments);
+
+            contract.setDate_create(oldContract.getDate_create());
+
             contract.setUser(user);
 
             contractItService.update(contract);

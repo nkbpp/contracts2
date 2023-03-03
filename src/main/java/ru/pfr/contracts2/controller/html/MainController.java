@@ -6,7 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ru.pfr.contracts2.entity.contracts.Contract;
+import ru.pfr.contracts2.entity.contracts.entity.Contract;
 import ru.pfr.contracts2.entity.user.User;
 import ru.pfr.contracts2.service.contracts.ContractService;
 import ru.pfr.contracts2.service.contracts.NotificationService;
@@ -37,8 +37,6 @@ public class MainController {
 
         model.addAttribute("contracts", contracts);
         model.addAttribute("user", user);
-
-        //model.addAttribute("notispolnenosrok", contractService.getColNotispolnenosrok());//TODO
 
         return "main";
     }

@@ -8,16 +8,18 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.pfr.contracts2.entity.contracts.Contract;
-import ru.pfr.contracts2.entity.contracts.MyDocuments;
-import ru.pfr.contracts2.entity.contracts.Notification;
+import ru.pfr.contracts2.entity.contracts.entity.Contract;
+import ru.pfr.contracts2.entity.contracts.entity.Notification;
 import ru.pfr.contracts2.entity.log.Logi;
 import ru.pfr.contracts2.repository.contracts.ContractRepository;
 import ru.pfr.contracts2.service.log.LogiService;
 import ru.pfr.contracts2.service.mail.MailSender;
 import ru.pfr.contracts2.service.zir.ZirServise;
 
-import java.util.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
@@ -61,25 +63,22 @@ public class ContractService {
 
     }
 
-
     public void save(Contract contract) {
         //рассчитываем расчетную дату
-        Date date = contract.getDate_ispolnenija_GK();
+        LocalDateTime date = contract.getDate_ispolnenija_GK();
         if (date != null) {
-            Calendar calendar = GregorianCalendar.getInstance();
+            /*Calendar calendar = GregorianCalendar.getInstance();
             calendar.setTime(date);
-            calendar.add(Calendar.DATE, (contract.getCol_days() + 2));
-            contract.setRaschet_date(calendar.getTime());
+            calendar.add(Calendar.DATE, (contract.getCol_days() + 2));*/
+            contract.setRaschet_date(date.plusDays(2));
         }
 
-        contract.setDate_update(new Date());
-
-        for (MyDocuments d : contract.getMyDocuments()) { //добавляем ссылку на контракт в MyDocuments
+/*        for (MyDocuments d : contract.getMyDocuments()) { //добавляем ссылку на контракт в MyDocuments
             d.setContract(contract);
         }
         for (Notification n : contract.getNotifications()) { //добавляем ссылку на контракт в Notification
             n.setContract(contract);
-        }
+        }*/
         contractRepository.save(contract);
     }
 
@@ -217,14 +216,15 @@ public class ContractService {
         System.out.println("ColList = " + contracts.size());
         contracts.forEach(contract -> {
 
-            int days = contract.getDaysOst();
+            long days = contract.getDaysOst();
 
             String subject = "\"Предупреждение! Возврат обеспечения исполнения контракта!\"!";
             String text = "Осталось дней: " + days +
                     "\n Наименование контрагента: " + contract.getKontragent().getName() +
                     "\n ИНН контрагента: " + contract.getKontragent().getInn() +
                     "\n Номер контракта: " + contract.getNomGK() +
-                    "\n Дата контракта: " + contract.getDateGKRu() +
+                    "\n Дата контракта: " + DateTimeFormatter.ofPattern("dd.MM.yyyy").format(
+                    contract.getDateGK().toLocalDate()) +
                     "\n Вид обеспечения: " + contract.getVidObesp().getName() +
                     "\n Сумма: " + contract.getSumOk();
 

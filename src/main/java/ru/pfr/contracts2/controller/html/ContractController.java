@@ -8,9 +8,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import ru.pfr.contracts2.entity.contracts.Contract;
-import ru.pfr.contracts2.entity.contracts.Kontragent;
-import ru.pfr.contracts2.entity.contracts.VidObesp;
+import ru.pfr.contracts2.entity.contracts.entity.Contract;
+import ru.pfr.contracts2.entity.contracts.entity.Kontragent;
+import ru.pfr.contracts2.entity.contracts.entity.VidObesp;
+import ru.pfr.contracts2.entity.contracts.mapper.ContractMapper;
 import ru.pfr.contracts2.entity.user.User;
 import ru.pfr.contracts2.service.contracts.ContractService;
 import ru.pfr.contracts2.service.contracts.KontragentService;
@@ -25,6 +26,7 @@ import java.util.List;
 @RequestMapping(value = {"/contract/main"})
 public class ContractController {
 
+    private final ContractMapper contractMapper;
     private final ContractService contractService;
     private final VidObespService vidObespService;
     private final KontragentService kontragentService;
@@ -45,9 +47,9 @@ public class ContractController {
         return kontragentService.findAll();
     }
 
-    @GetMapping("/getTable")  //Перелистывания
+    @GetMapping("/getTable") //Перелистывания
     public String getTable(
-            @RequestParam(defaultValue = "") Integer param,
+            @RequestParam(defaultValue = "0") Integer param,
             @RequestParam(defaultValue = "0") String statIspolneno,
             @RequestParam(defaultValue = "0") String statNotIspolneno,
             @RequestParam(defaultValue = "0") String statNotIspolnenoSrok,
@@ -55,7 +57,7 @@ public class ContractController {
             @RequestParam(defaultValue = "0") String statProsrocheno,
             Model model) {
 
-        param = param == null ? 0 : param - 1;
+        param = param == 0 ? 0 : param - 1;
 
         List<Contract> contracts;
         if (statIspolneno.equals("1")) {
@@ -72,10 +74,14 @@ public class ContractController {
             contracts = contractService.findAll(param);
         }
 
-        model.addAttribute("contracts", contracts);
+        model.addAttribute("contracts",
+                contracts.stream()
+                        .map(contractMapper::toDto)
+                        .toList()
+        );
         model.addAttribute("paramstart",
                 (param) * contractService.getCOL());
-
+        //todo rudate
         return "fragment/table :: table";
     }
 
@@ -86,7 +92,8 @@ public class ContractController {
             Model model) {
 
         Contract contract = contractService.findById(id);
-        model.addAttribute("contract", contract);
+        model.addAttribute("contract", contractMapper.toDto(contract));
+        //todo rudate
         return "fragment/modalKontragent :: tableContractDop";
     }
 

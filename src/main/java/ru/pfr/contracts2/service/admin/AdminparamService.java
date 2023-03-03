@@ -4,15 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.pfr.contracts2.entity.admin.Adminparam;
-import ru.pfr.contracts2.entity.contracts.Contract;
 import ru.pfr.contracts2.repository.admin.AdminparamRepository;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class AdminparamService {
-    
+
     final AdminparamRepository adminparamRepository;
 
     @Transactional

@@ -3,8 +3,8 @@ package ru.pfr.contracts2.entity.contractIT.mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import ru.pfr.contracts2.entity.contractIT.ItDocuments;
 import ru.pfr.contracts2.entity.contractIT.dto.ItDocumentsDto;
+import ru.pfr.contracts2.entity.contractIT.entity.ItDocuments;
 
 @Component
 @RequiredArgsConstructor

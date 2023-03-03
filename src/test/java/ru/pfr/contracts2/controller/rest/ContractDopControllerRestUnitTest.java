@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequ
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import ru.pfr.contracts2.config.sec.WithMockCustomUser;
-import ru.pfr.contracts2.entity.contractIT.ContractIT;
+import ru.pfr.contracts2.entity.contractIT.entity.ContractIT;
 import ru.pfr.contracts2.entity.contractIT.mapper.ContractItMapper;
 import ru.pfr.contracts2.entity.contractIT.mapper.ItDocumentsMapper;
 import ru.pfr.contracts2.service.it.ContractItService;

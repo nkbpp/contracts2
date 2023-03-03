@@ -2,8 +2,8 @@ package ru.pfr.contracts2.entity.contractIT.mapper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.pfr.contracts2.entity.contractIT.NaturalIndicator;
 import ru.pfr.contracts2.entity.contractIT.dto.NaturalIndicatorDto;
+import ru.pfr.contracts2.entity.contractIT.entity.NaturalIndicator;
 
 @Component
 @RequiredArgsConstructor

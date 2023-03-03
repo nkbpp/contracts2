@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.pfr.contracts2.entity.contracts.Kontragent;
+import ru.pfr.contracts2.entity.contracts.entity.Kontragent;
 import ru.pfr.contracts2.service.contracts.KontragentService;
 
 @RestController

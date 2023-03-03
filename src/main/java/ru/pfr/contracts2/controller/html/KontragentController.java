@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import ru.pfr.contracts2.entity.contracts.Kontragent;
+import ru.pfr.contracts2.entity.contracts.entity.Kontragent;
 import ru.pfr.contracts2.service.contracts.KontragentService;
 
 import java.util.List;

@@ -3,7 +3,7 @@ package ru.pfr.contracts2.service.contracts;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import ru.pfr.contracts2.entity.contracts.Kontragent;
+import ru.pfr.contracts2.entity.contracts.entity.Kontragent;
 import ru.pfr.contracts2.repository.contracts.KontragentRepository;
 
 import javax.transaction.Transactional;

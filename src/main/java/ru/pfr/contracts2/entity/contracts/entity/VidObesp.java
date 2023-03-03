@@ -1,6 +1,7 @@
-package ru.pfr.contracts2.entity.contracts;
+package ru.pfr.contracts2.entity.contracts.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +15,7 @@ import javax.persistence.Id;
 @NoArgsConstructor // создания пустого конструктора
 @AllArgsConstructor // конструктора включающего все возможные поля
 @Entity
+@Builder
 public class VidObesp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,17 +1,20 @@
-package ru.pfr.contracts2.entity.contracts;
+package ru.pfr.contracts2.entity.contracts.entity;
 
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import ru.pfr.contracts2.entity.user.User;
-import ru.pfr.contracts2.global.ConverterDate;
 import ru.pfr.contracts2.global.MyNumbers;
 
 import javax.persistence.*;
-
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Data
@@ -24,7 +27,7 @@ public class Contract {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Date receipt_date; //дата поступления
+    private LocalDateTime receipt_date; //дата поступления
 
     private String plat_post; //Платежное поручение
 
@@ -35,7 +38,7 @@ public class Contract {
 
     private String nomGK; //номер ГК
 
-    private Date dateGK; //дата ГК
+    private LocalDateTime dateGK; //дата ГК
 
     private String predmet_contract; //краткое содержание предмета контракта
 
@@ -44,11 +47,11 @@ public class Contract {
 
     private Double sum; //сумма
 
-    private Date date_ispolnenija_GK; //дата исполнения ГК
+    private LocalDateTime date_ispolnenija_GK; //дата исполнения ГК
 
     private Integer col_days; //Условия возврата ГК (количество дней от исполнения)
 
-    private Date raschet_date; //Расчетная дата (дата исполнения ГК + кол дней по условиям возврата + 1 день)
+    private LocalDateTime raschet_date; //Расчетная дата (дата исполнения ГК + кол дней по условиям возврата + 1 день)
 
     //@OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     @OneToMany(mappedBy = "contract", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -58,7 +61,7 @@ public class Contract {
 
     private String nomerZajavkiNaVozvrat; //Номер заявки на возврат
 
-    private Date dateZajavkiNaVozvrat; //Номер заявки на возврат
+    private LocalDateTime dateZajavkiNaVozvrat; //Номер заявки на возврат
 
     //@OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     @OneToMany(mappedBy = "contract", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -68,60 +71,23 @@ public class Contract {
     @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     private User user; //кто создал контракт
 
-    private Date date_update;
-
-    private Date date_create;
-
-    public String getDateZajavkiNaVozvratRu() {
-        return dateZajavkiNaVozvrat==null?"":ConverterDate.datetostring_ddMMyyyy(dateZajavkiNaVozvrat);
-    }
-
-    public String getDateZajavkiNaVozvratEn() {
-        return dateZajavkiNaVozvrat==null?"":ConverterDate.datetostring_yyyyMMdd(dateZajavkiNaVozvrat);
-    }
-
-    public String getReceipt_dateRu() {
-        return receipt_date==null?"":ConverterDate.datetostring_ddMMyyyy(receipt_date);
-    }
-
-    public String getReceipt_dateEn() {
-        return receipt_date==null?"":ConverterDate.datetostring_yyyyMMdd(receipt_date);
-    }
-
-    public String getDateGKRu() {
-        return dateGK==null?"":ConverterDate.datetostring_ddMMyyyy(dateGK);
-    }
-
-    public String getDateGKEn() {
-        return dateGK==null?"":ConverterDate.datetostring_yyyyMMdd(dateGK);
-    }
-
-    public String getDate_ispolnenija_GKRu() {
-        return date_ispolnenija_GK==null?"":ConverterDate.datetostring_ddMMyyyy(date_ispolnenija_GK);
-    }
-
-    public String getDate_ispolnenija_GKEn() {
-        return date_ispolnenija_GK==null?"":ConverterDate.datetostring_yyyyMMdd(date_ispolnenija_GK);
-    }
-
-    public String getRaschet_dateRu() {
-        return raschet_date==null?"":ConverterDate.datetostring_ddMMyyyy(raschet_date);
-    }
-
-    public String getRaschet_dateEn() {
-        return raschet_date==null?"":ConverterDate.datetostring_yyyyMMdd(raschet_date);
-    }
-
+    @LastModifiedDate
+    private LocalDateTime date_update;
+    @CreatedDate
+    private LocalDateTime date_create;
 
     public String getSumOk() {
         return MyNumbers.okrug(sum);
     }
 
-    public Contract(Date receipt_date, String plat_post, Kontragent kontragent/*String name_koltr*/, String nomGK,
-                    Date dateGK, String predmet_contract, VidObesp vidObesp, Double sum,
-                    Date date_ispolnenija_GK, Integer col_days, List<Notification> notifications,
+    @Builder
+    public Contract(Long id, LocalDateTime receipt_date, String plat_post,
+                    Kontragent kontragent, String nomGK,
+                    LocalDateTime dateGK, String predmet_contract, VidObesp vidObesp, Double sum,
+                    LocalDateTime date_ispolnenija_GK, Integer col_days, List<Notification> notifications,
                     Boolean ispolneno, List<MyDocuments> myDocuments, String nomerZajavkiNaVozvrat,
-                    Date dateZajavkiNaVozvrat, User user) {
+                    LocalDateTime dateZajavkiNaVozvrat, User user) {
+        this.id = id;
         this.receipt_date = receipt_date;
         this.plat_post = plat_post;
         this.kontragent = kontragent;
@@ -142,7 +108,7 @@ public class Contract {
         setAllDocuments(myDocuments);
         this.user = user;
 
-        date_create = new Date();
+        date_create = LocalDateTime.now();
     }
 
     public void addDocuments(MyDocuments myDoc) {
@@ -155,9 +121,11 @@ public class Contract {
 /*        while (myDocuments.size()>0){
             removeDocuments(myDocuments.get(0));
         }*/
-        for (MyDocuments d :
-                myDocs) {
-            addDocuments(d);
+        if (myDocs != null) {
+            for (MyDocuments d :
+                    myDocs) {
+                addDocuments(d);
+            }
         }
     }
 
@@ -172,8 +140,9 @@ public class Contract {
     }
 
     public void setAllNotification(List<Notification> notif) {
-        while (notifications.size()>0){
+        while (notifications.size() > 0) {
             removeNotification(notifications.get(0));
+            //notifications.clear();
         }
         for (Notification n :
                 notif) {
@@ -187,29 +156,28 @@ public class Contract {
     }
 
 
-    public int getDaysOst(){ //дней осталось
-        if(raschet_date!=null) {
-            Date ras = raschet_date;
-            Date tec = ConverterDate.stringToDate(ConverterDate.datetostring_yyyyMMdd(new Date()));
-            return ConverterDate.differenceInDays(ras, tec);
+    public long getDaysOst() { //дней осталось
+        if (raschet_date != null) {
+            LocalDate ras = raschet_date.toLocalDate();
+            LocalDate tec = LocalDate.now();
+            return ChronoUnit.DAYS.between(tec, ras);
         }
         return -1;
     }
 
-    public int getDayVsego(){ //дней всего
-        if(raschet_date!=null && dateGK!=null){
-        Date ras = raschet_date;
-        Date tec = dateGK;
-        return ConverterDate.differenceInDays(ras,tec);
+    public long getDayVsego() { //дней всего
+        if (raschet_date != null && dateGK != null) {
+            LocalDate ras = raschet_date.toLocalDate();
+            LocalDate tec = dateGK.toLocalDate();
+            return ChronoUnit.DAYS.between(tec, ras);
+            //return ConverterDate.differenceInDays(ras, tec);
         }
         return -1;
     }
 
-    public int getProcent(){ //дней всего
-
-        return 100*(getDayVsego()-getDaysOst())/getDayVsego();
+    public long getProcent() { //дней всего
+        return 100 * (getDayVsego() - getDaysOst()) / getDayVsego();
     }
-
 
 
 }

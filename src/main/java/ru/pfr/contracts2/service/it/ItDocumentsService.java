@@ -2,7 +2,7 @@ package ru.pfr.contracts2.service.it;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.pfr.contracts2.entity.contractIT.ItDocuments;
+import ru.pfr.contracts2.entity.contractIT.entity.ItDocuments;
 import ru.pfr.contracts2.repository.it.ItDocumentsRepository;
 
 import javax.transaction.Transactional;

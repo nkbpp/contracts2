@@ -2,9 +2,9 @@ package ru.pfr.contracts2.entity.contractIT.mapper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.pfr.contracts2.entity.contractIT.ContractIT;
 import ru.pfr.contracts2.entity.contractIT.dto.ContractAxoDto;
 import ru.pfr.contracts2.entity.contractIT.dto.ContractITDto;
+import ru.pfr.contracts2.entity.contractIT.entity.ContractIT;
 
 import java.util.stream.Collectors;
 
@@ -64,9 +64,9 @@ public class ContractAxoMapper {
                                 obj.getSumNaturalIndicators() / obj.getNaturalIndicators().size())
                 .ostatoc(
                         obj.getNaturalIndicators() == null ? null :
-                        obj.getSumNaturalIndicators() - obj.getNaturalIndicators().stream()
-                                .mapToDouble(value -> value.getSum())
-                                .reduce((x,y) -> x + y).orElse(0)
+                                obj.getSumNaturalIndicators() - obj.getNaturalIndicators().stream()
+                                        .mapToDouble(value -> value.getSum())
+                                        .reduce((x, y) -> x + y).orElse(0)
                 )
                 .build();
     }

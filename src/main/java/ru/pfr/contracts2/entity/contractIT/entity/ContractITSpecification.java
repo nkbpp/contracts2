@@ -1,4 +1,4 @@
-package ru.pfr.contracts2.entity.contractIT;
+package ru.pfr.contracts2.entity.contractIT.entity;
 
 import org.springframework.data.jpa.domain.Specification;
 import ru.pfr.contracts2.entity.contractIT.dto.FilterContractIt;

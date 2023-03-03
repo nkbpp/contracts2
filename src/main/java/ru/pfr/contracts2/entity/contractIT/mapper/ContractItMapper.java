@@ -2,9 +2,9 @@ package ru.pfr.contracts2.entity.contractIT.mapper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.pfr.contracts2.entity.contractIT.ContractIT;
 import ru.pfr.contracts2.entity.contractIT.dto.ContractDopRequest;
 import ru.pfr.contracts2.entity.contractIT.dto.ContractITDto;
+import ru.pfr.contracts2.entity.contractIT.entity.ContractIT;
 import ru.pfr.contracts2.service.zir.ZirServise;
 
 import java.util.ArrayList;

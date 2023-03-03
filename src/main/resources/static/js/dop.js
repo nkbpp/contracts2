@@ -204,26 +204,22 @@ $(document).ready(function () {
                 jsonData.id = addContractIt;
                 jsonData.statusGK = $('#statusGK').val();
                 jsonData.idzirot = $('#notificationsSelect').val();
-                /*let bc = {};
-                bc.id = $('#budgetClassification').val()
-                jsonData.budgetClassification = bc;*/
 
-                let data = {};
-                data.file = jsonData['itDocuments'];
                 delete jsonData.itDocuments;
 
                 let formDataFile = new FormData();
-
-                console.log(JSON.stringify(jsonData))
                 const blob = new Blob([JSON.stringify(jsonData)], {
                     type: 'application/json'
                 });
 
-                console.log(JSON.stringify(jsonData))
                 formDataFile.append("contract", blob)
 
                 let ins = document.getElementById('itDocuments').files.length;
                 if (ins === 0) {
+                    let form2 = new FormData($('#formItContract')[0]);
+                    let jsonData2 = Object.fromEntries(form2.entries());
+                    let data = {};
+                    data.file = jsonData2['itDocuments'];
                     formDataFile.append("file", data.file);
                 } else {
                     for (let x = 0; x < ins; x++) {

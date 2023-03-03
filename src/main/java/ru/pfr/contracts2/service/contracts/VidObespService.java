@@ -2,7 +2,7 @@ package ru.pfr.contracts2.service.contracts;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.pfr.contracts2.entity.contracts.VidObesp;
+import ru.pfr.contracts2.entity.contracts.entity.VidObesp;
 import ru.pfr.contracts2.repository.contracts.VidObespRepository;
 
 import javax.transaction.Transactional;

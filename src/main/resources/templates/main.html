@@ -82,31 +82,6 @@
                     });
                 }
 
-                if ($(this).attr('data-name-doc') === "delDoc") {
-                    let id = $(this).attr('data-id-doc');
-                    let param = "id=" + id;
-                    let token = $('#_csrf').attr('content');
-                    let header = $('#_csrf_header').attr('content');
-                    $.ajax({
-                        url: '/contract/main/delDoc',
-                        method: 'post',
-                        data: param,
-                        beforeSend: function (xhr) {
-                            xhr.setRequestHeader(header, token);
-                        },
-                        success: function (data) {
-                            $("div[data-id-doc=" + id + "]").remove();
-                            $("a[data-id-doc=" + id + "]").remove();
-                            initialToats("Удаление прошло успешно", data, "success").show();
-                        },
-                        error: function (textStatus) {
-                            initialToats("Ошибка при удалении документа!!!", textStatus, "err").show();
-                            console.log('ОШИБКИ AJAX запроса при удалении документа: ' + textStatus);
-                        }
-                    });
-                    return false;
-                }
-
                 if ($(this).attr('name') === "findContract") { //поиск
                     let param = "poleFindByNomGK=" + $("[data-name=poleFindByNomGK]").val() +
                         "&poleFindByINN=" + $("[data-name=poleFindByINN]").val() +
@@ -154,140 +129,10 @@
                 }
 
                 if ($(this).attr('id') === "menuViev") { //Кнопка просмотр
-                    loadMenuView();
+                    loadMenuView("");
                     return false;
                 }
 
-
-                if ($(this).attr('id') === "deleteContract") { //Удалить контракт
-                    if (confirm("Вы точно хотите удалить заявление c порядковым номером = " +
-                        $(this).parents("#" + $(this).attr('name')).children().eq(0).text())) {
-
-                        let param = "id=" + $(this).attr('name');
-                        let token = $('#_csrf').attr('content');
-                        let header = $('#_csrf_header').attr('content');
-                        $.ajax({
-                            url: '/contract/main/deleteContract',
-                            method: 'post',
-                            data: param,
-                            beforeSend: function (xhr) {
-                                xhr.setRequestHeader(header, token);
-                            },
-                            success: function (data) {
-                                param = "param=" + activeList("#pagination");//чтобы при удалении осталась текущая страница
-                                $("#tableContainer").load("/contract/main/getTable", param, function () {
-                                });
-                                initialToats("Удаление прошло успешно", data, "success").show();
-                            },
-                            error: function (textStatus) {
-                                initialToats("Ошибка!!!", textStatus, "err").show();
-                                //console.log('ОШИБКИ AJAX запроса: ' + textStatus);
-                            }
-                        });
-                    }
-                    return false;
-                }
-
-                if ($(this).attr('id') === "menuAdd") { //Добавить контракт
-                    $("#mainContainer").load("/contract/main/add", "", function () {
-                        $("#containerNotification").load("/contract/main/getnotification", "", function () {
-                        });
-
-                        let token = $('#_csrf').attr('content');
-                        let header = $('#_csrf_header').attr('content');
-                        $.ajax({
-                            url: '/contract/main/dopnotification',
-                            method: 'post',
-                            beforeSend: function (xhr) {
-                                xhr.setRequestHeader(header, token);
-                            },
-                            success: function (data) {
-                                if (!$.isEmptyObject(data)) {
-                                    for (let notif of data.notifications) {
-                                        let dv = $("#notifications");
-                                        dv.html(
-                                            dv.html() + getDopNotifHtml(notif.name, notif.id_user)
-                                        );
-                                    }
-                                }
-                            },
-                            error: function (textStatus) {
-                            }
-                        });
-                    });
-                    return false;
-                }
-
-                if ($(this).attr('id') === "updateContract") {
-                    console.log("update");
-                    let param = "id=" + $(this).attr('name');
-
-                    $("#mainContainer").load("/contract/main/updateViev", param, function () {
-                        $("#containerNotification").load("/contract/main/getnotification", "", function () {
-
-                            let token = $('#_csrf').attr('content');
-                            let header = $('#_csrf_header').attr('content');
-                            $.ajax({
-                                url: '/contract/main/getContract',
-                                method: 'post',
-                                data: param,
-                                beforeSend: function (xhr) {
-                                    xhr.setRequestHeader(header, token);
-                                },
-                                success: function (data) {
-                                    $("#addContracts").attr("data-id-contract", data.contract.id)
-                                    $('input[name=receipt_date]').val(data.contract.receipt_date);
-                                    $('input[name=plat_post]').val(data.contract.plat_post);
-                                    $('input[name=nomGK]').val(data.contract.nomGK);
-                                    $('input[name=dateGK]').val(data.contract.dateGK);
-                                    $('[name=predmet_contract]').val(data.contract.predmet_contract);
-
-                                    console.log("predmet_contract", data.contract.predmet_contract);
-
-                                    let kontragent = data.contract.kontragent;
-                                    if (kontragent !== "") {
-                                        $("#kontragent option[value=" + data.contract.kontragent + "]").prop("selected", "true");
-                                    }
-                                    let vidObesp = data.contract.vidObesp;
-                                    if (vidObesp !== "") {
-                                        $("#vidObesp option[value=" + data.contract.vidObesp + "]").prop("selected", "true");
-                                    }
-                                    $('input[name=sum]').val(data.contract.sum);
-                                    $('input[name=date_ispolnenija_GK]').val(data.contract.date_ispolnenija_GK);
-                                    $('input[name=col_days]').val(data.contract.col_days);
-                                    $('input[name=nomerZajavkiNaVozvrat]').val(data.contract.nomerZajavkiNaVozvrat);
-                                    $('input[name=dateZajavkiNaVozvrat]').val(data.contract.dateZajavkiNaVozvrat);
-                                    $('#checkboxAddUpdate').prop("checked", data.contract.ispolneno === "true");
-
-                                    $('#addContracts').text("Изменить");
-
-                                    for (let notif of data.notifications) {
-                                        let dv = $("#notifications");
-                                        dv.html(
-                                            dv.html() + getDopNotifHtml(notif.name, notif.id_user)
-                                        );
-                                    }
-
-                                    for (let doc of data.documents) {
-                                        let dv = $("#documentsViev");
-                                        dv.html(
-                                            dv.html() +
-                                            "<div class='mb-1' data-id-doc='" + doc.id + "'>" + doc.nameFile + " " +
-                                            "<button class='btn btn-secondary btn-sm' " +
-                                            "data-id-doc='" + doc.id + "' data-name-doc='delDoc'>X</button>" +
-                                            "</div>"
-                                        );
-                                    }
-                                },
-                                error: function (textStatus) {
-                                    initialToats("Ошибка!!!", textStatus, "err").show();
-                                    console.log('ОШИБКИ AJAX запроса: ' + textStatus);
-                                }
-                            });
-                        });
-                    });
-                    return false;
-                }
 
                 if ($(this).attr('data-a-dop-modal') === "dataADopModal") {
                     let param = "id=" + $(this).attr('name');
@@ -313,39 +158,6 @@
                 }
 
             });
-
-            //checkBox в таблице
-            body.on('click', 'input', function () {
-                if ($(this).attr('id') === "checkboxIspolneno") {
-                    let bool = $(this).prop("checked");
-                    let id = $(this).attr("name");
-                    let token = $('#_csrf').attr('content');
-                    let header = $('#_csrf_header').attr('content');
-
-                    let param = "id=" + id +
-                        "&ispolneno=" + bool;
-                    console.log(param)
-                    $.ajax({
-                        url: '/contract/main/setIspolneno',
-                        method: 'post',
-                        data: param,
-                        beforeSend: function (xhr) {
-                            xhr.setRequestHeader(header, token);
-                        },
-                        success: function (data) {
-                            param = "id=" + id;
-                            $("[data-progress-id=" + id + "]").load("/contract/main/getProgress", param, function () {
-                            });
-                            initialToats("Изменение статуса прошло успешно", data, "success").show();
-                        },
-                        error: function (textStatus) {
-                            initialToats("Ошибка в изменении статуса!!!", textStatus, "err").show();
-                            console.log('ОШИБКИ AJAX запроса: ' + textStatus);
-                        }
-                    });
-                }
-            });
-
 
         });
 
@@ -390,13 +202,6 @@
             });
         }
 
-        function logObj(obj) { //для вывода обьектов в лог
-            let str = "";
-            for (k in obj) {
-                str += k + ": " + obj[k] + "\r\n";
-            }
-            console.log(str);
-        }
 
     </script>
 
@@ -404,6 +209,8 @@
     <script type="text/javascript" th:src="@{/js/documents.js}"></script>
     <script type="text/javascript" th:src="@{/js/spisok.js}"></script>
     <script sec:authorize="hasRole('ROLE_UPDATE')" type="text/javascript" th:src="@{/js/kontragent.js}"></script>
+    <script sec:authorize="hasAnyRole('ROLE_UPDATE','ROLE_READ')" type="text/javascript"
+            th:src="@{/js/contract.js}"></script>
     <script type="text/javascript" th:src="@{/js/wrapper.js}"></script>
     <script sec:authorize="hasRole('ROLE_UPDATE')" type="text/javascript" th:src="@{/js/stat.js}"></script>
     <script sec:authorize="hasAnyRole('ROLE_UPDATEIT','ROLE_READIT','ROLE_UPDATERSP','ROLE_READRSP')"

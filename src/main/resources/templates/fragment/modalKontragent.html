@@ -16,8 +16,8 @@
     </div>
 
 
-    <div id="dliazamenyKontragentTable"  class="pt-2">
-         <!--th:include="fragment/modalKontragent :: modalKontragentTable">-->
+    <div id="dliazamenyKontragentTable" class="pt-2">
+        <!--th:include="fragment/modalKontragent :: modalKontragentTable">-->
     </div>
 
     <div id="MKpagination" th:include="fragment/pagination :: pagination"></div>
@@ -25,7 +25,7 @@
 </div>
 
 
-<div th:fragment="modalKontragentTable" >
+<div th:fragment="modalKontragentTable">
     <table class="table table-sm table-block table-light table-striped table-hover table-bordered text-center caption-top">
         <thead>
         <tr>
@@ -68,10 +68,10 @@
     </thead>
     <tbody>
     <tr>
-        <td th:text="${contract.getDate_ispolnenija_GKRu()}"></td>
-        <td th:text="${contract.getRaschet_dateRu()}"></td>
+        <td th:text="${contract.getDate_ispolnenija_GK()}"></td>
+        <td th:text="${contract.getRaschet_date()}"></td>
         <td th:text="${contract.nomerZajavkiNaVozvrat}"></td>
-        <td th:text="${contract.getDateZajavkiNaVozvratRu()}"></td>
+        <td th:text="${contract.getDateZajavkiNaVozvrat()}"></td>
         <td>
             <table class="text-center table table-block table-sm table-borderless">
                 <tr th:each="n : ${contract.notifications}">

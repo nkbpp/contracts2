@@ -1,10 +1,11 @@
-package ru.pfr.contracts2.entity.contractIT;
+package ru.pfr.contracts2.entity.contractIT.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.pfr.contracts2.global.MyNumbers;
 
 import javax.persistence.*;
 
@@ -14,27 +15,28 @@ import javax.persistence.*;
 @AllArgsConstructor // конструктора включающего все возможные поля
 @Entity
 @Builder
-public class ItDocuments {
+public class NaturalIndicator {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
-    @Column(name = "dokument", columnDefinition = "LONGBLOB", nullable = true)
-    private byte[] dokument;
-    @Column(name = "namefile", nullable = true/*, length = 400*/)
-    private String nameFile;
+
+    private Double sum;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contractIT_id")
     private ContractIT contractIT;
 
-    public ItDocuments(byte[] dokument, String nameFile) {
-        this.dokument = dokument;
-        this.nameFile = nameFile;
+    public NaturalIndicator(Double sum) {
+        this.sum = sum;
     }
 
     @JsonIgnore
     public ContractIT getContractIT() {
         return contractIT;
+    }
+
+    public String getSumOk() {
+        return MyNumbers.okrug(sum);
     }
 }

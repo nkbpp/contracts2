@@ -9,10 +9,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import ru.pfr.contracts2.entity.contractIT.BudgetClassification;
-import ru.pfr.contracts2.entity.contractIT.BudgetClassificationRequestMapper;
-import ru.pfr.contracts2.entity.contractIT.BudgetClassificationResponseMapper;
 import ru.pfr.contracts2.entity.contractIT.dto.BudgetClassificationDto;
+import ru.pfr.contracts2.entity.contractIT.entity.BudgetClassification;
+import ru.pfr.contracts2.entity.contractIT.entity.BudgetClassificationRequestMapper;
+import ru.pfr.contracts2.entity.contractIT.entity.BudgetClassificationResponseMapper;
 import ru.pfr.contracts2.global.GetOtdel;
 import ru.pfr.contracts2.service.budgetClassification.BudgetClassificationService;
 

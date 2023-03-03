@@ -61,7 +61,7 @@
                             type="button"
                             aria-expanded="false"
                             name="findContract">
-                    Найти
+                        Найти
                     </button>
                 </div>
             </div>
@@ -134,16 +134,16 @@
     <tr th:each="c,iterStat  : ${contracts}" th:id="${c.id}">
         <th scope="row" align="center" th:text="${iterStat.count} + ${paramstart}"></th>
         <td th:text="${c.plat_post}"></td>
-        <td th:text="${c.getReceipt_dateRu()}"></td>
+        <td th:text="${c.getReceipt_date()}"></td>
         <td>
             <table class="text-center table table-block table-sm table-borderless">
                 <tr th:each="k : ${c.kontragent}">
-                    <td     th:text="${k.getNameInn()}"></td>
+                    <td th:text="${k.getNameInn()}"></td>
                 </tr>
             </table>
         </td> <!--вид обеспечения-->
         <td th:text="${c.nomGK}"></td>
-        <td th:text="${c.getDateGKRu()}"></td>
+        <td th:text="${c.getDateGK()}"></td>
         <td th:text="${c.predmet_contract}"></td>
         <td>
             <table class="text-center table table-block table-sm table-borderless">
@@ -152,7 +152,7 @@
                 </tr>
             </table>
         </td> <!--вид обеспечения-->
-        <td th:text="${c.getSumOk()}"></td>
+        <td th:text="${c.getSum()}"></td>
         <td>
             <label>
                 <input type="checkbox" class="form-check-input"

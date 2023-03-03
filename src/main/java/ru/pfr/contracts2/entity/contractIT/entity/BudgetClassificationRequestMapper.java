@@ -1,4 +1,4 @@
-package ru.pfr.contracts2.entity.contractIT;
+package ru.pfr.contracts2.entity.contractIT.entity;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

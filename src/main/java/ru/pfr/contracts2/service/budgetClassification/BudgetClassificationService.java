@@ -5,7 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.pfr.contracts2.entity.contractIT.BudgetClassification;
+import ru.pfr.contracts2.entity.contractIT.entity.BudgetClassification;
 import ru.pfr.contracts2.repository.budgetClassification.BudgetClassificationRepository;
 
 import java.util.List;

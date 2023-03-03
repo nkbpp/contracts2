@@ -1,9 +1,11 @@
-package ru.pfr.contracts2.entity.contractIT;
+package ru.pfr.contracts2.entity.contractIT.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import ru.pfr.contracts2.entity.user.User;
 import ru.pfr.contracts2.global.MyNumbers;
 
@@ -61,86 +63,11 @@ public class ContractIT {
     private String nameot;//имя ответственного
     private String role;
 
+    @LastModifiedDate
     private LocalDateTime date_update;
 
-    private LocalDateTime date_create = LocalDateTime.now();
-
-/*    public String getDateGKRu() {
-        return dateGK == null ? "" : ConverterDate.datetostring_ddMMyyyy(dateGK);
-    }
-
-    public String getDateGKEn() {
-        return dateGK == null ? "" : ConverterDate.datetostring_yyyyMMdd(dateGK);
-    }
-
-    public String getDateGKsRu() {
-        return dateGKs == null ? "" : ConverterDate.datetostring_ddMMyyyy(dateGKs);
-    }
-
-    public String getDateGKsEn() {
-        return dateGKs == null ? "" : ConverterDate.datetostring_yyyyMMdd(dateGKs);
-    }
-
-    public String getDateGKpoRu() {
-        return dateGKpo == null ? "" : ConverterDate.datetostring_ddMMyyyy(dateGKpo);
-    }
-
-    public String getDateGKpoEn() {
-        return dateGKpo == null ? "" : ConverterDate.datetostring_yyyyMMdd(dateGKpo);
-    }
-
-    public String getSumOk() {
-        return MyNumbers.okrug(sum);
-    }
-
-    public String getMonth1Ok() {
-        return MyNumbers.okrug(month1);
-    }
-
-    public String getMonth2Ok() {
-        return MyNumbers.okrug(month2);
-    }
-
-    public String getMonth3Ok() {
-        return MyNumbers.okrug(month3);
-    }
-
-    public String getMonth4Ok() {
-        return MyNumbers.okrug(month4);
-    }
-
-    public String getMonth5Ok() {
-        return MyNumbers.okrug(month5);
-    }
-
-    public String getMonth6Ok() {
-        return MyNumbers.okrug(month6);
-    }
-
-    public String getMonth7Ok() {
-        return MyNumbers.okrug(month7);
-    }
-
-    public String getMonth8Ok() {
-        return MyNumbers.okrug(month8);
-    }
-
-    public String getMonth9Ok() {
-        return MyNumbers.okrug(month9);
-    }
-
-    public String getMonth10Ok() {
-        return MyNumbers.okrug(month10);
-    }
-
-    public String getMonth11Ok() {
-        return MyNumbers.okrug(month11);
-    }
-
-    public String getMonth12Ok() {
-        return MyNumbers.okrug(month12);
-    }
-    */
+    @CreatedDate
+    private LocalDateTime date_create;
 
 
     public String getOstatoc() {
