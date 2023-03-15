@@ -128,11 +128,6 @@
                     return false;
                 }
 
-                if ($(this).attr('id') === "menuViev") { //Кнопка просмотр
-                    loadMenuView("");
-                    return false;
-                }
-
 
                 if ($(this).attr('data-a-dop-modal') === "dataADopModal") {
                     let param = "id=" + $(this).attr('name');
@@ -176,33 +171,6 @@
                 "name='" + id + "' type='button'>X</button>" +
                 "</div>";
         }
-
-        function getSpinner() {
-            return "<div class='d-flex justify-content-center m-2'>" +
-                "<div class='spinner-border' role='status'>" +
-                "<span class='visually-hidden'>Загрузка...</span>" +
-                "</div>" +
-                "</div>";
-        }
-
-        function getSpinnerButton() {
-            return '<span class="spinner-border spinner-border-sm mx-2" role="status" aria-hidden="true"></span>';
-        }
-
-
-        function loadMenuView(param) {
-            console.log('param = ', param);
-            let mainContainer = $("#mainContainer");
-            mainContainer.html(getSpinner());
-            mainContainer.load("/contract/main/vievTable", "", function () {
-                let tableContainer = $("#tableContainer")
-                tableContainer.html(getSpinner());
-                tableContainer.load("/contract/main/getTable", param, function () {
-                });
-            });
-        }
-
-
     </script>
 
     <script type="text/javascript" th:src="@{/js/pagination.js}"></script>

@@ -6,6 +6,7 @@ function getSpinner() {
         "</div>";
 }
 
+
 function getSpinnerTable(idTable) { // передать id таблицу
     let ths = "";
     for (let i = 0; i < $('#' + idTable + ' thead tr th').length - 1; i++) {
@@ -17,3 +18,4 @@ function getSpinnerTable(idTable) { // передать id таблицу
 function getSpinnerButton() {
     return '<span class="spinner-border spinner-border-sm mx-2" role="status" aria-hidden="true"></span>';
 }
+

@@ -4,6 +4,11 @@ $(document).ready(function () {
 
     body.on('click', 'a', function () {
 
+        if ($(this).attr('id') === "menuViev") { //Кнопка просмотр
+            loadMenuView("");
+            return false;
+        }
+
         if ($(this).attr('id') === "menuAdd") { //Добавить контракт
             $("#mainContainer").load("/contract/main/add", "", function () {
                 $("#containerNotification").load("/contract/main/getnotification", "", function () {
@@ -331,3 +336,70 @@ $(document).ready(function () {
     })
 
 });
+
+function loadMenuView(param) {
+    let mainContainer = $("#mainContainer");
+    mainContainer.html(getSpinner());
+    mainContainer.load("/contract/main/vievTable", "", function () {
+        let tableContainer = $("#tableContainer")
+        tableContainer.html(getSpinner());
+        tableContainer.load("/contract/main/getTable", param, function () {
+        });
+    });
+}
+
+/*
+function ajaxContractAll(params){
+    getSpinnerTable("tableContainer")
+
+    $.ajax({
+        url: "/overpayment/referenceBook/district/All?" + params,
+        data: "",
+        cache: false,
+        processData: false,
+        contentType: "application/json",
+        dataType: 'json',
+        type: 'POST',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader($('#_csrf').attr('content'),
+                                 $('#_csrf_header').attr('content'));
+        },
+        success: function (response) {
+            let trHTML = '';
+            $('#tableDistrict tbody').html("");
+            $.each(response, function (i, item) {
+                trHTML +=
+                    '<tr>' +
+                    '<th>' + (+i+1) + '</th>' +
+                    '<td>' + item.id + '</td>' +
+                    '<td>' + item.kod + '</td>' +
+                    '<td>' + item.name + '</td>' +
+                    '<td>' +
+                    '<div class="btn-group" role="group">' +
+                    '<button ' +
+                    'class="btn  btn-secondary btn-sm deleteDistrictBtn" ' +
+                    'type="button" ' +
+                    'name="' + item.id + '" ' +
+                    '>Удалить</button>' +
+
+                    '<button ' +
+                    'class="btn  btn-secondary btn-sm updateDistrictBtn mx-1" ' +
+                    'data-bs-toggle="modal" ' +
+                    'data-bs-target="#modalDistrict" ' +
+                    'type="button" ' +
+                    'name="' + item.id + '" ' +
+                    '>Изменить</button>' +
+
+
+                    '</div>' +
+                    '</td>' +
+                    '</tr>';
+            });
+            $('#tableDistrict').append(trHTML);
+        },
+        error: function (response) {
+            initialToats("Ошибка!", response.responseJSON.message , "err").show();
+            $('#tableDistrict tbody').html("");
+        }
+    });
+}*/

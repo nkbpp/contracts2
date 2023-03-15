@@ -69,7 +69,6 @@ public class ContractIT {
     @CreatedDate
     private LocalDateTime date_create;
 
-
     public String getOstatoc() {
         return MyNumbers.okrug(sum - (month1 + month2 + month3 + month4 + month5 + month6 + month7 + month8 + month9 + month10 + month11 + month12));
     }
@@ -81,9 +80,7 @@ public class ContractIT {
     @OneToMany(mappedBy = "contractIT", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItDocuments> itDocuments = new ArrayList<>();
 
-
     private Double sumNaturalIndicators;
-
 
     @OneToMany(mappedBy = "contractIT", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<NaturalIndicator> naturalIndicators = new ArrayList<>();
