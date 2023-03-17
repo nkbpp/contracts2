@@ -33,6 +33,6 @@ public class ItDocumentsService {
 
 
     public List<ItDocuments> findByContractIT(int id) {
-        return itDocumentsRepository.findByContractIT(id);
+        return itDocumentsRepository.myFindByContractIT(id);
     }
 }

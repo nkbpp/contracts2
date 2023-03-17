@@ -12,6 +12,6 @@ public interface NaturalIndicatorRepository extends JpaRepository<NaturalIndicat
             value = "SELECT * FROM naturalindicator " +
                     "WHERE contractit_id = ?1",
             nativeQuery = true)
-    public List<NaturalIndicator> findByContractIT(int l);
+    List<NaturalIndicator> findByContractIT(int l);
 
 }

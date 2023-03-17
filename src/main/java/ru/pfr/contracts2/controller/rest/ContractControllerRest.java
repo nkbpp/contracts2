@@ -1,7 +1,8 @@
 package ru.pfr.contracts2.controller.rest;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,14 +12,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.pfr.contracts2.entity.contracts.dto.ContractDto;
 import ru.pfr.contracts2.entity.contracts.entity.Contract;
+import ru.pfr.contracts2.entity.contracts.entity.ContractSpecification;
 import ru.pfr.contracts2.entity.contracts.entity.MyDocuments;
 import ru.pfr.contracts2.entity.contracts.entity.Notification;
 import ru.pfr.contracts2.entity.contracts.mapper.ContractMapper;
 import ru.pfr.contracts2.entity.contracts.mapper.MyDocumentsMapper;
 import ru.pfr.contracts2.entity.user.User;
-import ru.pfr.contracts2.global.Translit;
 import ru.pfr.contracts2.service.contracts.ContractService;
-import ru.pfr.contracts2.service.contracts.MyDocumentsService;
 import ru.pfr.contracts2.service.zir.ZirServise;
 
 import java.util.ArrayList;
@@ -33,7 +33,6 @@ public class ContractControllerRest {
     private final MyDocumentsMapper myDocumentsMapper;
     private final ContractMapper contractMapper;
     private final ContractService contractService;
-    private final MyDocumentsService myDocumentsService;
     private final ZirServise zirServise;
 
     /**
@@ -148,34 +147,6 @@ public class ContractControllerRest {
         }
     }
 
-    @GetMapping("/download") //todo перенести
-    public @ResponseBody
-    ResponseEntity<?> download(
-            @RequestParam Long id
-    ) {
-        MyDocuments myDocuments = myDocumentsService.findById(id);
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType("application/octet-stream"))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + Translit.cyr2lat(myDocuments.getNameFile()) + "\"")
-                .body(myDocuments.getDokument());
-    }
-
-    /**
-     * Удалить документ по id
-     */
-    @DeleteMapping("/delDoc/{id}") //todo перенести
-    public ResponseEntity<?> delDoc(
-            @PathVariable("id") Long id
-    ) {
-        try {
-            String myDocumentsName = myDocumentsService.findById(id).getNameFile();
-            myDocumentsService.delete(id);
-            return ResponseEntity.ok("Документ с именем " + myDocumentsName + " успешно удален!");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Ошибка при удалении файла с ID = " + id + " !");
-        }
-    }
-
     /**
      * Удалить контракт по id
      */
@@ -265,4 +236,40 @@ public class ContractControllerRest {
         }
 
     }
+
+    /**
+     * Получить все
+     */
+    @PostMapping(path = "/All")
+    public ResponseEntity<?> getAll(
+            @RequestParam(name = "param", defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "") String poleFindByNomGK,
+            @RequestParam(defaultValue = "") String poleFindByINN,
+            @RequestParam(defaultValue = "true") Boolean poleFindByIspolneno,
+            @RequestParam(defaultValue = "true") Boolean poleFindByNotIspolneno
+    ) {
+        try {
+
+            List<Contract> contracts = contractService.findAll(
+                    ContractSpecification.filterContract(
+                            poleFindByNomGK, poleFindByINN,
+                            poleFindByIspolneno, poleFindByNotIspolneno
+                    ),
+                    PageRequest.of(
+                            page == 0 ? 0 : page - 1,
+                            ContractService.SIZE,
+                            Sort.by("id").descending()
+                    )
+            );
+
+            return new ResponseEntity<>(
+                    contracts.stream()
+                            .map(contractMapper::toDto)
+                            .toList(),
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

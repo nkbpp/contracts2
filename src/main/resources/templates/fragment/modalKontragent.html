@@ -67,32 +67,32 @@
     </tr>
     </thead>
     <tbody>
-    <tr>
-        <td th:text="${contract.getDate_ispolnenija_GK()}"></td>
-        <td th:text="${contract.getRaschet_date()}"></td>
-        <td th:text="${contract.nomerZajavkiNaVozvrat}"></td>
-        <td th:text="${contract.getDateZajavkiNaVozvrat()}"></td>
-        <td>
-            <table class="text-center table table-block table-sm table-borderless">
-                <tr th:each="n : ${contract.notifications}">
-                    <td th:text="${n.name}"></td>
-                </tr>
-            </table>
-        </td>
-        <td>
-            <table class="text-center table table-block table-sm table-borderless">
-                <tr th:each="d : ${contract.myDocuments}">
-                    <td>
-                        <a
-                                class="btn btn-link"
-                                th:href="@{/contract/main/download(id=${d.id})}"
-                                th:text="${d.nameFile}"
-                        ></a>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
+    <!--    <tr>
+            <td th:text="${contract.getDate_ispolnenija_GK()}"></td>
+            <td th:text="${contract.getRaschet_date()}"></td>
+            <td th:text="${contract.nomerZajavkiNaVozvrat}"></td>
+            <td th:text="${contract.getDateZajavkiNaVozvrat()}"></td>
+            <td>
+                <table class="text-center table table-block table-sm table-borderless">
+                    <tr th:each="n : ${contract.notifications}">
+                        <td th:text="${n.name}"></td>
+                    </tr>
+                </table>
+            </td>
+            <td>
+                <table class="text-center table table-block table-sm table-borderless">
+                    <tr th:each="d : ${contract.myDocuments}">
+                        <td>
+                            <a
+                                    class="btn btn-link"
+                                    th:href="@{/contract/main/download(id=${d.id})}"
+                                    th:text="${d.nameFile}"
+                            ></a>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>-->
     </tbody>
 </table>
 

@@ -37,14 +37,17 @@ public class ContractMapper {
                                 obj.getReceipt_date().toLocalDate()
                 )//дата поступления
                 .plat_post(obj.getPlat_post())//Платежное поручение
-                .kontragent(kontragentMapper.toDto(obj.getKontragent()))
+                .kontragent(
+                        obj.getKontragent() == null ? null :
+                                kontragentMapper.toDto(obj.getKontragent()))
                 .nomGK(obj.getNomGK())//номер ГК
                 .dateGK(
                         obj.getDateGK() == null ? null :
                                 obj.getDateGK().toLocalDate()
                 )//дата ГК
                 .predmet_contract(obj.getPredmet_contract())//краткое содержание предмета контракта
-                .vidObesp(vidObespMapper.toDto(obj.getVidObesp()))//вид обеспечения
+                .vidObesp(obj.getVidObesp() == null ? null :
+                        vidObespMapper.toDto(obj.getVidObesp()))//вид обеспечения
                 .sum(obj.getSum())//сумма
                 .date_ispolnenija_GK(
                         obj.getDate_ispolnenija_GK() == null ? null :

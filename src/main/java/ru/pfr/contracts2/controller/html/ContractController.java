@@ -8,10 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import ru.pfr.contracts2.entity.contracts.entity.Contract;
 import ru.pfr.contracts2.entity.contracts.entity.Kontragent;
 import ru.pfr.contracts2.entity.contracts.entity.VidObesp;
-import ru.pfr.contracts2.entity.contracts.mapper.ContractMapper;
 import ru.pfr.contracts2.entity.user.User;
 import ru.pfr.contracts2.service.contracts.ContractService;
 import ru.pfr.contracts2.service.contracts.KontragentService;
@@ -26,7 +24,6 @@ import java.util.List;
 @RequestMapping(value = {"/contract/main"})
 public class ContractController {
 
-    private final ContractMapper contractMapper;
     private final ContractService contractService;
     private final VidObespService vidObespService;
     private final KontragentService kontragentService;
@@ -47,85 +44,10 @@ public class ContractController {
         return kontragentService.findAll();
     }
 
-    @GetMapping("/getTable") //Перелистывания
-    public String getTable(
-            @RequestParam(defaultValue = "0") Integer param,
-            @RequestParam(defaultValue = "0") String statIspolneno,
-            @RequestParam(defaultValue = "0") String statNotIspolneno,
-            @RequestParam(defaultValue = "0") String statNotIspolnenoSrok,
-            @RequestParam(defaultValue = "0") String statNodate,
-            @RequestParam(defaultValue = "0") String statProsrocheno,
-            Model model) {
-
-        param = param == 0 ? 0 : param - 1;
-
-        List<Contract> contracts;
-        if (statIspolneno.equals("1")) {
-            contracts = contractService.findByIspolnenoTrue();
-        } else if (statNotIspolneno.equals("1")) {
-            contracts = contractService.findByIspolnenoFalse();
-        } else if (statNotIspolnenoSrok.equals("1")) {
-            contracts = contractService.findByNotIspolnenoSrok();
-        } else if (statNodate.equals("1")) {
-            contracts = contractService.findByNodate();
-        } else if (statProsrocheno.equals("1")) {
-            contracts = contractService.findByProsrocheno();
-        } else {
-            contracts = contractService.findAll(param);
-        }
-
-        model.addAttribute("contracts",
-                contracts.stream()
-                        .map(contractMapper::toDto)
-                        .toList()
-        );
-        model.addAttribute("paramstart",
-                (param) * contractService.getCOL());
-        //todo rudate
-        return "fragment/table :: table";
-    }
-
 
     @GetMapping("/dopTable")  //дополнительная информация
-    public String dopTable(
-            @RequestParam(defaultValue = "") Long id,
-            Model model) {
-
-        Contract contract = contractService.findById(id);
-        model.addAttribute("contract", contractMapper.toDto(contract));
-        //todo rudate
+    public String dopTable() {
         return "fragment/modalKontragent :: tableContractDop";
-    }
-
-    @GetMapping("/findTable")
-    public String findTable(
-            @RequestParam(defaultValue = "") String poleFindByNomGK,
-            @RequestParam(defaultValue = "") String poleFindByINN,
-            @RequestParam(defaultValue = "") Boolean poleFindByIspolneno,
-            @RequestParam(defaultValue = "") Boolean poleFindByNotIspolneno,
-            Model model) {
-
-        List<Contract> contracts;
-        if (poleFindByNomGK.equals("") && poleFindByINN.equals("")) {
-            contracts = contractService.findAll();
-        } else {
-            contracts = contractService.findByfindByNomGK(
-                    poleFindByNomGK, poleFindByINN
-            );
-        }
-        List<Contract> contracts2 = new ArrayList<>();
-        contracts.forEach(contract -> {
-            if (!poleFindByIspolneno && !poleFindByNotIspolneno) { //todo
-            } else if (contract.getIspolneno() == poleFindByIspolneno) {
-                contracts2.add(contract);
-            } else if (contract.getIspolneno() == !poleFindByNotIspolneno) {
-                contracts2.add(contract);
-            }
-        });
-
-        model.addAttribute("contracts", contracts2);
-        model.addAttribute("paramstart", 0);
-        return "fragment/table :: table";
     }
 
     @GetMapping("/vievTable")

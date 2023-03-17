@@ -2,7 +2,9 @@ package ru.pfr.contracts2.service.contracts;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -32,7 +34,7 @@ public class ContractService {
     private final ZirServise zirServise;
     final ContractRepository contractRepository;
     private final LogiService logiService;
-    private final int SIZE = 30;
+    public static final int SIZE = 30;
 
     public Contract findById(Long id) {
         return contractRepository.findById(id).orElse(null);
@@ -42,8 +44,15 @@ public class ContractService {
         return contractRepository.findByNomGKAndKontragentInn(nom, inn);
     }*/
 
-    public List<Contract> findByfindByNomGK(String name, String inn) {
-        return contractRepository.findByNomGKAndKontragentInnScript(name, inn);
+    public List<Contract> findByfindByNomGK(String name, String inn, int page) {
+        //для обрезки
+        PageRequest pageRequest = PageRequest.of(
+                page, SIZE,
+                Sort
+                        .by("id")
+                        .descending()
+        );
+        return contractRepository.findByNomGKAndKontragentInnScript(name, inn, pageRequest);
     }
 
     public List<Contract> findAll() {
@@ -61,6 +70,14 @@ public class ContractService {
         );
         return contractRepository.findAll(pageRequest).getContent();
 
+    }
+
+    public List<Contract> findAll(Specification<Contract> specification) {
+        return contractRepository.findAll(specification);
+    }
+
+    public List<Contract> findAll(Specification<Contract> specification, Pageable pageable) {
+        return contractRepository.findAll(specification, pageable).getContent();
     }
 
     public void save(Contract contract) {
@@ -140,7 +157,7 @@ public class ContractService {
         List<Contract> contracts = findAll();
         AtomicInteger ispolneno = new AtomicInteger();
         contracts.forEach(contract -> {
-            if (contract.getIspolneno() == true) {
+            if (contract.getIspolneno()) {
                 ispolneno.getAndIncrement();
             }
         });
@@ -152,7 +169,7 @@ public class ContractService {
 
         AtomicInteger notispolneno = new AtomicInteger();
         contracts.forEach(contract -> {
-            if (contract.getIspolneno() != true) {
+            if (!contract.getIspolneno()) {
                 notispolneno.getAndIncrement();
             }
         });
@@ -163,7 +180,7 @@ public class ContractService {
         List<Contract> contracts = findAll();
         AtomicInteger notispolnenosrok = new AtomicInteger();
         contracts.forEach(contract -> {
-            if (contract.getIspolneno() != true) {
+            if (!contract.getIspolneno()) {
                 if (contract.getDaysOst() <= 4) {
                     if (contract.getDaysOst() >= 0) {
                         if (contract.getRaschet_date() != null) {
@@ -180,7 +197,7 @@ public class ContractService {
         List<Contract> contracts = findAll();
         AtomicInteger nodate = new AtomicInteger();
         contracts.forEach(contract -> {
-            if (contract.getIspolneno() != true) {
+            if (!contract.getIspolneno()) {
                 if (contract.getDaysOst() < 0) {
                     if (contract.getRaschet_date() == null) {
                         nodate.getAndIncrement();
@@ -196,7 +213,7 @@ public class ContractService {
         List<Contract> contracts = findAll();
         AtomicInteger prosrocheno = new AtomicInteger();
         contracts.forEach(contract -> {
-            if (contract.getIspolneno() != true) {
+            if (!contract.getIspolneno()) {
                 if (contract.getDaysOst() < 0) {
                     if (contract.getRaschet_date() != null) {
                         prosrocheno.getAndIncrement();

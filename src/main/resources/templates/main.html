@@ -82,18 +82,6 @@
                     });
                 }
 
-                if ($(this).attr('name') === "findContract") { //поиск
-                    let param = "poleFindByNomGK=" + $("[data-name=poleFindByNomGK]").val() +
-                        "&poleFindByINN=" + $("[data-name=poleFindByINN]").val() +
-                        "&poleFindByIspolneno=" + $('[data-name=poleFindByIspolneno]').prop("checked") +
-                        "&poleFindByNotIspolneno=" + $('[data-name=poleFindByNotIspolneno]').prop("checked");
-                    console.log("findContract param = ", param);
-                    $("#tableContainer").load("/contract/main/findTable", param, function () {
-                        clearPagination1();
-                    });
-                    return false;
-                }
-
                 if ($(this).hasClass('minusNotif')) { //удалить уведомление
                     $("#notifications #" + $(this).attr('name')).detach();
                     return false;
@@ -128,21 +116,6 @@
                     return false;
                 }
 
-
-                if ($(this).attr('data-a-dop-modal') === "dataADopModal") {
-                    let param = "id=" + $(this).attr('name');
-                    $("#modalDopContainerContent").load("/contract/main/dopTable", param, function () {
-                    });
-                    return false;
-                }
-
-                //переключатели страниц pagination
-                if ($(this).parents("#pagination").attr("id") === "pagination") {
-                    let list = clickPagination($(this), "#pagination");
-                    let param = "param=" + list;
-                    $("#tableContainer").load("/contract/main/getTable", param, function () {
-                    });
-                }
 
                 //переключатели страниц MKpagination
                 if ($(this).parents("#MKpagination").attr("id") === "MKpagination") {

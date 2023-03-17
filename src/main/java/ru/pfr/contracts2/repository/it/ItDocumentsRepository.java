@@ -9,9 +9,8 @@ import java.util.List;
 public interface ItDocumentsRepository extends JpaRepository<ItDocuments, Long> {
 
     @Query(
-            value = "SELECT * FROM it_documents " +
-                    "WHERE contractit_id = ?1",
+            value = "SELECT * FROM it_documents WHERE contractit_id = ?1",
             nativeQuery = true)
-    public List<ItDocuments> findByContractIT(int l);
+    List<ItDocuments> myFindByContractIT(int l);
 
 }

@@ -10,15 +10,15 @@ import java.util.Optional;
 
 
 public interface LogiRepository extends JpaRepository<Logi, Long> {
-    public Optional<Logi> findByUser(String login);
+    Optional<Logi> findByUser(String login);
 
-    public List<Logi> findByDateBetweenOrDateNotNullAndUserOrUserNotNullAndTypeOrTypeNull(Date d1, Date d2, String user, Long l);
+    List<Logi> findByDateBetweenOrDateNotNullAndUserOrUserNotNullAndTypeOrTypeNull(Date d1, Date d2, String user, Long l);
 
-    public List<Logi> findByUserOrUserNotNullAndTypeOrTypeNull(String user, Long l);
+    List<Logi> findByUserOrUserNotNullAndTypeOrTypeNull(String user, Long l);
 
-    public Optional<Logi> findByTypeAndUser(Long t, String login);
+    Optional<Logi> findByTypeAndUser(Long t, String login);
 
-    public Optional<Logi> findByTypeAndUserAndDate(Long t, String login, Date date);
+    Optional<Logi> findByTypeAndUserAndDate(Long t, String login, Date date);
 
     @Query(
             value = "SELECT l.id, l.datelog, l.user, l.type, l.text FROM Logi l " +

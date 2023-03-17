@@ -60,7 +60,7 @@ public class ContractITSpecification {
                 criteriaBuilder.like(root.get("nomGK"), "%" + nomGK + "%");
     }
 
-    public static Specification<ContractIT> kontragentEquals(String kontragent) {
+    public static Specification<ContractIT> kontragentLike(String kontragent) {
         if (kontragent == null || kontragent.equals("")) {
             return (root, query, criteriaBuilder) ->
                     criteriaBuilder.isTrue(criteriaBuilder.literal(true));
@@ -79,7 +79,7 @@ public class ContractITSpecification {
         }
         return Specification.where(
                 roleEquals(role)
-                        .and(kontragentEquals(filter.poleFindByKontragent()))
+                        .and(kontragentLike(filter.poleFindByKontragent()))
                         .and(nomGKEquals(filter.poleFindByNomGK()))
                         .and(idotEquals(filter.idot()))
                         .and(dateGKEquals(dateGK2))

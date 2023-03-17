@@ -4,6 +4,17 @@ $(document).ready(function () {
 
     body.on('click', 'a', function () {
 
+        //переключатели страниц pagination
+        if ($(this).parents("#pagination").attr("id") === "pagination") {
+            let list = clickPagination($(this), "#pagination");
+            let param = "param=" + list +
+                "&poleFindByNomGK=" + $("[data-name=poleFindByNomGK]").val() +
+                "&poleFindByINN=" + $("[data-name=poleFindByINN]").val() +
+                "&poleFindByIspolneno=" + $('[data-name=poleFindByIspolneno]').prop("checked") +
+                "&poleFindByNotIspolneno=" + $('[data-name=poleFindByNotIspolneno]').prop("checked");
+            ajaxContractAll(param)
+        }
+
         if ($(this).attr('id') === "menuViev") { //Кнопка просмотр
             loadMenuView("");
             return false;
@@ -116,7 +127,6 @@ $(document).ready(function () {
                         },
                         error: function (textStatus) {
                             initialToats("Ошибка!!!", textStatus, "err").show();
-                            console.log('ОШИБКИ AJAX запроса: ' + logObj(textStatus));
                         }
                     });
                 });
@@ -140,8 +150,7 @@ $(document).ready(function () {
                     },
                     success: function (data) {
                         let param = "param=" + activeList("#pagination");//чтобы при удалении осталась текущая страница
-                        $("#tableContainer").load("/contract/main/getTable", param, function () {
-                        });
+                        ajaxContractAll(param);
                         initialToats("Удаление прошло успешно", data, "success").show();
                     },
                     error: function (textStatus) {
@@ -162,7 +171,6 @@ $(document).ready(function () {
                 $.ajax({
                     url: '/contract/main/setIspolneno/' + id,
                     method: 'get',
-                    //data: param,
                     beforeSend: function (xhr) {
                         xhr.setRequestHeader(header, token);
                     },
@@ -180,19 +188,88 @@ $(document).ready(function () {
             }
         });
 
+        //дополнительная инфа
+        if ($(this).attr('data-a-dop-modal') === "dataADopModal") {
+            let id = $(this).attr('name');
+            $("#modalDopContainerContent").load("/contract/main/dopTable", "", function () {
+
+                let token = $('#_csrf').attr('content');
+                let header = $('#_csrf_header').attr('content');
+                $.ajax({
+                    url: "/contract/main/contract/" + id,
+                    cache: false,
+                    processData: false,
+                    type: 'GET',
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader(header, token);
+                    },
+                    success: function (data) {
+                        let trHTML = '';
+                        let modalDopContainerContent = $('#modalDopContainerContent tbody');
+                        modalDopContainerContent.html("");
+
+                        let notif = "";
+                        for (let n of data.notifications) {
+                            notif += n.name;
+                            notif += ", ";
+                        }
+                        notif = notif.slice(0, -2);
+
+                        let docum = "";
+                        for (let doc of data.myDocuments) {
+                            docum += '<a ' +
+                                'class="btn btn-link" ' +
+                                'href="/contract/main/download/' + doc.id + '" ' +
+                                '>' + doc.nameFile + '</a>';
+                        }
+
+                        trHTML +=
+                            '<tr>' +
+                            '<td>' + replaceNull(data.date_ispolnenija_GK) + '</td>' +
+                            '<td>' + replaceNull(data.raschet_date) + '</td>' +
+                            '<td>' + replaceNull(data.nomerZajavkiNaVozvrat) + '</td>' +
+                            '<td>' + replaceNull(data.dateZajavkiNaVozvrat) + '</td>' +
+                            '<td>' + notif + '</td>' +
+                            '<td>' + docum + '</td>' +
+                            '</tr>';
+
+                        modalDopContainerContent.append(trHTML);
+                    },
+                    error: function (response) {
+                        initialToats("Ошибка!", response.responseJSON.message, "err").show();
+                        $('#tableContainer tbody').html("");
+                    }
+                });
+            });
+            return false;
+        }
+
     })
 
 
     body.on('click', 'button', function () {
 
+        //поиск
+        if ($(this).attr('name') === "findContract") {
+            let param = "poleFindByNomGK=" + $("[data-name=poleFindByNomGK]").val() +
+                "&poleFindByINN=" + $("[data-name=poleFindByINN]").val() +
+                "&poleFindByIspolneno=" + $('[data-name=poleFindByIspolneno]').prop("checked") +
+                "&poleFindByNotIspolneno=" + $('[data-name=poleFindByNotIspolneno]').prop("checked");
+            ajaxContractAll(param);
+            clearPagination1();
+            return false;
+        }
+
         //изменение контракта
         if ($(this).attr('id') === "addContracts") {
+            let vidObesp = $("#vidObesp").val();
+            let kontragent = $("#kontragent").val();
             // проверка заполнения основных полей
             if (
                 !$("#receipt_date").val().trim() ||
                 !$("#plat_post").val().trim() ||
-                $("#vidObesp").val() === 0 ||
-                $("#kontragent").val() === 0 ||
+                vidObesp === 0 ||
+                kontragent === 0 ||
                 !$("#sum").val().trim()
             ) {
                 alert("Не все обязательные поля (отмеченные *) заполнены!")
@@ -214,10 +291,10 @@ $(document).ready(function () {
                 jsonData.id = id;
                 jsonData.ispolneno = $('#checkboxAddUpdate').prop("checked");
                 jsonData.kontragent = {
-                    id: $("#kontragent").val()
+                    id: kontragent
                 };
                 jsonData.vidObesp = {
-                    id: $("#vidObesp").val()
+                    id: vidObesp
                 };
                 jsonData.notifications = $('#notifications div[id]').toArray()
                     .map(d => {
@@ -269,12 +346,11 @@ $(document).ready(function () {
                         success: function (data) {
                             //после добавления показать таблицу
                             $("#mainContainer").load("/contract/main/vievTable", "", function () {
-                                $("#tableContainer").load("/contract/main/getTable", "", function () {
-                                });
+                                ajaxContractAll("");
                             });
                             initialToats("Добавление прошло успешно", data, "success").show();
                         },
-                        error: function (jqXHR, textStatus) {
+                        error: function (jqXHR) {
                             initialToats("Ошибка при добавлении!!!", jqXHR.responseText, "err").show();
                         }
                     });
@@ -294,12 +370,11 @@ $(document).ready(function () {
                         success: function (data) {
                             //после изменения показать таблицу
                             $("#mainContainer").load("/contract/main/vievTable", "", function () {
-                                $("#tableContainer").load("/contract/main/getTable", "", function () {
-                                });
+                                ajaxContractAll("");
                             });
                             initialToats("Изменение прошло успешно", data, "success").show();
                         },
-                        error: function (jqXHR, textStatus) {
+                        error: function (jqXHR) {
                             initialToats("Ошибка при изменение!!!", jqXHR.responseText, "err").show();
                         }
                     });
@@ -337,23 +412,21 @@ $(document).ready(function () {
 
 });
 
-function loadMenuView(param) {
+function loadMenuView() {
     let mainContainer = $("#mainContainer");
     mainContainer.html(getSpinner());
     mainContainer.load("/contract/main/vievTable", "", function () {
-        let tableContainer = $("#tableContainer")
-        tableContainer.html(getSpinner());
-        tableContainer.load("/contract/main/getTable", param, function () {
-        });
+        ajaxContractAll("");
     });
 }
 
-/*
-function ajaxContractAll(params){
+function ajaxContractAll(params) {
     getSpinnerTable("tableContainer")
 
+    let token = $('#_csrf').attr('content');
+    let header = $('#_csrf_header').attr('content');
     $.ajax({
-        url: "/overpayment/referenceBook/district/All?" + params,
+        url: "/contract/main/All?" + params,
         data: "",
         cache: false,
         processData: false,
@@ -361,45 +434,75 @@ function ajaxContractAll(params){
         dataType: 'json',
         type: 'POST',
         beforeSend: function (xhr) {
-            xhr.setRequestHeader($('#_csrf').attr('content'),
-                                 $('#_csrf_header').attr('content'));
+            xhr.setRequestHeader(header, token);
         },
         success: function (response) {
             let trHTML = '';
-            $('#tableDistrict tbody').html("");
+            let tableContainer = $('#tableContainer tbody');
+            tableContainer.html("");
+            let start = (+activeList("#pagination") - 1) * 30;//$("#col").val();
+
             $.each(response, function (i, item) {
+
                 trHTML +=
                     '<tr>' +
-                    '<th>' + (+i+1) + '</th>' +
-                    '<td>' + item.id + '</td>' +
-                    '<td>' + item.kod + '</td>' +
-                    '<td>' + item.name + '</td>' +
+                    '<th>' + (start + +i + 1) + '</th>' +
+                    '<td>' + replaceNull(item.plat_post) + '</td>' +
+                    '<td>' + replaceNull(item.receipt_date) + '</td>' +
+                    '<td>' + (item.kontragent === null ? "" : replaceNull(item.kontragent.nameInn)) + '</td>' +
+                    '<td>' + replaceNull(item.nomGK) + '</td>' +
+                    '<td>' + replaceNull(item.dateGK) + '</td>' +
+                    '<td>' + replaceNull(item.predmet_contract) + '</td>' +
+                    '<td>' + replaceNull(item.vidObesp.name) + '</td>' +
+                    '<td>' + replaceNull(item.sum) + '</td>' +
                     '<td>' +
-                    '<div class="btn-group" role="group">' +
-                    '<button ' +
-                    'class="btn  btn-secondary btn-sm deleteDistrictBtn" ' +
-                    'type="button" ' +
-                    'name="' + item.id + '" ' +
-                    '>Удалить</button>' +
+                    '<label>' +
+                    '<input type="checkbox" class="form-check-input" ' +
+                    'name="' + item.id + '" id="checkboxIspolneno" ' +
+                    (item.ispolneno ? 'checked=true' : '') + '/>' +
+                    '<span class="marginonospan"></span>' +
+                    '</label>' +
+                    '<div data-progress-id="' + item.id + '">' +
+                    '<div class="progress" title="Осталось ' + item.daysOst + ' дней">' +
+                    '<div class="progress-bar ' +
+                    (item.ispolneno ? 'bg-success' :
+                        (item.daysOst <= 4 && item.daysOst >= 0) ? 'bg-danger progress-bar-striped ' :
+                            (item.procent >= 75) ? 'bg-danger' :
+                                (item.procent >= 50 ? 'bg-warning' :
+                                    (item.procent >= 25 ? 'bg-info' : ''
+                                    ))) + '" ' +
 
-                    '<button ' +
-                    'class="btn  btn-secondary btn-sm updateDistrictBtn mx-1" ' +
-                    'data-bs-toggle="modal" ' +
-                    'data-bs-target="#modalDistrict" ' +
-                    'type="button" ' +
-                    'name="' + item.id + '" ' +
-                    '>Изменить</button>' +
+                    'role="progressbar" ' +
+                    'style="width: ' + (item.ispolneno ? '100' : item.procent) + '%" ' +
+                    'aria-valuenow="' + (item.ispolneno ? '100' : item.procent) + '" ' +
+                    'aria-valuemin="0" ' +
+                    'aria-valuemax="100" ' +
 
-
+                    '">' + (item.ispolneno ? '' : item.daysOst) +
+                    '</div>' +
+                    '</div>' +
                     '</div>' +
                     '</td>' +
+                    '<td>' +
+                    '<div>' +
+                    '<a data-bs-toggle="modal"' +
+                    '        data-bs-target="#modalDopContainer"' +
+                    '        href="#!"' +
+                    '        data-a-dop-modal="dataADopModal"' +
+                    '        name="' + item.id + '">Доп.информация' +
+                    '</a>' +
+                    '</div>' +
+                    '<div><a name="' + item.id + '" id="updateContract" href="#">Изменить</a></div>' +
+                    '<div><a name="' + item.id + '" id="deleteContract" href="#">Удалить</a></div>' +
+                    '</td>' +
+
                     '</tr>';
             });
-            $('#tableDistrict').append(trHTML);
+            tableContainer.append(trHTML);
         },
         error: function (response) {
-            initialToats("Ошибка!", response.responseJSON.message , "err").show();
-            $('#tableDistrict tbody').html("");
+            initialToats("Ошибка!", response.responseJSON.message, "err").show();
+            tableContainer.html("");
         }
     });
-}*/
+}

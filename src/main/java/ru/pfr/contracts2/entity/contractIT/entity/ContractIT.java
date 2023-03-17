@@ -178,13 +178,13 @@ public class ContractIT {
     }
 
     public String getNaturalIndicatorsStr() {
-        String s = "";
+        StringBuilder s = new StringBuilder();
 
         for (int i = 0; i < naturalIndicators.size(); i++) {
-            s += (naturalIndicators.get(i).getSumOk() + ((i + 1) != naturalIndicators.size() ? ";" : ""));
+            s.append(naturalIndicators.get(i).getSumOk()).append((i + 1) != naturalIndicators.size() ? ";" : "");
         }
 
-        return s;
+        return s.toString();
     }
 
     public String getNaturalIndicatorsById(int i) {
