@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.pfr.contracts2.entity.contracts.entity.Contract;
+import ru.pfr.contracts2.entity.contracts.entity.Contract_;
 import ru.pfr.contracts2.entity.contracts.entity.Notification;
 import ru.pfr.contracts2.entity.log.Logi;
 import ru.pfr.contracts2.repository.contracts.ContractRepository;
@@ -49,7 +50,7 @@ public class ContractService {
         PageRequest pageRequest = PageRequest.of(
                 page, SIZE,
                 Sort
-                        .by("id")
+                        .by(Contract_.ID)
                         .descending()
         );
         return contractRepository.findByNomGKAndKontragentInnScript(name, inn, pageRequest);
@@ -65,7 +66,7 @@ public class ContractService {
         PageRequest pageRequest = PageRequest.of(
                 page, SIZE,
                 Sort
-                        .by("id")
+                        .by(Contract_.ID)
                         .descending()
         );
         return contractRepository.findAll(pageRequest).getContent();

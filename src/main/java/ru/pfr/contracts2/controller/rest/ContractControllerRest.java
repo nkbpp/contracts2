@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.pfr.contracts2.entity.contracts.dto.ContractDto;
 import ru.pfr.contracts2.entity.contracts.entity.Contract;
+import ru.pfr.contracts2.entity.contracts.entity.Contract_;
 import ru.pfr.contracts2.entity.contracts.entity.ContractSpecification;
 import ru.pfr.contracts2.entity.contracts.entity.MyDocuments;
 import ru.pfr.contracts2.entity.contracts.entity.Notification;
@@ -258,7 +259,7 @@ public class ContractControllerRest {
                     PageRequest.of(
                             page == 0 ? 0 : page - 1,
                             ContractService.SIZE,
-                            Sort.by("id").descending()
+                            Sort.by(Contract_.ID).descending()
                     )
             );
 

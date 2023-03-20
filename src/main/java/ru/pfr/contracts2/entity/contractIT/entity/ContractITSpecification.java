@@ -2,6 +2,7 @@ package ru.pfr.contracts2.entity.contractIT.entity;
 
 import org.springframework.data.jpa.domain.Specification;
 import ru.pfr.contracts2.entity.contractIT.dto.FilterContractIt;
+import ru.pfr.contracts2.entity.contractIT.entity.ContractIT_;
 import ru.pfr.contracts2.global.ConverterDate;
 
 import java.util.Date;
@@ -25,7 +26,7 @@ public class ContractITSpecification {
             //criteriaBuilder.isFalse(criteriaBuilder.literal(true)); //всегда ложно criteriaBuilder.or()
         }
         return (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get("idzirot"), idot);
+                criteriaBuilder.equal(root.get(ContractIT_.IDZIROT), idot);
     }
 
     public static Specification<ContractIT> dateGKEquals(Date dateGK) {
@@ -34,7 +35,7 @@ public class ContractITSpecification {
                     criteriaBuilder.isTrue(criteriaBuilder.literal(true));
         }
         return (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get("dateGK"), dateGK);
+                criteriaBuilder.equal(root.get(ContractIT_.DATE_GK), dateGK);
     }
 
     public static Specification<ContractIT> statusGKEquals(String statusGK) {
@@ -43,12 +44,12 @@ public class ContractITSpecification {
                     criteriaBuilder.isTrue(criteriaBuilder.literal(true));
         }
         return (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get("statusGK"), statusGK);
+                criteriaBuilder.equal(root.get(ContractIT_.STATUS_GK), statusGK);
     }
 
     public static Specification<ContractIT> roleEquals(String role) {
         return (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get("role"), role);
+                criteriaBuilder.equal(root.get(ContractIT_.ROLE), role);
     }
 
     public static Specification<ContractIT> nomGKEquals(String nomGK) {
@@ -57,7 +58,7 @@ public class ContractITSpecification {
                     criteriaBuilder.isTrue(criteriaBuilder.literal(true));
         }
         return (root, query, criteriaBuilder) ->
-                criteriaBuilder.like(root.get("nomGK"), "%" + nomGK + "%");
+                criteriaBuilder.like(root.get(ContractIT_.NOM_GK), "%" + nomGK + "%");
     }
 
     public static Specification<ContractIT> kontragentLike(String kontragent) {
@@ -66,7 +67,7 @@ public class ContractITSpecification {
                     criteriaBuilder.isTrue(criteriaBuilder.literal(true));
         }
         return (root, query, criteriaBuilder) ->
-                criteriaBuilder.like(root.get("kontragent"), "%" + kontragent + "%");
+                criteriaBuilder.like(root.get(ContractIT_.KONTRAGENT), "%" + kontragent + "%");
     }
 
     //todo

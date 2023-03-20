@@ -2,12 +2,13 @@ package ru.pfr.contracts2.entity.contracts.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data //@ToString, @EqualsAndHashCode, @Getter, @Setter, @RequiredArgsConstructor
+//@Data //@ToString, @EqualsAndHashCode, @Getter, @Setter, @RequiredArgsConstructor
 @AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Setter
 @Builder
 public class NotificationDto { //уведомление
 

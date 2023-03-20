@@ -14,6 +14,7 @@ import ru.pfr.contracts2.entity.contractIT.dto.ContractDopRequest;
 import ru.pfr.contracts2.entity.contractIT.dto.FilterContractIt;
 import ru.pfr.contracts2.entity.contractIT.entity.ContractIT;
 import ru.pfr.contracts2.entity.contractIT.entity.ContractITSpecification;
+import ru.pfr.contracts2.entity.contractIT.entity.ContractIT_;
 import ru.pfr.contracts2.entity.contractIT.entity.ItDocuments;
 import ru.pfr.contracts2.entity.contractIT.mapper.ContractItMapper;
 import ru.pfr.contracts2.entity.contractIT.mapper.ItDocumentsMapper;
@@ -119,8 +120,7 @@ public class ContractDopControllerRest {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteContract(
-            @PathVariable("id") Long id,
-            @AuthenticationPrincipal User user
+            @PathVariable("id") Long id
     ) {
         try {
             contractItService.delete(id);
@@ -160,16 +160,16 @@ public class ContractDopControllerRest {
     ) {
 
         try {
-            Sort sort = Sort.by("id").descending();
+            Sort sort = Sort.by(ContractIT_.ID).descending();
             if (filterContractIt.sortd() == 1) {
-                sort = Sort.by("dateGK").and(Sort.by("id").descending());
+                sort = Sort.by(ContractIT_.DATE_GK).and(Sort.by(ContractIT_.ID).descending());
             } else if (filterContractIt.sortd() == 2) {
-                sort = Sort.by("dateGK").descending().and(Sort.by("id").descending());
+                sort = Sort.by(ContractIT_.DATE_GK).descending().and(Sort.by(ContractIT_.ID).descending());
             }
             if (filterContractIt.sortk() == 1) {
-                sort = Sort.by("kontragent").and(Sort.by("id").descending());
+                sort = Sort.by(ContractIT_.KONTRAGENT).and(Sort.by(ContractIT_.ID).descending());
             } else if (filterContractIt.sortk() == 2) {
-                sort = Sort.by("kontragent").descending().and(Sort.by("id").descending());
+                sort = Sort.by(ContractIT_.KONTRAGENT).descending().and(Sort.by(ContractIT_.ID).descending());
             }
 
             List<ContractIT> contracts = contractItService.findAll(

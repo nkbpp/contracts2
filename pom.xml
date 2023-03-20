@@ -13,8 +13,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>17</java.version>
-        <!--<tomcat.version>10.0.14</tomcat.version>-->
         <spring.version>2.6.1</spring.version>
+        <!--<spring.version>2.6.1</spring.version>-->
         <start-class>ru.pfr.contracts2.Contracts2Application</start-class>
     </properties>
 
@@ -70,11 +70,27 @@
             <version>2.5.6</version>
         </dependency>
 
-        <!--        <dependency>
-                    <groupId>org.hibernate</groupId>
-                    <artifactId>hibernate-jpamodelgen</artifactId>
-                    <version>6.2.0.CR3</version>
-                </dependency>-->
+        <!--Генерация метамоделей для нее нужны 2 зависимости ниже
+        https://javastudy.ru/spring-data-jpa/generate-metamodel/
+        -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-jpamodelgen</artifactId>
+            <version>5.4.33.Final</version>
+        </dependency>
+        <!-- JAXB API only -->
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>4.0.0</version>
+        </dependency>
+        <!-- JAXB RI, Jakarta XML Binding -->
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>4.0.2</version>
+            <scope>runtime</scope>
+        </dependency>
 
         <!-- Use MySQL Connector-J -->
         <dependency>
