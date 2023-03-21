@@ -21,18 +21,18 @@ $(document).ready(function () {
                         $('textarea[name=kontragent]').val(data.kontragent);
                         $('input[name=dateGK]').val(data.dateGK);
                         $('input[name=sum]').val(data.sum.replace(',', '.'));
-                        $('input[name=January]').val(data.month1);
-                        $('input[name=February]').val(data.month2);
-                        $('input[name=March]').val(data.month3);
-                        $('input[name=April]').val(data.month4);
-                        $('input[name=May]').val(data.month5);
-                        $('input[name=June]').val(data.month6);
-                        $('input[name=July]').val(data.month7);
-                        $('input[name=August]').val(data.month8);
-                        $('input[name=September]').val(data.month9);
-                        $('input[name=October]').val(data.month10);
-                        $('input[name=November]').val(data.month11);
-                        $('input[name=December]').val(data.month12);
+                        $('input[name=month1]').val(data.month1);
+                        $('input[name=month2]').val(data.month2);
+                        $('input[name=month3]').val(data.month3);
+                        $('input[name=month4]').val(data.month4);
+                        $('input[name=month5]').val(data.month5);
+                        $('input[name=month6]').val(data.month6);
+                        $('input[name=month7]').val(data.month7);
+                        $('input[name=month8]').val(data.month8);
+                        $('input[name=month9]').val(data.month9);
+                        $('input[name=month10]').val(data.month10);
+                        $('input[name=month11]').val(data.month11);
+                        $('input[name=month12]').val(data.month12);
 
                         $('input[name=sumNaturalIndicators]').val(data.sumNaturalIndicators);
                         $('#range').val(data.naturalIndicators.length);
@@ -141,6 +141,7 @@ $(document).ready(function () {
 
     axobody.on('click', 'button', function () {
 
+        //Добавление Изменение
         if ($(this).attr('id') === "addContractAxo") {
             // проверка заполнения основных полей
             if (
@@ -151,20 +152,113 @@ $(document).ready(function () {
                 $(this).prop("disabled", true);//делаем кнопку не активной
                 $(this).prepend(getSpinnerButton());// крутилкa
 
-                let param = new FormData($('#formAxoContract')[0]);
-                param.append('id', encodeURIComponent($('#addContractAxo').attr("data-id-contract")));
+                let idContractAxo = $('#addContractAxo').attr("data-id-contract");
+
+                let form = new FormData($('#formAxoContract')[0]);
+                let jsonData = Object.fromEntries(form.entries());
+                jsonData.id = idContractAxo;
 
                 let ntinput = $('#nt').find('.col-3:not(.d-none) input');
-                let strntinput = "";
+                let ntArr = []
                 for (let i = 0; i < ntinput.length; i++) {
-                    strntinput += (ntinput.eq(i).val() + (((i + 1) != ntinput.length) ? ';' : ''));
+                    ntArr[i] = {sum: ntinput.eq(i).val()}
                 }
-                param.append('naturalIndicators', strntinput);
+                ;
+                jsonData.naturalIndicators = ntArr;
+
+
+                delete jsonData.itDocuments;
+
+                let formDataFile = new FormData();
+                const blob = new Blob([JSON.stringify(jsonData)], {
+                    type: 'application/json'
+                });
+
+                formDataFile.append("contract", blob)
+
+                let ins = document.getElementById('itDocuments').files.length;
+                if (ins === 0) {
+                    let form2 = new FormData($('#formAxoContract')[0]);
+                    let jsonData2 = Object.fromEntries(form2.entries());
+                    let data = {};
+                    data.file = jsonData2['itDocuments'];
+                    formDataFile.append("file", data.file);
+                } else {
+                    for (let x = 0; x < ins; x++) {
+                        formDataFile.append("file", document.getElementById('itDocuments').files[x]);
+                    }
+                }
+
+                /*                let param = new FormData($('#formAxoContract')[0]);
+                                param.append('id', encodeURIComponent($('#addContractAxo').attr("data-id-contract")));
+                
+                                let ntinput = $('#nt').find('.col-3:not(.d-none) input');
+                                let strntinput = "";
+                                for (let i = 0; i < ntinput.length; i++) {
+                                    strntinput += (ntinput.eq(i).val() + (((i + 1) != ntinput.length) ? ';' : ''));
+                                }
+                                param.append('naturalIndicators', strntinput);*/
+
 
                 // Отправляем запрос
                 let token = $('#_csrf').attr('content');
                 let header = $('#_csrf_header').attr('content');
-                $.post({
+                console.log(idContractAxo)
+                //ДОБАВЛЕНИЕ
+                if (idContractAxo === undefined) {
+                    console.log("add")
+                    console.log(jsonData)
+                    $.ajax({
+                        url: "/contract/axo",
+                        data: formDataFile,
+                        processData: false,
+                        contentType: false,
+                        type: "POST",
+                        headers: {
+                            "Content-Type": undefined
+                        },
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader(header, token);
+                        },
+                        success: function (data) {
+                            //после добавления показать таблицу
+                            $("#mainContainer").load("/contract/axo/vievTable", "", function () {
+                                ajaxContractAxoNoNatural("");
+                            });
+                            initialToats("Добавление прошло успешно", data, "success").show();
+                        },
+                        error: function (jqXHR) {
+                            initialToats("Ошибка при добавлении!!!", jqXHR.responseText, "err").show();
+                        }
+                    });
+                } else {
+                    console.log("update")
+                    console.log(jsonData)
+                    $.ajax({
+                        url: "/contract/axo",
+                        data: formDataFile,
+                        processData: false,
+                        contentType: false,
+                        type: "PUT",
+                        headers: {
+                            "Content-Type": undefined
+                        },
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader(header, token);
+                        },
+                        success: function (data) {
+                            //после добавления показать таблицу
+                            $("#mainContainer").load("/contract/axo/vievTable", "", function () {
+                                ajaxContractAxoNoNatural("");
+                            });
+                            initialToats("Изменение прошло успешно", data, "success").show();
+                        },
+                        error: function (jqXHR) {
+                            initialToats("Ошибка при изменении!!!", jqXHR.responseText, "err").show();
+                        }
+                    });
+                }
+                /*$.post({
                     url: "/contract/axo/upload",
                     data: param,
                     cache: false,
@@ -183,7 +277,7 @@ $(document).ready(function () {
                     error: function (jqXHR, textStatus) {
                         initialToats("Ошибка при добавлении!!!", jqXHR.responseText, "err").show();
                     }
-                });
+                });*/
             }
             return false;
         }
@@ -255,7 +349,7 @@ function ajaxContractAxoNoNatural(params) {
         "            <th colSpan='3'>3-й квартал</th>" +
         "            <th colSpan='3'>4-й квартал</th>" +
         "            <th rowSpan='2'>Остаток</th>" +
-        "            <th rowSpan='2' style='min-width:200px'>Документы</th>" +
+        //"            <th rowSpan='2' style='min-width:200px'>Документы</th>" +
         "            <th rowSpan='2'>Прикрепленные файлы</th>" +
         "            <th rowSpan='2'>Действие</th>" +
         "        </tr>" +
@@ -285,6 +379,8 @@ function ajaxContractAxoNoNatural(params) {
     )
 
     getSpinnerTable("tableContractAxo")
+    let token = $('#_csrf').attr('content');
+    let header = $('#_csrf_header').attr('content');
     $.ajax({
         url: "/contract/axo/findTable?" + params,
         data: "",
@@ -294,8 +390,7 @@ function ajaxContractAxoNoNatural(params) {
         dataType: 'json',
         type: 'POST',
         beforeSend: function (xhr) {
-            xhr.setRequestHeader($('#_csrf').attr('content'),
-                $('#_csrf_header').attr('content'));
+            xhr.setRequestHeader(header, token);
         },
         success: function (response) {
             let trHTML = '';
@@ -330,7 +425,7 @@ function ajaxContractAxoNoNatural(params) {
                     '<td>' + replaceNull(item.month11) + '</td>' +
                     '<td>' + replaceNull(item.month12) + '</td>' +
                     '<td>' + replaceNull(item.ostatoc) + '</td>' +
-                    '<td>' + replaceNull(item.documentu) + '</td>' +
+                    /*'<td>' + replaceNull(item.documentu) + '</td>' +*/
                     '<td>' + docum + '</td>' +
                     '<td>' +
                     '<div><a name="' + item.id + '" id="updateAxoContract" href="#">Изменить</a></div>' +
@@ -390,6 +485,8 @@ function ajaxContractAxoNatural(params) {
     )
 
     getSpinnerTable("tableContractAxo")
+    let token = $('#_csrf').attr('content');
+    let header = $('#_csrf_header').attr('content');
     $.ajax({
         url: "/contract/axo/findTable?" + params,
         data: "",
@@ -397,10 +494,9 @@ function ajaxContractAxoNatural(params) {
         processData: false,
         contentType: "application/json",
         dataType: 'json',
-        type: 'GET',
+        type: 'POST',
         beforeSend: function (xhr) {
-            xhr.setRequestHeader($('#_csrf').attr('content'),
-                $('#_csrf_header').attr('content'));
+            xhr.setRequestHeader(header, token);
         },
         success: function (response) {
             let trHTML = '';

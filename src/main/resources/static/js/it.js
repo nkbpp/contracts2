@@ -193,6 +193,7 @@ $(document).ready(function () {
             return false;
         }
 
+        //добавление контракта
         if ($(this).attr('id') === "addContractIt") {
             // проверка заполнения основных полей
             if (

@@ -13,7 +13,7 @@ public interface ContractItRepository extends JpaRepository<ContractIT, Long>, J
 
     Optional<ContractIT> findById(Long l);
 
-    List<ContractIT> findAllByOrderByIdDesc();
+/*    List<ContractIT> findAllByOrderByIdDesc();
 
     List<ContractIT> findAllByRoleOrderByIdDesc(String role, Pageable pageable);
 
@@ -39,6 +39,6 @@ public interface ContractItRepository extends JpaRepository<ContractIT, Long>, J
             value = "SELECT * FROM contractit " +
                     "WHERE id in ?1 desc",
             nativeQuery = true)
-    List<ContractIT> findByIds(List<Integer> list);
+    List<ContractIT> findByIds(List<Integer> list);*/
 
 }

@@ -19,7 +19,6 @@ import ru.pfr.contracts2.entity.contractIT.entity.ItDocuments;
 import ru.pfr.contracts2.entity.contractIT.mapper.ContractItMapper;
 import ru.pfr.contracts2.entity.contractIT.mapper.ItDocumentsMapper;
 import ru.pfr.contracts2.entity.user.User;
-import ru.pfr.contracts2.global.GetOtdel;
 import ru.pfr.contracts2.service.it.ContractItService;
 
 import java.util.List;
@@ -28,7 +27,7 @@ import java.util.Objects;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = {"/contract/dop"})
-public class ContractDopControllerRest {
+public class ContractItControllerRest {
 
     private final ContractItService contractItService;
     private final ItDocumentsMapper documentsMapper;
@@ -47,8 +46,7 @@ public class ContractDopControllerRest {
             @RequestPart("file") List<MultipartFile> documents,
             @RequestPart("contract") ContractDopRequest contractDopRequest,
 
-            @AuthenticationPrincipal User user,
-            Authentication authentication) {
+            @AuthenticationPrincipal User user) {
         try {
 
             //проход по документам
@@ -60,7 +58,7 @@ public class ContractDopControllerRest {
 
             ContractIT contract = contractItMapper
                     .fromContractDopRequest(contractDopRequest);
-            contract.setRole(GetOtdel.get(authentication));
+            //contract.setRole(GetOtdel.get(authentication));
             contract.setAllDocuments(listDocuments);
             contract.setUser(user);
 
@@ -84,8 +82,7 @@ public class ContractDopControllerRest {
             @RequestPart("file") List<MultipartFile> documents,
             @RequestPart("contract") ContractDopRequest contractDopRequest,
 
-            @AuthenticationPrincipal User user,
-            Authentication authentication) {
+            @AuthenticationPrincipal User user) {
         try {
 
             //проход по документам
@@ -99,7 +96,7 @@ public class ContractDopControllerRest {
 
             ContractIT contract = contractItMapper
                     .fromContractDopRequest(contractDopRequest);
-            contract.setRole(GetOtdel.get(authentication));
+            //contract.setRole(GetOtdel.get(authentication));
 
             contract.setAllDocuments(oldContract.getItDocuments());
             contract.setAllDocuments(listDocuments);
@@ -155,8 +152,7 @@ public class ContractDopControllerRest {
             @RequestBody FilterContractIt filterContractIt,
 
             @RequestParam(defaultValue = "1") Integer param,
-            @RequestParam(defaultValue = "10") Integer col,
-            Authentication authentication
+            @RequestParam(defaultValue = "10") Integer col
     ) {
 
         try {
@@ -174,7 +170,7 @@ public class ContractDopControllerRest {
 
             List<ContractIT> contracts = contractItService.findAll(
                     ContractITSpecification.filterContractIt(
-                            filterContractIt, GetOtdel.get(authentication)
+                            filterContractIt//, GetOtdel.get(authentication)
                     ),
                     PageRequest.of(
                             param - 1, col,

@@ -187,6 +187,7 @@ $(document).ready(function () {
             return false;
         }
 
+        //Добавление Изменение
         if ($(this).attr('id') === "addContractIt") {
             // проверка заполнения основных полей
             if (
@@ -194,14 +195,14 @@ $(document).ready(function () {
             ) {
                 alert("Не все обязательные поля (отмеченные *) заполнены!")
             } else {
-                let addContractIt = $('#addContractIt').attr("data-id-contract");
-
                 $(this).prop("disabled", true);//делаем кнопку не активной
                 $(this).prepend(getSpinnerButton());// крутилкa
 
+                let idContractIt = $('#addContractIt').attr("data-id-contract");
+
                 let form = new FormData($('#formItContract')[0]);
                 let jsonData = Object.fromEntries(form.entries());
-                jsonData.id = addContractIt;
+                jsonData.id = idContractIt;
                 jsonData.statusGK = $('#statusGK').val();
                 jsonData.idzirot = $('#notificationsSelect').val();
 
@@ -212,7 +213,7 @@ $(document).ready(function () {
                     type: 'application/json'
                 });
 
-                formDataFile.append("contract", blob)
+                formDataFile.append("contract", blob);
 
                 let ins = document.getElementById('itDocuments').files.length;
                 if (ins === 0) {
@@ -232,7 +233,7 @@ $(document).ready(function () {
                 let header = $('#_csrf_header').attr('content');
 
                 //ДОБАВЛЕНИЕ
-                if (addContractIt === undefined) {
+                if (idContractIt === undefined) {
                     $.ajax({
                         url: "/contract/dop",
                         data: formDataFile,

@@ -2,22 +2,11 @@ package ru.pfr.contracts2.entity.contractIT.entity;
 
 import org.springframework.data.jpa.domain.Specification;
 import ru.pfr.contracts2.entity.contractIT.dto.FilterContractIt;
-import ru.pfr.contracts2.entity.contractIT.entity.ContractIT_;
 import ru.pfr.contracts2.global.ConverterDate;
 
 import java.util.Date;
 
 public class ContractITSpecification {
-
-/*    public static Specification<ContractIT> belongsToCategory(List<Category> categories) {
-        return (root, query, criteriaBuilder) ->
-                criteriaBuilder.in(root.get(ContractIT_.CATEGORY)).value(categories);
-    }
-
-    public static Specification<Product> priceGreaterThan(double price) {
-        return (root, query, criteriaBuilder) ->
-                criteriaBuilder.greaterThanOrEqualTo(root.get(Product_.PRICE), price);
-    }*/
 
     public static Specification<ContractIT> idotEquals(Integer idot) {
         if (idot == null || idot.equals(0)) {
@@ -30,7 +19,7 @@ public class ContractITSpecification {
     }
 
     public static Specification<ContractIT> dateGKEquals(Date dateGK) {
-        if (dateGK == null || dateGK.equals("")) {
+        if (dateGK == null)) {
             return (root, query, criteriaBuilder) ->
                     criteriaBuilder.isTrue(criteriaBuilder.literal(true));
         }
@@ -52,7 +41,7 @@ public class ContractITSpecification {
                 criteriaBuilder.equal(root.get(ContractIT_.ROLE), role);
     }
 
-    public static Specification<ContractIT> nomGKEquals(String nomGK) {
+    public static Specification<ContractIT> nomGKLike(String nomGK) {
         if (nomGK == null || nomGK.equals("")) {
             return (root, query, criteriaBuilder) ->
                     criteriaBuilder.isTrue(criteriaBuilder.literal(true));
@@ -70,27 +59,31 @@ public class ContractITSpecification {
                 criteriaBuilder.like(root.get(ContractIT_.KONTRAGENT), "%" + kontragent + "%");
     }
 
-    //todo
-    public static Specification<ContractIT> filterContractIt(FilterContractIt filter, String role) {
+    public static Specification<ContractIT> filterContractIt(
+            FilterContractIt filter//, String role
+    ) {
         final Date dateGK2;
         if (filter.dateGK() != null && !filter.dateGK().equals("")) {
             dateGK2 = ConverterDate.stringToDate(filter.dateGK().trim());
         } else {
             dateGK2 = null;
         }
-        return Specification.where(
+        /*return Specification.where(
                 roleEquals(role)
                         .and(kontragentLike(filter.poleFindByKontragent()))
-                        .and(nomGKEquals(filter.poleFindByNomGK()))
+                        .and(nomGKLike(filter.poleFindByNomGK()))
+                        .and(idotEquals(filter.idot()))
+                        .and(dateGKEquals(dateGK2))
+                        .and(statusGKEquals(filter.poleStatusGK()))
+        );*/
+
+        return Specification.where(
+                (kontragentLike(filter.poleFindByKontragent()))
+                        .and(nomGKLike(filter.poleFindByNomGK()))
                         .and(idotEquals(filter.idot()))
                         .and(dateGKEquals(dateGK2))
                         .and(statusGKEquals(filter.poleStatusGK()))
         );
     }
-
-/*    public static Specification<Product> expired() {
-        return (root, query, criteriaBuilder) ->
-                criteriaBuilder.lessThan(root.get(Product_.EXPIRATION_DATE), LocalDate.now());
-    }*/
 
 }

@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Disabled
 @SpringBootTest
 @AutoConfigureMockMvc//запускается полный контекст приложения Spring, но без сервера
-class ContractDopControllerRestUnitTest {
+class ContractItControllerRestUnitTest {
 
     @Autowired
     private ContractItMapper contractItMapper;
@@ -81,7 +81,7 @@ class ContractDopControllerRestUnitTest {
 
                 .idzirot(1)
                 .nameot("Господин Работник")
-                .naturalIndicators(new ArrayList<>())//только для отдела AXO тут не нужен
+                //.naturalIndicators(new ArrayList<>())//только для отдела AXO тут не нужен
 
                 .build();
     }

@@ -26,7 +26,7 @@ public class ItDocuments {
     private String nameFile;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contractIT_id")
-    private ContractIT contractIT;
+    private ContractDop contractIT;
 
     public ItDocuments(byte[] dokument, String nameFile) {
         this.dokument = dokument;
@@ -34,7 +34,7 @@ public class ItDocuments {
     }
 
     @JsonIgnore
-    public ContractIT getContractIT() {
+    public ContractDop getContractIT() {
         return contractIT;
     }
 }

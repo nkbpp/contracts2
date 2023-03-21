@@ -30,12 +30,12 @@
                     <div class="col-2 align-self-center">Контракт</div>
                     <div class="col-7">
                         <label for="nomGK" class="form-label m-0">Номер/Наименование*</label>
-                        <!--<input type="text" class="form-control" id="nomGK" name="nomGK">-->
                         <textarea class="form-control" rows="1" id="nomGK" name="nomGK"></textarea>
                     </div>
                     <div class="col-3">
                         <label for="dateGK" class="form-label m-0">Дата</label>
-                        <input type="text" placeholder="дд.мм.гггг" class="form-control datepicker" id="dateGK" name="dateGK">
+                        <input type="text" placeholder="дд.мм.гггг" class="form-control datepicker" id="dateGK"
+                               name="dateGK">
                     </div>
                 </div>
                 <div class="col-12 row ">
@@ -75,34 +75,34 @@
                         <div class="col-2 align-self-center">1-й квартал</div>
                         <div class="col row">
                             <div class="col-4">
-                                <label for="January" class="form-label m-0">Январь</label>
+                                <label for="month1" class="form-label m-0">Январь</label>
                                 <input
                                         class="form-control"
                                         type="number"
-                                        id="January"
-                                        name="January"
+                                        id="month1"
+                                        name="month1"
                                         min="0" step="1" data-bind="value:replyNumber"
                                         onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
                                 />
                             </div>
                             <div class="col-4">
-                                <label for="February" class="form-label m-0">Февраль</label>
+                                <label for="month2" class="form-label m-0">Февраль</label>
                                 <input
                                         class="form-control"
                                         type="number"
-                                        id="February"
-                                        name="February"
+                                        id="month2"
+                                        name="month2"
                                         min="0" step="1" data-bind="value:replyNumber"
                                         onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
                                 />
                             </div>
                             <div class="col-4">
-                                <label for="March" class="form-label m-0">Март</label>
+                                <label for="month3" class="form-label m-0">Март</label>
                                 <input
                                         class="form-control"
                                         type="number"
-                                        id="March"
-                                        name="March"
+                                        id="month3"
+                                        name="month3"
                                         min="0" step="1" data-bind="value:replyNumber"
                                         onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
                                 />
@@ -122,34 +122,34 @@
                         <div class="col-2 align-self-center">2-й квартал</div>
                         <div class="col row">
                             <div class="col-4">
-                                <label for="April" class="form-label m-0">Апрель</label>
+                                <label for="month4" class="form-label m-0">Апрель</label>
                                 <input
                                         class="form-control"
                                         type="number"
-                                        id="April"
-                                        name="April"
+                                        id="month4"
+                                        name="month4"
                                         min="0" step="1" data-bind="value:replyNumber"
                                         onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
                                 />
                             </div>
                             <div class="col-4">
-                                <label for="May" class="form-label m-0">Май</label>
+                                <label for="month5" class="form-label m-0">Май</label>
                                 <input
                                         class="form-control"
                                         type="number"
-                                        id="May"
-                                        name="May"
+                                        id="month5"
+                                        name="month5"
                                         min="0" step="1" data-bind="value:replyNumber"
                                         onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
                                 />
                             </div>
                             <div class="col-4">
-                                <label for="June" class="form-label m-0">Июнь</label>
+                                <label for="month6" class="form-label m-0">Июнь</label>
                                 <input
                                         class="form-control"
                                         type="number"
-                                        id="June"
-                                        name="June"
+                                        id="month6"
+                                        name="month6"
                                         min="0" step="1" data-bind="value:replyNumber"
                                         onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
                                 />
@@ -169,34 +169,34 @@
                         <div class="col-2 align-self-center">3-й квартал</div>
                         <div class="col row">
                             <div class="col-4">
-                                <label for="July" class="form-label m-0">Июль</label>
+                                <label for="month7" class="form-label m-0">Июль</label>
                                 <input
                                         class="form-control"
                                         type="number"
-                                        id="July"
-                                        name="July"
+                                        id="month7"
+                                        name="month7"
                                         min="0" step="1" data-bind="value:replyNumber"
                                         onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
                                 />
                             </div>
                             <div class="col-4">
-                                <label for="August" class="form-label m-0">Август</label>
+                                <label for="month8" class="form-label m-0">Август</label>
                                 <input
                                         class="form-control"
                                         type="number"
-                                        id="August"
-                                        name="August"
+                                        id="month8"
+                                        name="month8"
                                         min="0" step="1" data-bind="value:replyNumber"
                                         onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
                                 />
                             </div>
                             <div class="col-4">
-                                <label for="September" class="form-label m-0">Сентябрь</label>
+                                <label for="month9" class="form-label m-0">Сентябрь</label>
                                 <input
                                         class="form-control"
                                         type="number"
-                                        id="September"
-                                        name="September"
+                                        id="month9"
+                                        name="month9"
                                         min="0" step="1" data-bind="value:replyNumber"
                                         onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
                                 />
@@ -214,34 +214,34 @@
                         <div class="col-2 align-self-center">4-й квартал</div>
                         <div class="col row">
                             <div class="col-4">
-                                <label for="October" class="form-label m-0">Октябрь</label>
+                                <label for="month10" class="form-label m-0">Октябрь</label>
                                 <input
                                         class="form-control"
                                         type="number"
-                                        id="October"
-                                        name="October"
+                                        id="month10"
+                                        name="month10"
                                         min="0" step="1" data-bind="value:replyNumber"
                                         onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
                                 />
                             </div>
                             <div class="col-4">
-                                <label for="November" class="form-label m-0">Ноябрь</label>
+                                <label for="month11" class="form-label m-0">Ноябрь</label>
                                 <input
                                         class="form-control"
                                         type="number"
-                                        id="November"
-                                        name="November"
+                                        id="month11"
+                                        name="month11"
                                         min="0" step="1" data-bind="value:replyNumber"
                                         onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
                                 />
                             </div>
                             <div class="col-4">
-                                <label for="December" class="form-label m-0">Декабрь</label>
+                                <label for="month12" class="form-label m-0">Декабрь</label>
                                 <input
                                         class="form-control"
                                         type="number"
-                                        id="December"
-                                        name="December"
+                                        id="month12"
+                                        name="month12"
                                         min="0" step="1" data-bind="value:replyNumber"
                                         onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
                                 />
@@ -260,24 +260,25 @@
                     <div class="col-10">
                         <div class="row">
                             <div class="col-4">
-                            <label for="sumNaturalIndicators" class="form-label m-0">Ожидаемый показатель</label>
-                            <input
-                                    class="form-control"
-                                    type="number"
-                                    id="sumNaturalIndicators"
-                                    name="sumNaturalIndicators"
-                                    min="0" step="1" data-bind="value:replyNumber"
-                                    onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
-                            />
+                                <label for="sumNaturalIndicators" class="form-label m-0">Ожидаемый показатель</label>
+                                <input
+                                        class="form-control"
+                                        type="number"
+                                        id="sumNaturalIndicators"
+                                        name="sumNaturalIndicators"
+                                        min="0" step="1" data-bind="value:replyNumber"
+                                        onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
+                                />
                             </div>
                         </div>
                         <hr class="mt-1 mb-0">
                         <div class="row">
-                            <label for="range" class="form-label">Количество месяцев <strong id="spanVal">0</strong></label>
+                            <label for="range" class="form-label">Количество месяцев <strong
+                                    id="spanVal">0</strong></label>
                             <input type="range" class="form-range" min="0" max="12" value="0" id="range">
                         </div>
                         <hr class="mt-1 mb-0">
-                        <div class="row" id="nt" >
+                        <div class="row" id="nt">
                             <div class="row">
                                 <div class="col-3  d-none">
                                     <label for="m1" class="form-label m-0">Месяц 1</label>
@@ -423,20 +424,18 @@
 
             <hr class="m-0">
 
-            <!--<hr class="m-0">-->
+            <!--            <div class="row mb-1 mt-1 ">
+                            <div class="col-12 row ">
+                                <div class="col-2 align-self-center">Документы</div>
+                                <div class="col">
+                                    <textarea class="form-control mt-0"
+                                              name="doc" rows="2"></textarea>
+                                </div>
 
-            <div class="row mb-1 mt-1 ">
-                <div class="col-12 row ">
-                    <div class="col-2 align-self-center">Документы</div>
-                    <div class="col">
-                        <textarea class="form-control mt-0"
-                                  name="doc" rows="2"></textarea>
-                    </div>
+                            </div>
+                        </div>
 
-                </div>
-            </div>
-
-            <hr class="m-0">
+                        <hr class="m-0">-->
 
             <div class="row mb-1 mt-1 ">
                 <div class="col-12 row ">
@@ -468,7 +467,6 @@
             </div>
         </form>
     </div>
-
 
     <div
             class="modal fade"
@@ -504,279 +502,6 @@
         </div>
     </div>
 </div>
-
-<!--<div class="row" id="addVievIt" th:fragment="addviev">
-
-    &lt;!&ndash;Отключение стрелочек&ndash;&gt;
-    <style>
-        #formItContract  input[type="number"] {
-            -moz-appearance: textfield;
-            -webkit-appearance: textfield;
-            appearance: textfield;
-        }
-
-        #formItContract input[type="number"]::-webkit-outer-spin-button,
-        #formItContract input[type="number"]::-webkit-inner-spin-button {
-            display: none;
-        }
-    </style>
-
-
-    <div class="col-2"></div>
-
-    <div class="col-8">
-        <form enctype="multipart/form-data" method="post" id="formItContract">
-
-            <div class="row mb-1 mt-3 ">
-                <div class="col-12 row ">
-                    <div class="col-3 align-self-center">Контракт</div>
-                    <div class="col-3">
-                        <label for="nomGK" class="form-label m-0">Номер/Наименование*</label>
-                        <input type="text" class="form-control" id="nomGK" name="nomGK">
-                    </div>
-                    <div class="col-3">
-                        <label for="dateGK" class="form-label m-0">Дата</label>
-                        <input type="date" class="form-control" id="dateGK" name="dateGK">
-                    </div>
-                    <div class="col-3">
-                        <label for="sum" class="form-label m-0">Сумма</label>
-                        <input
-                                class="form-control"
-                                type="number"
-                                id="sum"
-                                name="sum"
-                                min="0" step="1" data-bind="value:replyNumber"
-                                onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
-                        />
-                    </div>
-                </div>
-            </div>
-
-            <hr class="m-0">
-
-            <div class="row mb-1 mt-1 ">
-                <div class="col-12 row ">
-                    <div class="col-3 align-self-center">1-й квартал</div>
-                    <div class="col-3">
-                        <label for="January" class="form-label m-0">Январь</label>
-                        <input
-                                class="form-control"
-                                type="number"
-                                id="January"
-                                name="January"
-                                min="0" step="1" data-bind="value:replyNumber"
-                                onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
-                        />
-                    </div>
-                    <div class="col-3">
-                        <label for="February" class="form-label m-0">Февраль</label>
-                        <input
-                                class="form-control"
-                                type="number"
-                                id="February"
-                                name="February"
-                                min="0" step="1" data-bind="value:replyNumber"
-                                onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
-                        />
-                    </div>
-                    <div class="col-3">
-                        <label for="March" class="form-label m-0">Март</label>
-                        <input
-                                class="form-control"
-                                type="number"
-                                id="March"
-                                name="March"
-                                min="0" step="1" data-bind="value:replyNumber"
-                                onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
-                        />
-                    </div>
-                </div>
-            </div>
-
-            <hr class="m-0">
-
-            <div class="row mb-1 mt-1 ">
-                <div class="col-12 row ">
-                    <div class="col-3 align-self-center">2-й квартал</div>
-                    <div class="col-3">
-                        <label for="April" class="form-label m-0">Апрель</label>
-                        <input
-                                class="form-control"
-                                type="number"
-                                id="April"
-                                name="April"
-                                min="0" step="1" data-bind="value:replyNumber"
-                                onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
-                        />
-                    </div>
-                    <div class="col-3">
-                        <label for="May" class="form-label m-0">Май</label>
-                        <input
-                                class="form-control"
-                                type="number"
-                                id="May"
-                                name="May"
-                                min="0" step="1" data-bind="value:replyNumber"
-                                onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
-                        />
-                    </div>
-                    <div class="col-3">
-                        <label for="June" class="form-label m-0">Июнь</label>
-                        <input
-                                class="form-control"
-                                type="number"
-                                id="June"
-                                name="June"
-                                min="0" step="1" data-bind="value:replyNumber"
-                                onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
-                        />
-                    </div>
-
-                </div>
-            </div>
-
-            <hr class="m-0">
-
-            <div class="row mb-1 mt-1 ">
-                <div class="col-12 row ">
-                    <div class="col-3 align-self-center">3-й квартал</div>
-                    <div class="col-3">
-                        <label for="July" class="form-label m-0">Июль</label>
-                        <input
-                                class="form-control"
-                                type="number"
-                                id="July"
-                                name="July"
-                                min="0" step="1" data-bind="value:replyNumber"
-                                onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
-                        />
-                    </div>
-                    <div class="col-3">
-                        <label for="August" class="form-label m-0">Август</label>
-                        <input
-                                class="form-control"
-                                type="number"
-                                id="August"
-                                name="August"
-                                min="0" step="1" data-bind="value:replyNumber"
-                                onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
-                        />
-                    </div>
-                    <div class="col-3">
-                        <label for="September" class="form-label m-0">Сентябрь</label>
-                        <input
-                                class="form-control"
-                                type="number"
-                                id="September"
-                                name="September"
-                                min="0" step="1" data-bind="value:replyNumber"
-                                onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
-                        />
-                    </div>
-                </div>
-            </div>
-
-            <hr class="m-0">
-
-            <div class="row mb-1 mt-1 ">
-                <div class="col-12 row ">
-                    <div class="col-3 align-self-center">4-й квартал</div>
-                    <div class="col-3">
-                        <label for="October" class="form-label m-0">Октябрь</label>
-                        <input
-                                class="form-control"
-                                type="number"
-                                id="October"
-                                name="October"
-                                min="0" step="1" data-bind="value:replyNumber"
-                                onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
-                        />
-                    </div>
-                    <div class="col-3">
-                        <label for="November" class="form-label m-0">Ноябрь</label>
-                        <input
-                                class="form-control"
-                                type="number"
-                                id="November"
-                                name="November"
-                                min="0" step="1" data-bind="value:replyNumber"
-                                onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
-                        />
-                    </div>
-                    <div class="col-3">
-                        <label for="December" class="form-label m-0">Декабрь</label>
-                        <input
-                                class="form-control"
-                                type="number"
-                                id="December"
-                                name="December"
-                                min="0" step="1" data-bind="value:replyNumber"
-                                onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
-                        />
-                    </div>
-                </div>
-            </div>
-
-            <hr class="m-0">
-
-            <div class="row mb-1 mt-1 ">
-                <div class="col-12 row ">
-                    <div class="col-3 align-self-center">Документы</div>
-                    <div class="col-9">
-                        <textarea class="form-control mt-3"
-                                  name="doc" rows="2"></textarea>
-                    </div>
-
-                </div>
-            </div>
-
-            <hr class="m-0">
-
-            <div class="row mt-3 ">
-                <div class="col-12 row justify-content-center">
-                    <div class="col-4 row">
-                        <button class="btn btn-dark btn-block" id="addContractIt">Добавить</button>
-                    </div>
-                </div>
-            </div>
-        </form>
-    </div>
-
-
-    <div
-            class="modal fade"
-            id="modalKontragent"
-            tabindex="-1"
-            aria-labelledby="modalKontragentLabel"
-            aria-hidden="true"
-
-    >
-        <div class="modal-dialog modal-lg" th:fragment="modalKontragent(kontragent2)">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalKontragentLabel">Контрагент</h5>
-                    <button
-                            type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Close"
-                    ></button>
-                </div>
-                <div class="modal-body" th:include="fragment/modalKontragent :: modalKontragent(${kontragent2})">
-                </div>
-                <div class="modal-footer">
-                    <button
-                            type="button"
-                            class="btn btn-secondary"
-                            data-bs-dismiss="modal"
-                    >
-                        Закрыть
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>-->
 
 
 </body>

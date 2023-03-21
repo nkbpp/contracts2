@@ -160,7 +160,6 @@ public class AuthProvider implements AuthenticationProvider {
                             roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_ADMIN.getString()));
                             upfrCode = new StringBuilder("999");
                         }
-                        //TODO оригинал
                         case 100 -> roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_UPDATE_IT.getString()));
                         case 101 -> roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_READ_IT.getString()));
                         case 102 -> roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_UPDATE_AXO.getString()));
@@ -170,10 +169,10 @@ public class AuthProvider implements AuthenticationProvider {
 
                         /*case 100 -> roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_UPDATE_RSP.getString()));
                         case 101 -> roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_READ_RSP.getString()));*/
-                    }/**/
+                    }
                 }
 
-                //roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_ADMIN.getString()));//TODO УБРАТЬ
+                //roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_ADMIN.getString()));
                 //roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_UPDATE_AXO.getString()));
                 //roleList.add(new SimpleGrantedAuthority(ROLE_ENUM.ROLE_READ_AXO.getString()));
 

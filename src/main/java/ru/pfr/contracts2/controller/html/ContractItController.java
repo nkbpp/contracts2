@@ -7,21 +7,19 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import ru.pfr.contracts2.entity.contractIT.entity.ContractIT;
 import ru.pfr.contracts2.entity.contractIT.mapper.ContractItMapper;
 import ru.pfr.contracts2.entity.contracts.entity.Notification;
+
 import ru.pfr.contracts2.global.GetOtdel;
 import ru.pfr.contracts2.service.it.ContractItService;
 import ru.pfr.contracts2.service.zir.ZirServise;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping(value = {"/contract/dop"})
-public class ContractDopController {
+public class ContractItController {
 
     private final ContractItService contractItService;
     private final ZirServise zirServise;
@@ -60,15 +58,14 @@ public class ContractDopController {
         return "fragment/it/viev :: vievTable";
     }
 
-    @GetMapping("/getTable")  //Перелистывания
+/*    @GetMapping("/getTable")  //Перелистывания
     public String getTable(
             @RequestParam(defaultValue = "") Integer param,
             @RequestParam(defaultValue = "10") Integer col,
-            Authentication authentication,
             Model model) {
 
         int skip = col * (param == null ? 0 : param - 1);
-        List<ContractIT> contractITs = contractItService.findAll(GetOtdel.get(authentication))
+        List<ContractIT> contractITs = contractItService.findAll()
                 .stream()
                 .skip(skip)
                 .limit(col)
@@ -85,7 +82,7 @@ public class ContractDopController {
 
         return "fragment/it/viev :: table";
 
-    }
+    }*/
 
     @GetMapping("/add")
     public String add() {

@@ -102,7 +102,7 @@ public class ContractItMapper {
                 )*/
                 .idzirot(dto.getIdzirot())
                 .nameot(fio)
-                .naturalIndicators(new ArrayList<>())//только для отдела AXO тут не нужен
+                //.naturalIndicators(new ArrayList<>())//только для отдела AXO тут не нужен
 
                 .build();
     }

@@ -28,7 +28,7 @@ public class ContractAxoController {
         return "fragment/axo/viev :: vievTableAxo";
     }
 
-    @GetMapping("/getTable")  //Перелистывания
+/*    @GetMapping("/getTable")  //Перелистывания
     public String getTable(
             @RequestParam(defaultValue = "") Integer param,
             Model model) {
@@ -60,19 +60,16 @@ public class ContractAxoController {
 
         return "fragment/axo/viev2 :: table2";
 
-    }
+    }*/
 
     @GetMapping("/add")
     public String add() {
-
         return "fragment/axo/add :: addviev";
     }
 
     @GetMapping("/updateViev/{id}")
     public String updateViev(
-            //@PathVariable Long id
     ) {
-
         return "fragment/axo/add :: addviev";
     }
 

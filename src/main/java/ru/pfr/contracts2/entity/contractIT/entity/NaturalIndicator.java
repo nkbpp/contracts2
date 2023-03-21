@@ -25,14 +25,14 @@ public class NaturalIndicator {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contractIT_id")
-    private ContractIT contractIT;
+    private ContractAxo contractIT;
 
     public NaturalIndicator(Double sum) {
         this.sum = sum;
     }
 
     @JsonIgnore
-    public ContractIT getContractIT() {
+    public ContractAxo getContractIT() {
         return contractIT;
     }
 
