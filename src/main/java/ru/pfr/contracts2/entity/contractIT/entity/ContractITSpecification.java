@@ -19,7 +19,7 @@ public class ContractITSpecification {
     }
 
     public static Specification<ContractIT> dateGKEquals(Date dateGK) {
-        if (dateGK == null)) {
+        if (dateGK == null) {
             return (root, query, criteriaBuilder) ->
                     criteriaBuilder.isTrue(criteriaBuilder.literal(true));
         }
