@@ -14,21 +14,22 @@ import javax.persistence.*;
 @AllArgsConstructor // конструктора включающего все возможные поля
 @Entity
 @Builder
-public class ItDocuments {
+@Table(name = "it_documents")
+public class DopDocuments {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Lob
     @Basic(fetch = FetchType.LAZY)
-    @Column(name = "dokument", columnDefinition = "LONGBLOB", nullable = true)
+    @Column(name = "dokument", columnDefinition = "LONGBLOB")
     private byte[] dokument;
-    @Column(name = "namefile", nullable = true/*, length = 400*/)
+    @Column(name = "namefile")
     private String nameFile;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contractIT_id")
     private ContractDop contractIT;
 
-    public ItDocuments(byte[] dokument, String nameFile) {
+    public DopDocuments(byte[] dokument, String nameFile) {
         this.dokument = dokument;
         this.nameFile = nameFile;
     }

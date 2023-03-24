@@ -3,33 +3,33 @@ package ru.pfr.contracts2.entity.contractIT.mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import ru.pfr.contracts2.entity.contractIT.dto.ItDocumentsDto;
-import ru.pfr.contracts2.entity.contractIT.entity.ItDocuments;
+import ru.pfr.contracts2.entity.contractIT.dto.DopDocumentsDto;
+import ru.pfr.contracts2.entity.contractIT.entity.DopDocuments;
 
 @Component
 @RequiredArgsConstructor
-public class ItDocumentsMapper {
+public class DopDocumentsMapper {
 
-    public ItDocumentsDto toDto(ItDocuments obj) {
-        return ItDocumentsDto.builder()
+    public DopDocumentsDto toDto(DopDocuments obj) {
+        return DopDocumentsDto.builder()
                 .id(obj.getId())
                 .nameFile(obj.getNameFile())
                 .build();
     }
 
-    public ItDocuments fromDto(ItDocumentsDto dto) {
-        return ItDocuments.builder()
+    public DopDocuments fromDto(DopDocumentsDto dto) {
+        return DopDocuments.builder()
                 .id(dto.getId())
                 .nameFile(dto.getNameFile())
                 .build();
     }
 
-    public ItDocuments fromMultipart(MultipartFile file) {
+    public DopDocuments fromMultipart(MultipartFile file) {
         String nameFile = file.getOriginalFilename();
         if (!file.isEmpty() && !nameFile.equals("")) {
             try {
                 byte[] bytes = file.getBytes();
-                return new ItDocuments(bytes, nameFile);
+                return new DopDocuments(bytes, nameFile);
             } catch (Exception e) {
                 return null;
             }

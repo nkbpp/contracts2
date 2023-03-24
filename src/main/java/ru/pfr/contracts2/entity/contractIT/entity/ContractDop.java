@@ -1,11 +1,9 @@
 package ru.pfr.contracts2.entity.contractIT.entity;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import ru.pfr.contracts2.entity.AuditEntity;
 import ru.pfr.contracts2.entity.user.User;
 import ru.pfr.contracts2.global.MyNumbers;
 
@@ -23,7 +21,7 @@ import java.util.List;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "role",
         discriminatorType = DiscriminatorType.STRING)
-public class ContractDop {
+public class ContractDop extends AuditEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,9 +34,9 @@ public class ContractDop {
 
     private Double sum; //сумма +
 
-    private Double month1; //+
-    private Double month2; //+
-    private Double month3; //+
+    private Double month1;
+    private Double month2;
+    private Double month3;
     private Double month4;
     private Double month5;
     private Double month6;
@@ -62,11 +60,6 @@ public class ContractDop {
     @Column(insertable = false, updatable = false)
     private String role; //+
 
-    @LastModifiedDate
-    private LocalDateTime date_update; //+
-
-    @CreatedDate
-    private LocalDateTime date_create; //+
 
     public String getOstatoc() {
         return MyNumbers.okrug(sum - (month1 + month2 + month3 + month4 + month5 + month6 + month7 + month8 + month9 + month10 + month11 + month12));
@@ -77,14 +70,13 @@ public class ContractDop {
     }
 
     @OneToMany(mappedBy = "contractIT", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ItDocuments> itDocuments = new ArrayList<>(); // +
+    private List<DopDocuments> dopDocuments = new ArrayList<>(); // +
 
     public ContractDop(Long id, String nomGK, String kontragent, LocalDateTime dateGK,
                        Double sum, Double month1, Double month2, Double month3,
                        Double month4, Double month5, Double month6, Double month7,
                        Double month8, Double month9, Double month10, Double month11,
-                       Double month12, User user, LocalDateTime date_update,
-                       LocalDateTime date_create, List<ItDocuments> itDocuments) {
+                       Double month12, User user, List<DopDocuments> dopDocuments) {
         this.id = id;
         this.nomGK = nomGK;
         this.kontragent = kontragent;
@@ -103,22 +95,20 @@ public class ContractDop {
         this.month11 = month11;
         this.month12 = month12;
         this.user = user;
-        this.date_update = date_update;
-        this.date_create = date_create;
-        setAllDocuments(itDocuments);
+        setAllDocuments(dopDocuments);
     }
 
-    public void addDocuments(ItDocuments myDoc) {
-        this.itDocuments.add(myDoc);
+    public void addDocuments(DopDocuments myDoc) {
+        this.dopDocuments.add(myDoc);
         myDoc.setContractIT(this);
     }
 
-    public void setAllDocuments(List<ItDocuments> myDocs) {
+    public void setAllDocuments(List<DopDocuments> myDocs) {
 /*        while (itDocuments.size()>0){
             removeDocuments(itDocuments.get(0));
         }*/
         if (myDocs != null) {
-            for (ItDocuments d :
+            for (DopDocuments d :
                     myDocs) {
                 addDocuments(d);
             }
@@ -126,8 +116,8 @@ public class ContractDop {
 
     }
 
-    public void removeDocuments(ItDocuments myDoc) {
-        this.itDocuments.remove(myDoc);
+    public void removeDocuments(DopDocuments myDoc) {
+        this.dopDocuments.remove(myDoc);
         myDoc.setContractIT(null);
     }
 

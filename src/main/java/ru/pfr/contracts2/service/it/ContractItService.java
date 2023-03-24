@@ -3,18 +3,15 @@ package ru.pfr.contracts2.service.it;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.pfr.contracts2.entity.contractIT.entity.ContractIT;
 import ru.pfr.contracts2.repository.it.ContractItRepository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@EnableScheduling
 @Transactional
 public class ContractItService {
 
@@ -24,7 +21,7 @@ public class ContractItService {
         return contractItRepository.findById(id).orElse(null);
     }
 
-    private List<ContractIT> findAll() {
+    public List<ContractIT> findAll() {
         return contractItRepository.findAll();
     }
 
@@ -41,47 +38,11 @@ public class ContractItService {
     }
 
     public void update(ContractIT contractIT) {
-        contractIT.setDate_update(LocalDateTime.now());
         contractItRepository.save(contractIT);
     }
 
     public void delete(Long id) {
         contractItRepository.deleteById(id);
     }
-
-    /*public int getCOL() {
-        int COL = 30;
-        return COL;
-    }*/
-
-
-    /*    public List<ContractIT> findAllByRole(String role) {
-        return contractItRepository.findAllByRole(role);
-    }
-
-    public List<ContractIT> findByIds(List<Integer> list) {
-        return contractItRepository.findByIds(list);
-    }*/
-
-/*    public List<ContractIT> findAll(String role) {
-        return contractItRepository.findAllByRoleOrderByIdDesc(role);
-    }
-
-    public List<ContractIT> findAll(String role, int page) {
-        return contractItRepository.findAllByRoleOrderByIdDesc(role, PageRequest.of(page, COL));
-    }*/
-
-/*    public List<ContractIT> findAllcut(int page) {
-        return contractItRepository.findAll(PageRequest.of(page, COL)).getContent();
-    }*/
-
-/*    public List<ContractIT> findAllcut(int page, String role) {
-        return contractItRepository.findAllByRoleOrderByIdDesc(role, PageRequest.of(page, COL));
-    }*/
-
-    //поиск по номеру гк и контрагенту
-/*    public List<ContractIT> findByNomGK(String nomgk, String kontragent, String role) {
-        return contractItRepository.findByNomGKAndKontragent(nomgk, kontragent, role);
-    }*/
 
 }

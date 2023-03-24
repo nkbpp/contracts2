@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 import ru.pfr.contracts2.entity.annotations.date.CustomLocalDateDeserializerRuAndEnOrNull;
 import ru.pfr.contracts2.entity.annotations.date.CustomLocalDateSerializerRu;
-import ru.pfr.contracts2.entity.annotations.okrug.OkrugSerializer;
+import ru.pfr.contracts2.entity.annotations.numbers.OkrugSerializer;
 import ru.pfr.contracts2.entity.user.UserDto;
 
 import java.time.LocalDate;

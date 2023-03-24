@@ -16,13 +16,12 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import ru.pfr.contracts2.config.sec.WithMockCustomUser;
 import ru.pfr.contracts2.entity.contractIT.entity.ContractIT;
 import ru.pfr.contracts2.entity.contractIT.mapper.ContractItMapper;
-import ru.pfr.contracts2.entity.contractIT.mapper.ItDocumentsMapper;
+import ru.pfr.contracts2.entity.contractIT.mapper.DopDocumentsMapper;
 import ru.pfr.contracts2.service.it.ContractItService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 
 import static org.apache.http.entity.ContentType.DEFAULT_BINARY;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -37,7 +36,7 @@ class ContractItControllerRestUnitTest {
     private ContractItMapper contractItMapper;
 
     @Autowired
-    private ItDocumentsMapper documentsMapper;
+    private DopDocumentsMapper documentsMapper;
     @Autowired
     private MockMvc mockMvc;
     @MockBean

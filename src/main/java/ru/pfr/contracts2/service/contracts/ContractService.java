@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.pfr.contracts2.entity.contracts.entity.Contract;
+import ru.pfr.contracts2.entity.contracts.entity.ContractSpecification;
 import ru.pfr.contracts2.entity.contracts.entity.Contract_;
 import ru.pfr.contracts2.entity.contracts.entity.Notification;
 import ru.pfr.contracts2.entity.log.Logi;
@@ -47,12 +48,7 @@ public class ContractService {
 
     public List<Contract> findByfindByNomGK(String name, String inn, int page) {
         //для обрезки
-        PageRequest pageRequest = PageRequest.of(
-                page, SIZE,
-                Sort
-                        .by(Contract_.ID)
-                        .descending()
-        );
+        PageRequest pageRequest = PageRequest.of(page, SIZE, Sort.by(Contract_.ID).descending());
         return contractRepository.findByNomGKAndKontragentInnScript(name, inn, pageRequest);
     }
 
@@ -63,12 +59,7 @@ public class ContractService {
     public List<Contract> findAll(int page) {
 
         //для обрезки
-        PageRequest pageRequest = PageRequest.of(
-                page, SIZE,
-                Sort
-                        .by(Contract_.ID)
-                        .descending()
-        );
+        PageRequest pageRequest = PageRequest.of(page, SIZE, Sort.by(Contract_.ID).descending());
         return contractRepository.findAll(pageRequest).getContent();
 
     }
@@ -154,76 +145,54 @@ public class ContractService {
         return contracts.size();
     }
 
-    public AtomicInteger getColIspolneno() {
-        List<Contract> contracts = findAll();
-        AtomicInteger ispolneno = new AtomicInteger();
-        contracts.forEach(contract -> {
-            if (contract.getIspolneno()) {
-                ispolneno.getAndIncrement();
-            }
-        });
-        return ispolneno;
+    public int getColIspolneno() {
+        List<Contract> contracts = findAll(ContractSpecification.ispolnenoIs(true));
+        return contracts.size();
     }
 
-    public AtomicInteger getColNotispolneno() {
-        List<Contract> contracts = findAll();
-
-        AtomicInteger notispolneno = new AtomicInteger();
-        contracts.forEach(contract -> {
-            if (!contract.getIspolneno()) {
-                notispolneno.getAndIncrement();
-            }
-        });
-        return notispolneno;
+    public int getColNotispolneno() {
+        List<Contract> contracts = findAll(ContractSpecification.ispolnenoIs(false));
+        return contracts.size();
     }
 
-    public AtomicInteger getColNotispolnenosrok() {
-        List<Contract> contracts = findAll();
-        AtomicInteger notispolnenosrok = new AtomicInteger();
-        contracts.forEach(contract -> {
-            if (!contract.getIspolneno()) {
-                if (contract.getDaysOst() <= 4) {
-                    if (contract.getDaysOst() >= 0) {
-                        if (contract.getRaschet_date() != null) {
-                            notispolnenosrok.getAndIncrement();
-                        }
-                    }
-                }
-            }
-        });
-        return notispolnenosrok;
+    public List<Contract> getNotispolnenosrok() {
+        return findAll(ContractSpecification.ispolnenoIs(false))
+                .stream()
+                .filter(contract ->
+                        contract.getDaysOst() <= 4 &&
+                                contract.getDaysOst() >= 0 &&
+                                contract.getRaschet_date() != null
+                ).toList();
     }
 
-    public AtomicInteger getColNodate() {
-        List<Contract> contracts = findAll();
-        AtomicInteger nodate = new AtomicInteger();
-        contracts.forEach(contract -> {
-            if (!contract.getIspolneno()) {
-                if (contract.getDaysOst() < 0) {
-                    if (contract.getRaschet_date() == null) {
-                        nodate.getAndIncrement();
-                    }
-                }
-            }
-
-        });
-        return nodate;
+    public int getColNotispolnenosrok() {
+        return getNotispolnenosrok().size();
     }
 
-    public AtomicInteger getColProsrocheno() {
-        List<Contract> contracts = findAll();
-        AtomicInteger prosrocheno = new AtomicInteger();
-        contracts.forEach(contract -> {
-            if (!contract.getIspolneno()) {
-                if (contract.getDaysOst() < 0) {
-                    if (contract.getRaschet_date() != null) {
-                        prosrocheno.getAndIncrement();
-                    }
+    public List<Contract> getNodate() {
+        return findAll(ContractSpecification.ispolnenoIs(false))
+                .stream()
+                .filter(contract ->
+                        contract.getDaysOst() < 0 &&
+                                contract.getRaschet_date() == null
+                ).toList();
+    }
 
-                }
-            }
-        });
-        return prosrocheno;
+    public int getColNodate() {
+        return getNodate().size();
+    }
+
+    public List<Contract> getProsrocheno() {
+        return findAll(ContractSpecification.ispolnenoIs(false))
+                .stream()
+                .filter(contract ->
+                        contract.getDaysOst() < 0 &&
+                                contract.getRaschet_date() != null
+                ).toList();
+    }
+
+    public int getColProsrocheno() {
+        return getProsrocheno().size();
     }
 
     @Scheduled(cron = "0 0 8 * * MON-FRI")
@@ -237,14 +206,7 @@ public class ContractService {
             long days = contract.getDaysOst();
 
             String subject = "\"Предупреждение! Возврат обеспечения исполнения контракта!\"!";
-            String text = "Осталось дней: " + days +
-                    "\n Наименование контрагента: " + contract.getKontragent().getName() +
-                    "\n ИНН контрагента: " + contract.getKontragent().getInn() +
-                    "\n Номер контракта: " + contract.getNomGK() +
-                    "\n Дата контракта: " + DateTimeFormatter.ofPattern("dd.MM.yyyy").format(
-                    contract.getDateGK().toLocalDate()) +
-                    "\n Вид обеспечения: " + contract.getVidObesp().getName() +
-                    "\n Сумма: " + contract.getSumOk();
+            String text = "Осталось дней: " + days + "\n Наименование контрагента: " + contract.getKontragent().getName() + "\n ИНН контрагента: " + contract.getKontragent().getInn() + "\n Номер контракта: " + contract.getNomGK() + "\n Дата контракта: " + DateTimeFormatter.ofPattern("dd.MM.yyyy").format(contract.getDateGK().toLocalDate()) + "\n Вид обеспечения: " + contract.getVidObesp().getName() + "\n Сумма: " + contract.getSumOk();
 
             System.out.println("Дней " + days);
             if (days >= 0 && days <= 4) {
@@ -253,32 +215,25 @@ public class ContractService {
                     String emailUser = zirServise.getEmailUserById(Integer.parseInt(String.valueOf(contract.getUser().getId_user_zir())));
                     System.out.println("Создатель " + emailUser);
 
-                    mailSender.send(
-                            zirServise.getEmailUserById(Integer.parseInt(String.valueOf(contract.getUser().getId_user_zir()))),
-                            subject, text); //сообщение создателю
+                    mailSender.send(zirServise.getEmailUserById(Integer.parseInt(String.valueOf(contract.getUser().getId_user_zir()))), subject, text); //сообщение создателю
                     String emailBoss = null;
                     try {
                         emailBoss = zirServise.getEmailBossById(Integer.parseInt(String.valueOf(contract.getUser().getId_user_zir())));
 
                         System.out.println("Босс " + emailBoss);
                         if (emailBoss != null && !emailUser.equals(emailBoss)) {
-                            mailSender.send(
-                                    emailBoss,
-                                    subject, text); //сообщение начальнику отдела
+                            mailSender.send(emailBoss, subject, text); //сообщение начальнику отдела
                         }
 
                     } catch (Exception e) {
                     }
 
 
-                    for (Notification notification :
-                            contract.getNotifications()) {
-                        String email = zirServise.getEmailUserById(
-                                Integer.parseInt(String.valueOf(notification.getId_user())));
+                    for (Notification notification : contract.getNotifications()) {
+                        String email = zirServise.getEmailUserById(Integer.parseInt(String.valueOf(notification.getId_user())));
                         System.out.println("Кто то " + email);
                         if (!emailUser.equals(email) && (emailBoss != null && !emailBoss.equals(email))) {
-                            mailSender.send(email,
-                                    subject, text);//сообщение остальным
+                            mailSender.send(email, subject, text);//сообщение остальным
                         }
                     }
 
@@ -288,10 +243,7 @@ public class ContractService {
                         zirServise.getEmailUserById(1997),
                         subject,text); //сообщение мне*/
                 } catch (Exception e) {
-                    logiService.save(new Logi(
-                            "this",
-                            "MailError",
-                            "Ошибка при отправке сообщения!"));
+                    logiService.save(new Logi("this", "MailError", "Ошибка при отправке сообщения!"));
                 }
             }
         });

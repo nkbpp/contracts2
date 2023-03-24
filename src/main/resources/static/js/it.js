@@ -4,7 +4,7 @@ $(document).ready(function () {
     let itbody = $("body");
     itbody.on('click', 'a', function () {
 
-        if ($(this).attr('id') === "menuitcontract") { //Кнопка ИТ контракты
+        if ($(this).attr('name') === "menudopcontract") { //Кнопка ИТ контракты
             SORTK = 0;
             SORTD = 0;
             let mainContainer = $("#mainContainer");
@@ -19,7 +19,7 @@ $(document).ready(function () {
             return false;
         }
 
-        if ($(this).attr('id') === "menuitaddcontract") { //Кнопка Добавить ИТ контракт
+        if ($(this).attr('name') === "menudopaddcontract") { //Кнопка Добавить ИТ контракт
             $("#mainContainer").load("/contract/it/add", "", function () {
                 $('.datepicker').datepicker({
                     format: 'dd.mm.yyyy',
@@ -33,13 +33,11 @@ $(document).ready(function () {
             if (confirm("Вы точно хотите удалить заявление c порядковым номером = " +
                 $(this).parents("tr").children().eq(0).text())) {
 
-                let param = "id=" + $(this).attr('name');
                 let token = $('#_csrf').attr('content');
                 let header = $('#_csrf_header').attr('content');
                 $.ajax({
-                    url: '/contract/it/deleteContract',
-                    method: 'post',
-                    data: param,
+                    url: '/contract/it/' + $(this).attr('name'),
+                    method: 'delete',
                     beforeSend: function (xhr) {
                         xhr.setRequestHeader(header, token);
                     },
@@ -65,12 +63,11 @@ $(document).ready(function () {
                 let header = $('#_csrf_header').attr('content');
                 $.ajax({
                     url: '/contract/it/getContract/' + param,
-                    method: 'post',
+                    method: 'get',
                     beforeSend: function (xhr) {
                         xhr.setRequestHeader(header, token);
                     },
                     success: function (data) {
-                        console.log(data)
                         $("#addContractIt").attr("data-id-contract", data.id)
 
                         $('textarea[name=nomGK]').val(data.nomGK);
@@ -79,20 +76,20 @@ $(document).ready(function () {
                         $('input[name=dateGKs]').val(data.dateGKs);
                         $('input[name=dateGKpo]').val(data.dateGKpo);
                         $('input[name=sum]').val(data.sum.replace(',', '.'));
-                        $('input[name=January]').val(data.month1);
-                        $('input[name=February]').val(data.month2);
-                        $('input[name=March]').val(data.month3);
-                        $('input[name=April]').val(data.month4);
-                        $('input[name=May]').val(data.month5);
-                        $('input[name=June]').val(data.month6);
-                        $('input[name=July]').val(data.month7);
-                        $('input[name=August]').val(data.month8);
-                        $('input[name=September]').val(data.month9);
-                        $('input[name=October]').val(data.month10);
-                        $('input[name=November]').val(data.month11);
-                        $('input[name=December]').val(data.month12);
+                        $('input[name=month1]').val(data.month1);
+                        $('input[name=month2]').val(data.month2);
+                        $('input[name=month3]').val(data.month3);
+                        $('input[name=month4]').val(data.month4);
+                        $('input[name=month5]').val(data.month5);
+                        $('input[name=month6]').val(data.month6);
+                        $('input[name=month7]').val(data.month7);
+                        $('input[name=month8]').val(data.month8);
+                        $('input[name=month9]').val(data.month9);
+                        $('input[name=month10]').val(data.month10);
+                        $('input[name=month11]').val(data.month11);
+                        $('input[name=month12]').val(data.month12);
                         $('#statusGK').val(data.statusGK);
-                        $('#budgetClassification').val(data.budgetClassification !== null ? data.budgetClassification.id : "0");
+                        /*$('#budgetClassification').val(data.budgetClassification !== null ? data.budgetClassification.id : "0");*/
                         $('#notificationsSelect').val(data.idzirot);
 
                         for (let doc of data.documents) {
@@ -125,7 +122,7 @@ $(document).ready(function () {
 
         //переключатели страниц pagination
         if ($(this).parents("#paginationItContract").attr("id") === "paginationItContract") {
-            let list = clickPagination($(this), "#paginationItContract");
+            clickPagination($(this), "#paginationItContract");
             fpagination()
         }
 
@@ -150,7 +147,6 @@ $(document).ready(function () {
                 SORTD = 0;
                 $("#sortKspan").html(SORTK === 2 ? "&#9660" : "&#9650");
                 $("#sortDspan").text("");
-
             }
             ajaxContractIt(getContractItJson(), getContractItParams());
         }
@@ -170,13 +166,11 @@ $(document).ready(function () {
 
         if ($(this).attr('data-name-doc') === "delItDoc") {
             let id = $(this).attr('data-id-doc');
-            let param = "id=" + id;
             let token = $('#_csrf').attr('content');
             let header = $('#_csrf_header').attr('content');
             $.ajax({
-                url: '/contract/it/delItDoc',
-                method: 'post',
-                data: param,
+                url: '/contract/it/delItDoc/' + id,
+                method: 'delete',
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader(header, token);
                 },
@@ -193,7 +187,7 @@ $(document).ready(function () {
             return false;
         }
 
-        //добавление контракта
+        //Добавление Изменение
         if ($(this).attr('id') === "addContractIt") {
             // проверка заполнения основных полей
             if (
@@ -204,42 +198,91 @@ $(document).ready(function () {
                 $(this).prop("disabled", true);//делаем кнопку не активной
                 $(this).prepend(getSpinnerButton());// крутилкa
 
-                let param = new FormData($('#formItContract')[0]);
-                param.append('id', encodeURIComponent($('#addContractIt').attr("data-id-contract")));
-                param.append('statusGK', $('#statusGK').val());
-                param.append('idzirot', $('#notificationsSelect').val());
-                param.append('budgetClassificationId', $('#budgetClassification').val());
+                let idContractIt = $('#addContractIt').attr("data-id-contract");
 
-                let ntinput = $('#nt').find('.col-3:not(.d-none) input');
-                let strntinput = "";
-                for (let i = 0; i < ntinput.length; i++) {
-                    strntinput += (ntinput.eq(i).val() + (((i + 1) != ntinput.length) ? ';' : ''));
+                let form = new FormData($('#formItContract')[0]);
+                let jsonData = Object.fromEntries(form.entries());
+                jsonData.id = idContractIt;
+                jsonData.statusGK = $('#statusGK').val();
+                jsonData.idzirot = $('#notificationsSelect').val();
+
+                delete jsonData.dopDocuments;
+
+                let formDataFile = new FormData();
+                const blob = new Blob([JSON.stringify(jsonData)], {
+                    type: 'application/json'
+                });
+
+                formDataFile.append("contract", blob);
+
+                let ins = document.getElementById('dopDocuments').files.length;
+                if (ins === 0) {
+                    let form2 = new FormData($('#formItContract')[0]);
+                    let jsonData2 = Object.fromEntries(form2.entries());
+                    let data = {};
+                    data.file = jsonData2['dopDocuments'];
+                    formDataFile.append("file", data.file);
+                } else {
+                    for (let x = 0; x < ins; x++) {
+                        formDataFile.append("file", document.getElementById('dopDocuments').files[x]);
+                    }
                 }
-                param.append('naturalIndicators', strntinput);
 
                 // Отправляем запрос
                 let token = $('#_csrf').attr('content');
                 let header = $('#_csrf_header').attr('content');
-                $.post({
-                    url: "/contract/it/upload",
-                    data: param,
-                    cache: false,
-                    processData: false, // Не обрабатываем файлы (Don't process the files)
-                    contentType: false, // Так jQuery скажет серверу что это строковой запрос
-                    beforeSend: function (xhr) {
-                        xhr.setRequestHeader(header, token);
-                    },
-                    success: function (data) {
-                        //после добавления показать таблицу
-                        $("#mainContainer").load("/contract/it/vievTable", "", function () {
-                            ajaxContractIt(getContractItJson(), "");
-                        });
-                        initialToats("Добавление прошло успешно", data, "success").show();
-                    },
-                    error: function (jqXHR, textStatus) {
-                        initialToats("Ошибка при добавлении!!!", jqXHR.responseText, "err").show();
-                    }
-                });
+
+                //ДОБАВЛЕНИЕ
+                if (idContractIt === undefined) {
+                    $.ajax({
+                        url: "/contract/it",
+                        data: formDataFile,
+                        processData: false,
+                        contentType: false,
+                        type: "POST",
+                        headers: {
+                            "Content-Type": undefined
+                        },
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader(header, token);
+                        },
+                        success: function (data) {
+                            //после добавления показать таблицу
+                            $("#mainContainer").load("/contract/it/vievTable", "", function () {
+                                ajaxContractIt(getContractItJson(), "");
+                            });
+                            initialToats("Добавление прошло успешно", data, "success").show();
+                        },
+                        error: function (jqXHR) {
+                            initialToats("Ошибка при добавлении!!!", jqXHR.responseText, "err").show();
+                        }
+                    });
+                } else { //ИЗМЕНЕНИЕ
+                    $.ajax({
+                        url: "/contract/it",
+                        data: formDataFile,
+                        processData: false,
+                        contentType: false,
+                        type: "PUT",
+                        headers: {
+                            "Content-Type": undefined
+                        },
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader(header, token);
+                        },
+                        success: function (data) {
+                            //после изменения показать таблицу
+                            $("#mainContainer").load("/contract/it/vievTable", "", function () {
+                                ajaxContractIt(getContractItJson(), "");
+                            });
+                            initialToats("Изменение прошло успешно", data, "success").show();
+                        },
+                        error: function (jqXHR) {
+                            initialToats("Ошибка при изменении!!!", jqXHR.responseText, "err").show();
+                        }
+                    });
+                }
+
             }
             return false;
         }
@@ -272,8 +315,7 @@ function getContractItParams() {
 function ajaxContractIt(json, params) {
 
     getSpinnerTable("tableContractIt")
-    console.log("params = " + params)
-    console.log("json = " + json)
+
     let token = $('#_csrf').attr('content');
     let header = $('#_csrf_header').attr('content');
     $.ajax({
@@ -296,16 +338,16 @@ function ajaxContractIt(json, params) {
                         '<div><a class="btn btn-link" href="/contract/it/download?id=' + doc.id + '">' + replaceNull(doc.nameFile) + '</a></div>';
                 }
 
-                let bc = "";
-                if (item.budgetClassification === null || item.budgetClassification === "" || item.budgetClassification === undefined) {
-                } else {
-                    bc = replaceNull(item.budgetClassification.kod);
-                }
+                let tecdate = new Date();
+                let mydate1 = new Date(replaceNull(item.dateGKpo).replace(/(\d+).(\d+).(\d+)/, '$3/$2/$1'));
+                let bDate = (tecdate.getTime() > mydate1.getTime()) && (replaceNull(item.statusGK) === "Действующий")
 
                 trHTML +=
-                    '<tr class="' + (replaceNull(item.ostatoc) === "0.00" ? "table-success" : "") + '">' +
+                    '<tr class="' + (replaceNull(item.ostatoc) === "0.00" ?
+                            "table-success" :
+                            bDate ? "table-danger" : ""
+                    ) + '">' +
                     '<th>' + (start + +i + 1) + '</th>' +
-                    /*'<td>' + replaceNull(item.id) + '</td>' +*/
                     '<td class="fix">' + replaceNull(item.nomGK) + '</td>' +
                     '<td>' + replaceNull(item.kontragent) + '</td>' +
                     '<td>' + replaceNull(item.dateGK) + '</td>' +
@@ -313,7 +355,7 @@ function ajaxContractIt(json, params) {
                     '<td>' + replaceNull(item.dateGKpo) + '</td>' +
                     '<td>' + replaceNull(item.sum) + '</td>' +
                     '<td>' + replaceNull(item.statusGK) + '</td>' +
-                    '<td>' + bc + '</td>' +
+                    /*'<td>' + bc + '</td>' +*/
                     '<td>' + replaceNull(item.month1) + '</td>' +
                     '<td>' + replaceNull(item.month2) + '</td>' +
                     '<td>' + replaceNull(item.month3) + '</td>' +
@@ -335,9 +377,10 @@ function ajaxContractIt(json, params) {
                     '</td>' +
                     '</tr>';
             });
-            $('#tableContractIt').append(trHTML);
-            $('#wrapper1 .div1').attr('style', 'width: ' + $('#tableContractIt').width() + 'px;');
-            $('#wrapper2 .div2').attr('style', 'width: ' + $('#tableContractIt').width() + 'px;');
+            let tableContractIt = $('#tableContractIt');
+            tableContractIt.append(trHTML);
+            $('#wrapper1 .div1').attr('style', 'width: ' + tableContractIt.width() + 'px;');
+            $('#wrapper2 .div2').attr('style', 'width: ' + tableContractIt.width() + 'px;');
         },
         error: function (response) {
             initialToats("Ошибка!", response.responseJSON.message, "err").show();

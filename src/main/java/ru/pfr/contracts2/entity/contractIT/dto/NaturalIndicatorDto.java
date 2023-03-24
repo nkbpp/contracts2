@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.pfr.contracts2.entity.annotations.okrug.OkrugSerializer;
+import ru.pfr.contracts2.entity.annotations.numbers.OkrugSerializer;
 
 @Data //@ToString, @EqualsAndHashCode, @Getter, @Setter, @RequiredArgsConstructor
 @AllArgsConstructor

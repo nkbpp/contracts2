@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ItDocumentsDto {
+public class DopDocumentsDto {
 
     private Long id;
     private String nameFile;

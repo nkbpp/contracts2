@@ -3,18 +3,15 @@ package ru.pfr.contracts2.service.it;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.pfr.contracts2.entity.contractIT.entity.ContractAxo;
 import ru.pfr.contracts2.repository.it.ContractAxoRepository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@EnableScheduling
 @Transactional
 public class ContractAxoService {
 
@@ -37,7 +34,6 @@ public class ContractAxoService {
     }
 
     public void update(ContractAxo contractAxo) {
-        contractAxo.setDate_update(LocalDateTime.now());
         contractAxoRepository.save(contractAxo);
     }
 

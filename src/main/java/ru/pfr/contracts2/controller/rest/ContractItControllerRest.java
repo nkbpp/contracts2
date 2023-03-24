@@ -6,18 +6,18 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.pfr.contracts2.entity.contractIT.dto.ContractDopRequest;
 import ru.pfr.contracts2.entity.contractIT.dto.FilterContractIt;
+import ru.pfr.contracts2.entity.contractIT.dto.StatItDto;
 import ru.pfr.contracts2.entity.contractIT.entity.ContractIT;
 import ru.pfr.contracts2.entity.contractIT.entity.ContractITSpecification;
 import ru.pfr.contracts2.entity.contractIT.entity.ContractIT_;
-import ru.pfr.contracts2.entity.contractIT.entity.ItDocuments;
+import ru.pfr.contracts2.entity.contractIT.entity.DopDocuments;
 import ru.pfr.contracts2.entity.contractIT.mapper.ContractItMapper;
-import ru.pfr.contracts2.entity.contractIT.mapper.ItDocumentsMapper;
+import ru.pfr.contracts2.entity.contractIT.mapper.DopDocumentsMapper;
 import ru.pfr.contracts2.entity.user.User;
 import ru.pfr.contracts2.service.it.ContractItService;
 
@@ -26,11 +26,11 @@ import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = {"/contract/dop"})
+@RequestMapping(value = {"/contract/it"})
 public class ContractItControllerRest {
 
     private final ContractItService contractItService;
-    private final ItDocumentsMapper documentsMapper;
+    private final DopDocumentsMapper documentsMapper;
     private final ContractItMapper contractItMapper;
 
     /**
@@ -50,7 +50,7 @@ public class ContractItControllerRest {
         try {
 
             //проход по документам
-            List<ItDocuments> listDocuments = documents
+            List<DopDocuments> listDocuments = documents
                     .stream()
                     .map(documentsMapper::fromMultipart)
                     .filter(Objects::nonNull)
@@ -86,23 +86,16 @@ public class ContractItControllerRest {
         try {
 
             //проход по документам
-            List<ItDocuments> listDocuments = documents
+            List<DopDocuments> listDocuments = documents
                     .stream()
                     .map(documentsMapper::fromMultipart)
                     .filter(Objects::nonNull)
                     .toList();
 
-            ContractIT oldContract = contractItService.findById(contractDopRequest.getId());
-
             ContractIT contract = contractItMapper
                     .fromContractDopRequest(contractDopRequest);
-            //contract.setRole(GetOtdel.get(authentication));
 
-            contract.setAllDocuments(oldContract.getItDocuments());
             contract.setAllDocuments(listDocuments);
-
-            contract.setDate_create(oldContract.getDate_create());
-
             contract.setUser(user);
 
             contractItService.update(contract);
@@ -157,14 +150,14 @@ public class ContractItControllerRest {
 
         try {
             Sort sort = Sort.by(ContractIT_.ID).descending();
-            if (filterContractIt.sortd() == 1) {
+            if (filterContractIt.getSortd() == 1) {
                 sort = Sort.by(ContractIT_.DATE_GK).and(Sort.by(ContractIT_.ID).descending());
-            } else if (filterContractIt.sortd() == 2) {
+            } else if (filterContractIt.getSortd() == 2) {
                 sort = Sort.by(ContractIT_.DATE_GK).descending().and(Sort.by(ContractIT_.ID).descending());
             }
-            if (filterContractIt.sortk() == 1) {
+            if (filterContractIt.getSortk() == 1) {
                 sort = Sort.by(ContractIT_.KONTRAGENT).and(Sort.by(ContractIT_.ID).descending());
-            } else if (filterContractIt.sortk() == 2) {
+            } else if (filterContractIt.getSortk() == 2) {
                 sort = Sort.by(ContractIT_.KONTRAGENT).descending().and(Sort.by(ContractIT_.ID).descending());
             }
 
@@ -187,7 +180,35 @@ public class ContractItControllerRest {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Ошибка!");
         }
+    }
 
+    /***
+     * Статистика
+     */
+    @GetMapping("/stat")
+    public ResponseEntity<?> stat() {
+        try {
+            return new ResponseEntity<>(
+                    new StatItDto(
+                            contractItService.findAll().size(),
+                            contractItService.findAll(
+                                    ContractITSpecification.statusGKEquals("Исполнен")
+                            ).size(),
+                            contractItService.findAll(
+                                    ContractITSpecification.statusGKEquals("Действующий")
+                            ).size(),
+                            contractItService.findAll(
+                                    ContractITSpecification.statusGKEquals("Расторгнут")
+                            ).size(),
+                            contractItService.findAll(
+                                    ContractITSpecification.statusGKisEmpty()
+                            ).size()
+                    ),
+                    HttpStatus.OK
+            );
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
 }

@@ -5,13 +5,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.pfr.contracts2.entity.contractIT.entity.ItDocuments;
+import ru.pfr.contracts2.entity.contractIT.entity.DopDocuments;
 import ru.pfr.contracts2.global.Translit;
 import ru.pfr.contracts2.service.it.ItDocumentsService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = {"/contract/dop", "/contract/axo"})
+@RequestMapping(value = {"/contract/it", "/contract/axo"})
 public class DocumentDopControllerRest {
     private final ItDocumentsService itDocumentsService;
 
@@ -20,12 +20,12 @@ public class DocumentDopControllerRest {
     ResponseEntity<?> download(
             @RequestParam Long id
     ) {
-        ItDocuments itDocuments = itDocumentsService.findById(id);
+        DopDocuments dopDocuments = itDocumentsService.findById(id);
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
                 .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=\"" + Translit.cyr2lat(itDocuments.getNameFile()) + "\"")
-                .body(itDocuments.getDokument());
+                        "attachment; filename=\"" + Translit.cyr2lat(dopDocuments.getNameFile()) + "\"")
+                .body(dopDocuments.getDokument());
     }
 
     /**

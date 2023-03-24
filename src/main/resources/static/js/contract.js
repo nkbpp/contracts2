@@ -182,7 +182,6 @@ $(document).ready(function () {
                     },
                     error: function (textStatus) {
                         initialToats("Ошибка в изменении статуса!!!", textStatus, "err").show();
-                        console.log('ОШИБКИ AJAX запроса: ' + textStatus);
                     }
                 });
             }
@@ -402,7 +401,6 @@ $(document).ready(function () {
                 },
                 error: function (textStatus) {
                     initialToats("Ошибка при удалении документа!!!", textStatus, "err").show();
-                    console.log('ОШИБКИ AJAX запроса при удалении документа: ' + textStatus);
                 }
             });
             return false;
@@ -437,68 +435,7 @@ function ajaxContractAll(params) {
             xhr.setRequestHeader(header, token);
         },
         success: function (response) {
-            let trHTML = '';
-            let tableContainer = $('#tableContainer tbody');
-            tableContainer.html("");
-            let start = (+activeList("#pagination") - 1) * 30;//$("#col").val();
-
-            $.each(response, function (i, item) {
-
-                trHTML +=
-                    '<tr>' +
-                    '<th>' + (start + +i + 1) + '</th>' +
-                    '<td>' + replaceNull(item.plat_post) + '</td>' +
-                    '<td>' + replaceNull(item.receipt_date) + '</td>' +
-                    '<td>' + (item.kontragent === null ? "" : replaceNull(item.kontragent.nameInn)) + '</td>' +
-                    '<td>' + replaceNull(item.nomGK) + '</td>' +
-                    '<td>' + replaceNull(item.dateGK) + '</td>' +
-                    '<td>' + replaceNull(item.predmet_contract) + '</td>' +
-                    '<td>' + replaceNull(item.vidObesp.name) + '</td>' +
-                    '<td>' + replaceNull(item.sum) + '</td>' +
-                    '<td>' +
-                    '<label>' +
-                    '<input type="checkbox" class="form-check-input" ' +
-                    'name="' + item.id + '" id="checkboxIspolneno" ' +
-                    (item.ispolneno ? 'checked=true' : '') + '/>' +
-                    '<span class="marginonospan"></span>' +
-                    '</label>' +
-                    '<div data-progress-id="' + item.id + '">' +
-                    '<div class="progress" title="Осталось ' + item.daysOst + ' дней">' +
-                    '<div class="progress-bar ' +
-                    (item.ispolneno ? 'bg-success' :
-                        (item.daysOst <= 4 && item.daysOst >= 0) ? 'bg-danger progress-bar-striped ' :
-                            (item.procent >= 75) ? 'bg-danger' :
-                                (item.procent >= 50 ? 'bg-warning' :
-                                    (item.procent >= 25 ? 'bg-info' : ''
-                                    ))) + '" ' +
-
-                    'role="progressbar" ' +
-                    'style="width: ' + (item.ispolneno ? '100' : item.procent) + '%" ' +
-                    'aria-valuenow="' + (item.ispolneno ? '100' : item.procent) + '" ' +
-                    'aria-valuemin="0" ' +
-                    'aria-valuemax="100" ' +
-
-                    '">' + (item.ispolneno ? '' : item.daysOst) +
-                    '</div>' +
-                    '</div>' +
-                    '</div>' +
-                    '</td>' +
-                    '<td>' +
-                    '<div>' +
-                    '<a data-bs-toggle="modal"' +
-                    '        data-bs-target="#modalDopContainer"' +
-                    '        href="#!"' +
-                    '        data-a-dop-modal="dataADopModal"' +
-                    '        name="' + item.id + '">Доп.информация' +
-                    '</a>' +
-                    '</div>' +
-                    '<div><a name="' + item.id + '" id="updateContract" href="#">Изменить</a></div>' +
-                    '<div><a name="' + item.id + '" id="deleteContract" href="#">Удалить</a></div>' +
-                    '</td>' +
-
-                    '</tr>';
-            });
-            tableContainer.append(trHTML);
+            ajaxContractSuccess(response)
         },
         error: function (response) {
             initialToats("Ошибка!", response.responseJSON.message, "err").show();
@@ -506,3 +443,98 @@ function ajaxContractAll(params) {
         }
     });
 }
+
+function ajaxContractSort(url) {
+    getSpinnerTable("tableContainer")
+
+    let token = $('#_csrf').attr('content');
+    let header = $('#_csrf_header').attr('content');
+    $.ajax({
+        url: "/contract/main/" + url,
+        data: "",
+        cache: false,
+        processData: false,
+        contentType: "application/json",
+        dataType: 'json',
+        type: 'GET',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader(header, token);
+        },
+        success: function (response) {
+            ajaxContractSuccess(response)
+        },
+        error: function (response) {
+            console.log("ddd")
+            initialToats("Ошибка!", response.responseJSON.message, "err").show();
+        }
+    });
+}
+
+function ajaxContractSuccess(response) {
+    let trHTML = '';
+    let tableContainer = $('#tableContainer tbody');
+    tableContainer.html("");
+    let start = (+activeList("#pagination") - 1) * 30;//$("#col").val();
+
+    console.log("response = ")
+    console.log(response)
+    $.each(response, function (i, item) {
+
+        trHTML +=
+            '<tr>' +
+            '<th>' + (start + +i + 1) + '</th>' +
+            '<td>' + replaceNull(item.plat_post) + '</td>' +
+            '<td>' + replaceNull(item.receipt_date) + '</td>' +
+            '<td>' + (item.kontragent === null ? "" : replaceNull(item.kontragent.nameInn)) + '</td>' +
+            '<td>' + replaceNull(item.nomGK) + '</td>' +
+            '<td>' + replaceNull(item.dateGK) + '</td>' +
+            '<td>' + replaceNull(item.predmet_contract) + '</td>' +
+            '<td>' + replaceNull(item.vidObesp.name) + '</td>' +
+            '<td>' + replaceNull(item.sum) + '</td>' +
+            '<td>' +
+            '<label>' +
+            '<input type="checkbox" class="form-check-input" ' +
+            'name="' + item.id + '" id="checkboxIspolneno" ' +
+            (item.ispolneno ? 'checked=true' : '') + '/>' +
+            '<span class="marginonospan"></span>' +
+            '</label>' +
+            '<div data-progress-id="' + item.id + '">' +
+            '<div class="progress" title="Осталось ' + item.daysOst + ' дней">' +
+            '<div class="progress-bar ' +
+            (item.ispolneno ? 'bg-success' :
+                (item.daysOst <= 4 && item.daysOst >= 0) ? 'bg-danger progress-bar-striped ' :
+                    (item.procent >= 75) ? 'bg-danger' :
+                        (item.procent >= 50 ? 'bg-warning' :
+                            (item.procent >= 25 ? 'bg-info' : ''
+                            ))) + '" ' +
+
+            'role="progressbar" ' +
+            'style="width: ' + (item.ispolneno ? '100' : item.procent) + '%" ' +
+            'aria-valuenow="' + (item.ispolneno ? '100' : item.procent) + '" ' +
+            'aria-valuemin="0" ' +
+            'aria-valuemax="100" ' +
+
+            '">' + (item.ispolneno ? '' : item.daysOst) +
+            '</div>' +
+            '</div>' +
+            '</div>' +
+            '</td>' +
+            '<td>' +
+            '<div>' +
+            '<a data-bs-toggle="modal"' +
+            '        data-bs-target="#modalDopContainer"' +
+            '        href="#!"' +
+            '        data-a-dop-modal="dataADopModal"' +
+            '        name="' + item.id + '">Доп.информация' +
+            '</a>' +
+            '</div>' +
+            '<div><a name="' + item.id + '" id="updateContract" href="#">Изменить</a></div>' +
+            '<div><a name="' + item.id + '" id="deleteContract" href="#">Удалить</a></div>' +
+            '</td>' +
+
+            '</tr>';
+    });
+    tableContainer.append(trHTML);
+}
+
+

@@ -1,4 +1,4 @@
-package ru.pfr.contracts2.entity.annotations.okrug;
+package ru.pfr.contracts2.entity.annotations.numbers;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -19,6 +19,6 @@ public class OkrugSerializer extends StdSerializer<Double> {
 
     @Override
     public void serialize(Double aDouble, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-        jsonGenerator.writeString(aDouble != null ? new DecimalFormat("#0.00").format(aDouble).replace(",",".") : "");
+        jsonGenerator.writeString(aDouble != null ? new DecimalFormat("#0.00").format(aDouble).replace(",", ".") : "");
     }
 }

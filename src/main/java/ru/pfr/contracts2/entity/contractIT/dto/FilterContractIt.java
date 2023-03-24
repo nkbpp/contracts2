@@ -1,12 +1,22 @@
 package ru.pfr.contracts2.entity.contractIT.dto;
 
-public record FilterContractIt(
-        String poleFindByNomGK,
-        String poleFindByKontragent,
-        String dateGK,
-        String poleStatusGK,
-        Integer idot,
-        Integer sortk,
-        Integer sortd
-) {
+import lombok.*;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class FilterContractIt {
+
+    private String poleFindByNomGK;
+    private String poleFindByKontragent;
+    private String dateGK;
+    private String poleStatusGK;
+    private Integer idot;
+    @Builder.Default
+    private Integer sortk = 1;
+    @Builder.Default
+    private Integer sortd = 1;
+
 }

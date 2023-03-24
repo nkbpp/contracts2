@@ -2,7 +2,7 @@ package ru.pfr.contracts2.service.it;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.pfr.contracts2.entity.contractIT.entity.ItDocuments;
+import ru.pfr.contracts2.entity.contractIT.entity.DopDocuments;
 import ru.pfr.contracts2.repository.it.ItDocumentsRepository;
 
 import javax.transaction.Transactional;
@@ -14,8 +14,8 @@ public class ItDocumentsService {
     private final ItDocumentsRepository itDocumentsRepository;
 
     @Transactional
-    public void save(ItDocuments itDocuments) {
-        itDocumentsRepository.save(itDocuments);
+    public void save(DopDocuments dopDocuments) {
+        itDocumentsRepository.save(dopDocuments);
     }
 
     @Transactional
@@ -23,16 +23,16 @@ public class ItDocumentsService {
         itDocumentsRepository.deleteById(id);
     }
 
-    public List<ItDocuments> findAll() {
+    public List<DopDocuments> findAll() {
         return itDocumentsRepository.findAll();
     }
 
-    public ItDocuments findById(Long id) {
+    public DopDocuments findById(Long id) {
         return itDocumentsRepository.findById(id).orElse(null);
     }
 
 
-    public List<ItDocuments> findByContractIT(int id) {
+    public List<DopDocuments> findByContractIT(int id) {
         return itDocumentsRepository.myFindByContractIT(id);
     }
 }

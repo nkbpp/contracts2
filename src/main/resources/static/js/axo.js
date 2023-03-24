@@ -167,7 +167,7 @@ $(document).ready(function () {
                 jsonData.naturalIndicators = ntArr;
 
 
-                delete jsonData.itDocuments;
+                delete jsonData.dopDocuments;
 
                 let formDataFile = new FormData();
                 const blob = new Blob([JSON.stringify(jsonData)], {
@@ -176,16 +176,16 @@ $(document).ready(function () {
 
                 formDataFile.append("contract", blob)
 
-                let ins = document.getElementById('itDocuments').files.length;
+                let ins = document.getElementById('dopDocuments').files.length;
                 if (ins === 0) {
                     let form2 = new FormData($('#formAxoContract')[0]);
                     let jsonData2 = Object.fromEntries(form2.entries());
                     let data = {};
-                    data.file = jsonData2['itDocuments'];
+                    data.file = jsonData2['dopDocuments'];
                     formDataFile.append("file", data.file);
                 } else {
                     for (let x = 0; x < ins; x++) {
-                        formDataFile.append("file", document.getElementById('itDocuments').files[x]);
+                        formDataFile.append("file", document.getElementById('dopDocuments').files[x]);
                     }
                 }
 
@@ -526,7 +526,7 @@ function ajaxContractAxoNatural(params) {
                     '<td>' + (item.naturalIndicators[11] === null || item.naturalIndicators[11] === undefined ? '' : replaceNull(item.naturalIndicators[11].sum)) + '</td>' +
                     '<td>' + replaceNull(item.ojidRashodMonth) + '</td>' +
                     '<td>' + replaceNull(item.factRashodMonth) + '</td>' +
-                    '<td>' + replaceNull(item.ostatoc) + '</td>' +
+                    '<td>' + replaceNull(item.ostatocNatural) + '</td>' +
                     '<td>' +
                     '<div><a name="' + item.id + '" id="updateAxoContract" href="#">Изменить</a></div>' +
                     '<div><a name="' + item.id + '" id="deleteAxoContract" href="#">Удалить</a></div>' +

@@ -155,7 +155,7 @@
     <script type="text/javascript" th:src="@{/js/wrapper.js}"></script>
     <script sec:authorize="hasRole('ROLE_UPDATE')" type="text/javascript" th:src="@{/js/stat.js}"></script>
     <script sec:authorize="hasAnyRole('ROLE_UPDATEIT','ROLE_READIT','ROLE_UPDATERSP','ROLE_READRSP')"
-            type="text/javascript" th:src="@{/js/dop.js}"></script>
+            type="text/javascript" th:src="@{/js/it.js}"></script>
     <!--<script sec:authorize="hasAnyRole('ROLE_UPDATEIT','ROLE_UPDATERSP')" type="text/javascript"
             th:src="@{/js/budgetClassification.js}"></script>-->
     <script sec:authorize="hasAnyRole('ROLE_UPDATEAXO','ROLE_READAXO')" type="text/javascript"
@@ -170,7 +170,12 @@
 
     <div th:insert="fragment/menu :: menu"></div>
 
-    <div id="mainContainer"></div>
+    <div id="mainContainer">
+    </div>
+    <!--<div sec:authorize="hasAnyRole('ROLE_UPDATE','ROLE_READ')" id="mainContainer">
+    </div>-->
+
+    <!--    <div sec:authorize="hasAnyRole('ROLE_UPDATEIT','ROLE_READIT')" id="statContainerIt"></div>-->
 
     <!--TOASTS-->
     <div class="toast-container position-absolute p-3 bottom-0 end-0">

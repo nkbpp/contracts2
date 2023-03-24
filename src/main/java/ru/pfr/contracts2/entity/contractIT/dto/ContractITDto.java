@@ -27,8 +27,8 @@ public class ContractITDto extends ContractDopDto {
     private String nameot;//имя ответственного
 
     @Builder
-    public ContractITDto(Long id, String nomGK, String kontragent, LocalDateTime dateGK, Double sum, Double month1, Double month2, Double month3, Double month4, Double month5, Double month6, Double month7, Double month8, Double month9, Double month10, Double month11, Double month12, Double ostatoc, List<ItDocumentsDto> documents, LocalDateTime dateGKs, LocalDateTime dateGKpo, String statusGK, Integer idzirot, String nameot) {
-        super(id, nomGK, kontragent, dateGK, sum, month1, month2, month3, month4, month5, month6, month7, month8, month9, month10, month11, month12, ostatoc, documents);
+    public ContractITDto(Double month1, Double month2, Double month3, Double month4, Double month5, Double month6, Double month7, Double month8, Double month9, Double month10, Double month11, Double month12, Long id, String nomGK, String kontragent, LocalDateTime dateGK, Double sum, Double ostatoc, List<DopDocumentsDto> documents, LocalDateTime dateGKs, LocalDateTime dateGKpo, String statusGK, Integer idzirot, String nameot) {
+        super(month1, month2, month3, month4, month5, month6, month7, month8, month9, month10, month11, month12, id, nomGK, kontragent, dateGK, sum, ostatoc, documents);
         this.dateGKs = dateGKs;
         this.dateGKpo = dateGKpo;
         this.statusGK = statusGK;

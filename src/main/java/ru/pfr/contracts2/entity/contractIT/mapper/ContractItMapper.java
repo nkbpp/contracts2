@@ -5,9 +5,9 @@ import org.springframework.stereotype.Component;
 import ru.pfr.contracts2.entity.contractIT.dto.ContractDopRequest;
 import ru.pfr.contracts2.entity.contractIT.dto.ContractITDto;
 import ru.pfr.contracts2.entity.contractIT.entity.ContractIT;
+import ru.pfr.contracts2.service.it.ContractItService;
 import ru.pfr.contracts2.service.zir.ZirServise;
 
-import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 
@@ -15,11 +15,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ContractItMapper {
 
-    private final ItDocumentsMapper documentsMapper;
+    private final DopDocumentsMapper documentsMapper;
     /*private final BudgetClassificationResponseMapper budgetClassificationResponseMapper;
     private final BudgetClassificationRepository budgetClassificationRepository;*/
 
     private final ZirServise zirServise;
+
+    private final ContractItService contractItService;
 
     public ContractITDto toDto(ContractIT obj) {
         return ContractITDto.builder()
@@ -49,7 +51,7 @@ public class ContractItMapper {
                         (obj.getMonth1() + obj.getMonth2() + obj.getMonth3() + obj.getMonth4() +
                                 obj.getMonth5() + obj.getMonth6() + obj.getMonth7() + obj.getMonth8() +
                                 obj.getMonth9() + obj.getMonth10() + obj.getMonth11() + obj.getMonth12()))
-                .documents(obj.getItDocuments() == null ? null : obj.getItDocuments()
+                .documents(obj.getDopDocuments() == null ? null : obj.getDopDocuments()
                         .stream()
                         .map(documentsMapper::toDto)
                         .collect(Collectors.toList())
@@ -70,6 +72,32 @@ public class ContractItMapper {
         } catch (Exception e) {
         }
 
+        if (dto.getId() != null) {
+            ContractIT contractIT = contractItService.findById(dto.getId());
+            contractIT.setNomGK(dto.getNomGK());
+            contractIT.setKontragent(dto.getKontragent());
+            contractIT.setDateGK(dto.getDateGK());
+            contractIT.setDateGKs(dto.getDateGKs());
+            contractIT.setDateGKpo(dto.getDateGKpo());
+            contractIT.setStatusGK(dto.getStatusGK());
+            contractIT.setSum(dto.getSum());
+            contractIT.setMonth1(dto.getMonth1());
+            contractIT.setMonth2(dto.getMonth2());
+            contractIT.setMonth3(dto.getMonth3());
+            contractIT.setMonth4(dto.getMonth4());
+            contractIT.setMonth5(dto.getMonth5());
+            contractIT.setMonth6(dto.getMonth6());
+            contractIT.setMonth7(dto.getMonth7());
+            contractIT.setMonth8(dto.getMonth8());
+            contractIT.setMonth9(dto.getMonth9());
+            contractIT.setMonth10(dto.getMonth10());
+            contractIT.setMonth11(dto.getMonth11());
+            contractIT.setMonth12(dto.getMonth12());
+            contractIT.setIdzirot(dto.getIdzirot());
+            contractIT.setNameot(fio);
+            return contractIT;
+        }
+
         return ContractIT.builder()
 
                 .id(dto.getId())
@@ -79,9 +107,21 @@ public class ContractItMapper {
                 .dateGKs(dto.getDateGKs())
                 .dateGKpo(dto.getDateGKpo())
                 .statusGK(dto.getStatusGK())
-                .sum(dto.getSum() == null ? 0 : dto.getSum())
+                .sum(dto.getSum())
 
-                .month1(dto.getJanuary() == null ? 0 : dto.getJanuary())
+                .month1(dto.getMonth1())
+                .month2(dto.getMonth2())
+                .month3(dto.getMonth3())
+                .month4(dto.getMonth4())
+                .month5(dto.getMonth5())
+                .month6(dto.getMonth6())
+                .month7(dto.getMonth7())
+                .month8(dto.getMonth8())
+                .month9(dto.getMonth9())
+                .month10(dto.getMonth10())
+                .month11(dto.getMonth11())
+                .month12(dto.getMonth12())
+                /*.month1(dto.getJanuary() == null ? 0 : dto.getJanuary())
                 .month2(dto.getFebruary() == null ? 0 : dto.getFebruary())
                 .month3(dto.getMarch() == null ? 0 : dto.getMarch())
                 .month4(dto.getApril() == null ? 0 : dto.getApril())
@@ -92,7 +132,7 @@ public class ContractItMapper {
                 .month9(dto.getSeptember() == null ? 0 : dto.getSeptember())
                 .month10(dto.getOctober() == null ? 0 : dto.getOctober())
                 .month11(dto.getNovember() == null ? 0 : dto.getNovember())
-                .month12(dto.getDecember() == null ? 0 : dto.getDecember())
+                .month12(dto.getDecember() == null ? 0 : dto.getDecember())*/
 
                 /*.budgetClassification(
                         dto.getBudgetClassification().id() == null ? null :

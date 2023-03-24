@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.pfr.contracts2.entity.annotations.date.CustomDateDeserializerRuAndEn;
 import ru.pfr.contracts2.entity.annotations.date.CustomDateSerializerRu;
-import ru.pfr.contracts2.entity.annotations.okrug.OkrugSerializer;
+import ru.pfr.contracts2.entity.annotations.numbers.OkrugSerializer;
 
 import java.util.Date;
 import java.util.List;
@@ -61,7 +61,7 @@ public class ContractDopResponse {
     private Double November;
     @JsonSerialize(using = OkrugSerializer.class)
     private Double December;
-    private List<ItDocumentsDto> documents;
+    private List<DopDocumentsDto> documents;
 
 
 /*    @JsonSerialize(using = OkrugSerializer.class)

@@ -7,10 +7,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.pfr.contracts2.entity.contracts.dto.ContractDto;
+import ru.pfr.contracts2.entity.contracts.dto.StatDto;
 import ru.pfr.contracts2.entity.contracts.entity.Contract;
 import ru.pfr.contracts2.entity.contracts.entity.Contract_;
 import ru.pfr.contracts2.entity.contracts.entity.ContractSpecification;
@@ -250,7 +252,6 @@ public class ContractControllerRest {
             @RequestParam(defaultValue = "true") Boolean poleFindByNotIspolneno
     ) {
         try {
-
             List<Contract> contracts = contractService.findAll(
                     ContractSpecification.filterContract(
                             poleFindByNomGK, poleFindByINN,
@@ -267,7 +268,83 @@ public class ContractControllerRest {
                     contracts.stream()
                             .map(contractMapper::toDto)
                             .toList(),
+                    HttpStatus.OK
+            );
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Просрочено контрактов
+     */
+    @GetMapping(path = "/statProsrocheno")
+    public ResponseEntity<?> statProsrocheno() {
+        try {
+            return new ResponseEntity<>(
+                    contractService.getProsrocheno()
+                            .stream()
+                            .map(contractMapper::toDto)
+                            .toList(),
+                    HttpStatus.OK
+            );
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Не задан срок исполнения контракта
+     */
+    @GetMapping(path = "/statNodate")
+    public ResponseEntity<?> statNodate() {
+        try {
+            return new ResponseEntity<>(
+                    contractService.getNodate()
+                            .stream()
+                            .map(contractMapper::toDto)
+                            .toList(),
                     HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Приближается срок исполнения контрактов
+     */
+    @GetMapping(path = "/statNotIspolnenoSrok")
+    public ResponseEntity<?> statNotIspolnenoSrok() {
+        try {
+            return new ResponseEntity<>(
+                    contractService.getNotispolnenosrok()
+                            .stream()
+                            .map(contractMapper::toDto)
+                            .toList(),
+                    HttpStatus.OK
+            );
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    /***
+     * Статистика
+     */
+    @GetMapping("/stat")
+    public ResponseEntity<?> stat() {
+        try {
+            return new ResponseEntity<>(
+                    new StatDto(
+                            contractService.getColSize(),
+                            contractService.getColIspolneno(),
+                            contractService.getColNotispolneno(),
+                            contractService.getColNotispolnenosrok(),
+                            contractService.getColNodate(),
+                            contractService.getColProsrocheno()
+                    ),
+                    HttpStatus.OK
+            );
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

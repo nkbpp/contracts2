@@ -101,7 +101,7 @@ public class ContractController {
         return "fragment/table :: progress";
     }
 
-    @GetMapping("/stat")
+/*    @GetMapping("/stat")
     public String stat(
             Model model) {
 
@@ -119,7 +119,7 @@ public class ContractController {
                 contractService.getColProsrocheno());
 
         return "fragment/stat :: stat";
-    }
+    }*/
 
 
 }

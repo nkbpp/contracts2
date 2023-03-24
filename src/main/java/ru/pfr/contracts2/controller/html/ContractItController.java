@@ -18,7 +18,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping(value = {"/contract/dop"})
+@RequestMapping(value = {"/contract/it"})
 public class ContractItController {
 
     private final ContractItService contractItService;

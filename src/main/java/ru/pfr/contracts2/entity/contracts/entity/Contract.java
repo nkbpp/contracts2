@@ -1,12 +1,8 @@
 package ru.pfr.contracts2.entity.contracts.entity;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import lombok.*;
+import ru.pfr.contracts2.entity.AuditEntity;
 import ru.pfr.contracts2.entity.user.User;
 import ru.pfr.contracts2.global.MyNumbers;
 
@@ -17,12 +13,14 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+//@Data
 // 	генерация всех служебных методов, заменяет сразу команды @ToString, @EqualsAndHashCode, Getter, Setter, @RequiredArgsConstructor
+@Setter
+@Getter
 @NoArgsConstructor // создания пустого конструктора
 @AllArgsConstructor // конструктора включающего все возможные поля
 @Entity
-public class Contract {
+public class Contract extends AuditEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -67,14 +65,8 @@ public class Contract {
     @OneToMany(mappedBy = "contract", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MyDocuments> myDocuments = new ArrayList<>();
 
-
     @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     private User user; //кто создал контракт
-
-    @LastModifiedDate
-    private LocalDateTime date_update;
-    @CreatedDate
-    private LocalDateTime date_create;
 
     public String getSumOk() {
         return MyNumbers.okrug(sum);
@@ -107,8 +99,6 @@ public class Contract {
         setAllNotification(notifications);
         setAllDocuments(myDocuments);
         this.user = user;
-
-        date_create = LocalDateTime.now();
     }
 
     public void addDocuments(MyDocuments myDoc) {
@@ -129,10 +119,10 @@ public class Contract {
         }
     }
 
-    public void removeDocuments(MyDocuments myDoc) {
+/*    public void removeDocuments(MyDocuments myDoc) {
         this.myDocuments.remove(myDoc);
         myDoc.setContract(null);
-    }
+    }*/
 
     public void addNotification(Notification notif) {
         this.notifications.add(notif);

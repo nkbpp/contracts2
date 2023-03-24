@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import ru.pfr.contracts2.global.MyNumbers;
 
 import javax.persistence.*;
@@ -24,7 +26,8 @@ public class NaturalIndicator {
     private Double sum;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "contractIT_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "contractit_id")
     private ContractAxo contractIT;
 
     public NaturalIndicator(Double sum) {
