@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import ru.pfr.contracts2.aop.log.valid.ValidError;
 import ru.pfr.contracts2.entity.contracts.dto.ContractDto;
 import ru.pfr.contracts2.entity.contracts.dto.StatDto;
 import ru.pfr.contracts2.entity.contracts.entity.Contract;
@@ -24,6 +25,7 @@ import ru.pfr.contracts2.entity.user.User;
 import ru.pfr.contracts2.service.contracts.ContractService;
 import ru.pfr.contracts2.service.zir.ZirServise;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -41,6 +43,7 @@ public class ContractControllerRest {
     /**
      * Добавить контракт
      */
+    @ValidError
     @PostMapping(
             value = "/contract",
             consumes = {
@@ -49,14 +52,14 @@ public class ContractControllerRest {
     )
     public ResponseEntity<?> add(
             @RequestPart("file") List<MultipartFile> documents,
-            @RequestPart("contract") ContractDto contractDto,
+            @Valid @RequestPart("contract") ContractDto contractDto,
             @AuthenticationPrincipal User user,
             Errors errors
     ) {
 
-        if (errors.hasErrors()) {
+/*        if (errors.hasErrors()) {
             return ResponseEntity.badRequest().body("Ошибка!");
-        }
+        }*/
 
         try {
             Contract cont = contractMapper.fromDto(contractDto);
@@ -96,6 +99,7 @@ public class ContractControllerRest {
     /**
      * Изменить контракт
      */
+    @ValidError
     @PutMapping(
             value = "/contract",
             consumes = {
@@ -104,13 +108,13 @@ public class ContractControllerRest {
     )
     public ResponseEntity<?> upload(
             @RequestPart("file") List<MultipartFile> documents,
-            @RequestPart("contract") ContractDto contractDto,
+            @Valid @RequestPart("contract") ContractDto contractDto,
             Errors errors
     ) {
 
-        if (errors.hasErrors()) {
+/*        if (errors.hasErrors()) {
             return ResponseEntity.badRequest().body("Ошибка!");
-        }
+        }*/
 
         try {
             Contract cont = contractMapper.fromDto(contractDto);
@@ -146,7 +150,7 @@ public class ContractControllerRest {
             contractService.save(newContract);
             return ResponseEntity.ok("Данные обновлены!");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Ошибка!");
+            return ResponseEntity.badRequest().body("Ошибка при изменении!");
         }
     }
 

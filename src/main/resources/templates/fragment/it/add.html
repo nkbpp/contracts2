@@ -489,16 +489,30 @@
             <div class="row mb-1 mt-3 ">
                 <div class="col-12 row ">
                     <div class="col-2 align-self-center">Ответственный</div>
-                    <div class="col-6">
+                    <div class="col-5">
                         <label for="notificationsSelect" class="form-label m-0">ФИО</label>
                         <select id="notificationsSelect" class="form-select">
                             <option th:each="u : ${notifications}" th:text="${u.name}"
                                     th:value="${u.id_user}"></option>
                         </select>
                     </div>
+                    <div class="col-3">
+                        <label for="dayNotification" class="form-label m-0">День оплаты</label>
+                        <input
+                                class="form-control"
+                                type="number"
+                                id="dayNotification"
+                                name="dayNotification"
+                                value="0"
+                                min="0" max="31" step="1" data-bind="value:replyNumber"
+                                onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
+                        />
+                    </div>
                 </div>
             </div>
+
             <hr class="m-0">
+
             <!--<hr class="m-0">-->
 
             <!--            <div class="row mb-1 mt-1 ">
@@ -544,7 +558,6 @@
             </div>
         </form>
     </div>
-
 
     <div
             class="modal fade"

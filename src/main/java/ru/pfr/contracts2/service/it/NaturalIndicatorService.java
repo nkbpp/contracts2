@@ -2,7 +2,7 @@ package ru.pfr.contracts2.service.it;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.pfr.contracts2.entity.contractIT.entity.NaturalIndicator;
+import ru.pfr.contracts2.entity.contractOtdel.contractAxo.entity.NaturalIndicator;
 import ru.pfr.contracts2.repository.it.NaturalIndicatorRepository;
 
 import javax.transaction.Transactional;

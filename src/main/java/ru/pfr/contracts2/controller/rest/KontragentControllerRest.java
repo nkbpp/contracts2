@@ -1,11 +1,12 @@
 package ru.pfr.contracts2.controller.rest;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import ru.pfr.contracts2.entity.contractOtdel.contractDop.dto.StatisticDto;
+import ru.pfr.contracts2.entity.contractOtdel.contractDop.dto.StatusGk;
+import ru.pfr.contracts2.entity.contractOtdel.contractIT.entity.ContractITSpecification;
 import ru.pfr.contracts2.entity.contracts.entity.Kontragent;
 import ru.pfr.contracts2.service.contracts.KontragentService;
 
@@ -59,6 +60,21 @@ public class KontragentControllerRest {
             return ResponseEntity.ok("Данные удалены!");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Не удалось удалить запись с ID = " + id + "!");
+        }
+    }
+
+    /***
+     * получить все
+     */
+    @GetMapping("/all")
+    public ResponseEntity<?> findAll() {
+        try {
+            return new ResponseEntity<>(
+                    kontragentService.findAll(),
+                    HttpStatus.OK
+            );
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 

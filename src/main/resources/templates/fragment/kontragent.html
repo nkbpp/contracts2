@@ -20,7 +20,9 @@
         </div>
     </form>
 
-    <table class="table table-block table-secondary table-striped table-hover table-bordered text-center caption-top table-sm">
+    <table class="table table-block table-secondary table-striped
+    table-hover table-bordered text-center caption-top table-sm"
+           id="spravKontrTable">
         <caption>Контрагенты</caption>
         <thead>
         <tr>
@@ -31,7 +33,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="k,iterStat : ${kontragents}">
+        <!--<tr th:each="k,iterStat : ${kontragents}">
             <th  th:text="${iterStat.count}">
             </th>
             <td>
@@ -54,7 +56,7 @@
                 <a name="delSpisokKontragent" th:id="${k.getId()}"
                    class="btn btn-secondary">X</a>
             </td>
-        </tr>
+        </tr>-->
         </tbody>
     </table>
 </div>

@@ -161,32 +161,6 @@ $(document).ready(function () {
             return false;
         }
 
-        //checkBox в таблице
-        body.on('click', 'input', function () {
-            if ($(this).attr('id') === "checkboxIspolneno") {
-                let id = $(this).attr("name");
-                let token = $('#_csrf').attr('content');
-                let header = $('#_csrf_header').attr('content');
-
-                $.ajax({
-                    url: '/contract/main/setIspolneno/' + id,
-                    method: 'get',
-                    beforeSend: function (xhr) {
-                        xhr.setRequestHeader(header, token);
-                    },
-                    success: function (data) {
-                        let param = "id=" + id;
-                        $("[data-progress-id=" + id + "]").load("/contract/main/getProgress", param, function () {
-                        });
-                        initialToats("Изменение статуса прошло успешно", data, "success").show();
-                    },
-                    error: function (textStatus) {
-                        initialToats("Ошибка в изменении статуса!!!", textStatus, "err").show();
-                    }
-                });
-            }
-        });
-
         //дополнительная инфа
         if ($(this).attr('data-a-dop-modal') === "dataADopModal") {
             let id = $(this).attr('name');
@@ -245,8 +219,35 @@ $(document).ready(function () {
 
     })
 
+    //checkBox в таблице
+    body.on('click', 'input', function () {
+        if ($(this).attr('id') === "checkboxIspolneno") {
+            let id = $(this).attr("name");
+
+            let token = $('#_csrf').attr('content');
+            let header = $('#_csrf_header').attr('content');
+
+            $.ajax({
+                url: '/contract/main/setIspolneno/' + id,
+                method: 'get',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token);
+                },
+                success: function (data) {
+                    let param = "id=" + id;
+                    $("[data-progress-id=" + id + "]").load("/contract/main/getProgress", param, function () {
+                    });
+                    initialToats("Изменение статуса прошло успешно", data, "success").show();
+                },
+                error: function (textStatus) {
+                    initialToats("Ошибка в изменении статуса!!!", textStatus, "err").show();
+                }
+            });
+        }
+    });
 
     body.on('click', 'button', function () {
+
 
         //поиск
         if ($(this).attr('name') === "findContract") {
@@ -488,7 +489,7 @@ function ajaxContractSuccess(response) {
             '<td>' + (item.kontragent === null ? "" : replaceNull(item.kontragent.nameInn)) + '</td>' +
             '<td>' + replaceNull(item.nomGK) + '</td>' +
             '<td>' + replaceNull(item.dateGK) + '</td>' +
-            '<td>' + replaceNull(item.predmet_contract) + '</td>' +
+            '<td style="max-width: 290px">' + replaceNull(item.predmet_contract) + '</td>' +
             '<td>' + replaceNull(item.vidObesp.name) + '</td>' +
             '<td>' + replaceNull(item.sum) + '</td>' +
             '<td>' +

@@ -7,20 +7,25 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.pfr.contracts2.entity.contractIT.dto.ContractDopRequest;
-import ru.pfr.contracts2.entity.contractIT.dto.FilterContractIt;
-import ru.pfr.contracts2.entity.contractIT.dto.StatItDto;
-import ru.pfr.contracts2.entity.contractIT.entity.ContractIT;
-import ru.pfr.contracts2.entity.contractIT.entity.ContractITSpecification;
-import ru.pfr.contracts2.entity.contractIT.entity.ContractIT_;
-import ru.pfr.contracts2.entity.contractIT.entity.DopDocuments;
-import ru.pfr.contracts2.entity.contractIT.mapper.ContractItMapper;
-import ru.pfr.contracts2.entity.contractIT.mapper.DopDocumentsMapper;
+import ru.pfr.contracts2.aop.log.valid.ValidError;
+import ru.pfr.contracts2.entity.contractOtdel.contractDop.entity.DopDocuments;
+import ru.pfr.contracts2.entity.contractOtdel.contractDop.dto.ContractItRosRequest;
+import ru.pfr.contracts2.entity.contractOtdel.contractDop.dto.FilterContractItRsp;
+import ru.pfr.contracts2.entity.contractOtdel.contractDop.dto.StatisticDto;
+
+import ru.pfr.contracts2.entity.contractOtdel.contractIT.entity.ContractIT;
+import ru.pfr.contracts2.entity.contractOtdel.contractDop.dto.StatusGk;
+import ru.pfr.contracts2.entity.contractOtdel.contractIT.entity.ContractITSpecification;
+import ru.pfr.contracts2.entity.contractOtdel.contractIT.entity.ContractIT_;
+import ru.pfr.contracts2.entity.contractOtdel.contractIT.mapper.ContractItMapper;
+import ru.pfr.contracts2.entity.contractOtdel.contractDop.mapper.DopDocumentsMapper;
 import ru.pfr.contracts2.entity.user.User;
 import ru.pfr.contracts2.service.it.ContractItService;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 
@@ -36,6 +41,7 @@ public class ContractItControllerRest {
     /**
      * Добавить контракт
      */
+    @ValidError
     @PostMapping(
             value = "",
             consumes = {
@@ -43,10 +49,10 @@ public class ContractItControllerRest {
             }
     )
     public ResponseEntity<?> add(
+            @AuthenticationPrincipal User user,
             @RequestPart("file") List<MultipartFile> documents,
-            @RequestPart("contract") ContractDopRequest contractDopRequest,
-
-            @AuthenticationPrincipal User user) {
+            @Valid @RequestPart("contract") ContractItRosRequest contractItRosRequest,
+            Errors errors) {
         try {
 
             //проход по документам
@@ -57,8 +63,7 @@ public class ContractItControllerRest {
                     .toList();
 
             ContractIT contract = contractItMapper
-                    .fromContractDopRequest(contractDopRequest);
-            //contract.setRole(GetOtdel.get(authentication));
+                    .fromDto(contractItRosRequest);
             contract.setAllDocuments(listDocuments);
             contract.setUser(user);
 
@@ -72,6 +77,7 @@ public class ContractItControllerRest {
     /**
      * Изменить контракт
      */
+    @ValidError
     @PutMapping(
             value = "",
             consumes = {
@@ -79,10 +85,10 @@ public class ContractItControllerRest {
             }
     )
     public ResponseEntity<?> update(
+            @AuthenticationPrincipal User user,
             @RequestPart("file") List<MultipartFile> documents,
-            @RequestPart("contract") ContractDopRequest contractDopRequest,
-
-            @AuthenticationPrincipal User user) {
+            @Valid @RequestPart("contract") ContractItRosRequest contractItRosRequest,
+            Errors errors) {
         try {
 
             //проход по документам
@@ -93,7 +99,7 @@ public class ContractItControllerRest {
                     .toList();
 
             ContractIT contract = contractItMapper
-                    .fromContractDopRequest(contractDopRequest);
+                    .fromDto(contractItRosRequest);
 
             contract.setAllDocuments(listDocuments);
             contract.setUser(user);
@@ -140,30 +146,32 @@ public class ContractItControllerRest {
     /**
      * Фильтр
      */
+    @ValidError
     @PostMapping(value = "/findTable")
     public ResponseEntity<?> findTable(
-            @RequestBody FilterContractIt filterContractIt,
+            @Valid @RequestBody FilterContractItRsp filterContractItRsp,
 
             @RequestParam(defaultValue = "1") Integer param,
-            @RequestParam(defaultValue = "10") Integer col
+            @RequestParam(defaultValue = "10") Integer col,
+            Errors errors
     ) {
 
         try {
             Sort sort = Sort.by(ContractIT_.ID).descending();
-            if (filterContractIt.getSortd() == 1) {
+            if (filterContractItRsp.getSortd() == 1) {
                 sort = Sort.by(ContractIT_.DATE_GK).and(Sort.by(ContractIT_.ID).descending());
-            } else if (filterContractIt.getSortd() == 2) {
+            } else if (filterContractItRsp.getSortd() == 2) {
                 sort = Sort.by(ContractIT_.DATE_GK).descending().and(Sort.by(ContractIT_.ID).descending());
             }
-            if (filterContractIt.getSortk() == 1) {
+            if (filterContractItRsp.getSortk() == 1) {
                 sort = Sort.by(ContractIT_.KONTRAGENT).and(Sort.by(ContractIT_.ID).descending());
-            } else if (filterContractIt.getSortk() == 2) {
+            } else if (filterContractItRsp.getSortk() == 2) {
                 sort = Sort.by(ContractIT_.KONTRAGENT).descending().and(Sort.by(ContractIT_.ID).descending());
             }
 
             List<ContractIT> contracts = contractItService.findAll(
-                    ContractITSpecification.filterContractIt(
-                            filterContractIt//, GetOtdel.get(authentication)
+                    ContractITSpecification.filterContract(
+                            filterContractItRsp//, GetOtdel.get(authentication)
                     ),
                     PageRequest.of(
                             param - 1, col,
@@ -189,16 +197,22 @@ public class ContractItControllerRest {
     public ResponseEntity<?> stat() {
         try {
             return new ResponseEntity<>(
-                    new StatItDto(
+                    new StatisticDto(
                             contractItService.findAll().size(),
                             contractItService.findAll(
-                                    ContractITSpecification.statusGKEquals("Исполнен")
+                                    ContractITSpecification.statusGKEquals(
+                                            StatusGk.EXECUTED
+                                    )
                             ).size(),
                             contractItService.findAll(
-                                    ContractITSpecification.statusGKEquals("Действующий")
+                                    ContractITSpecification.statusGKEquals(
+                                            StatusGk.CURRENT
+                                    )
                             ).size(),
                             contractItService.findAll(
-                                    ContractITSpecification.statusGKEquals("Расторгнут")
+                                    ContractITSpecification.statusGKEquals(
+                                            StatusGk.TERMINATED
+                                    )
                             ).size(),
                             contractItService.findAll(
                                     ContractITSpecification.statusGKisEmpty()

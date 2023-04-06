@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,13 +22,12 @@ import ru.pfr.contracts2.service.zir.ZirServise;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @RequiredArgsConstructor
-@EnableScheduling
+@EnableAsync
+//@EnableScheduling
 @Transactional
 public class ContractService {
 
@@ -40,16 +39,6 @@ public class ContractService {
 
     public Contract findById(Long id) {
         return contractRepository.findById(id).orElse(null);
-    }
-
-/*    public List<Contract> findByfindByNomGK(String nom, String inn) {
-        return contractRepository.findByNomGKAndKontragentInn(nom, inn);
-    }*/
-
-    public List<Contract> findByfindByNomGK(String name, String inn, int page) {
-        //для обрезки
-        PageRequest pageRequest = PageRequest.of(page, SIZE, Sort.by(Contract_.ID).descending());
-        return contractRepository.findByNomGKAndKontragentInnScript(name, inn, pageRequest);
     }
 
     public List<Contract> findAll() {
@@ -76,69 +65,14 @@ public class ContractService {
         //рассчитываем расчетную дату
         LocalDateTime date = contract.getDate_ispolnenija_GK();
         if (date != null) {
-            /*Calendar calendar = GregorianCalendar.getInstance();
-            calendar.setTime(date);
-            calendar.add(Calendar.DATE, (contract.getCol_days() + 2));*/
             contract.setRaschet_date(date.plusDays(2));
         }
-
-/*        for (MyDocuments d : contract.getMyDocuments()) { //добавляем ссылку на контракт в MyDocuments
-            d.setContract(contract);
-        }
-        for (Notification n : contract.getNotifications()) { //добавляем ссылку на контракт в Notification
-            n.setContract(contract);
-        }*/
         contractRepository.save(contract);
     }
 
     public void delete(Long id) {
         contractRepository.deleteById(id);
     }
-
-    public int getCOL() {
-        return SIZE;
-    }
-
-    public List<Contract> findByIspolnenoFalse() {
-        return contractRepository.findAllByIspolneno(false);
-    }
-
-    public List<Contract> findByIspolnenoTrue() {
-        return contractRepository.findAllByIspolneno(true);
-    }
-
-    public List<Contract> findByNotIspolnenoSrok() {
-        List<Contract> contracts = new ArrayList<>();
-        findByIspolnenoFalse().forEach(contract -> {
-            if (contract.getDaysOst() >= 0 && contract.getDaysOst() <= 4) {
-                contracts.add(contract);
-            }
-        });
-        return contracts;
-    }
-
-    public List<Contract> findByNodate() {
-        List<Contract> contracts = new ArrayList<>();
-        findByIspolnenoFalse().forEach(contract -> {
-            if (contract.getRaschet_date() == null) {
-                contracts.add(contract);
-            }
-        });
-        return contracts;
-    }
-
-    public List<Contract> findByProsrocheno() {
-        List<Contract> contracts = new ArrayList<>();
-        findByIspolnenoFalse().forEach(contract -> {
-            if (contract.getDaysOst() < 0) {
-                if (contract.getRaschet_date() != null) {
-                    contracts.add(contract);
-                }
-            }
-        });
-        return contracts;
-    }
-
 
     public int getColSize() {
         List<Contract> contracts = findAll();
@@ -196,47 +130,54 @@ public class ContractService {
     }
 
     @Scheduled(cron = "0 0 8 * * MON-FRI")
+    //@Scheduled(cron = "0 20 16 * * MON-FRI")
+    //@Scheduled(fixedRate = 60000)
     @Async
     @Transactional
     public void sendEmails() {
-        List<Contract> contracts = this.findByIspolnenoFalse();
-        System.out.println("ColList = " + contracts.size());
+        List<Contract> contracts = this.findAll(
+                ContractSpecification.ispolnenoEquals(false)
+        );
+
         contracts.forEach(contract -> {
 
             long days = contract.getDaysOst();
 
-            String subject = "\"Предупреждение! Возврат обеспечения исполнения контракта!\"!";
-            String text = "Осталось дней: " + days + "\n Наименование контрагента: " + contract.getKontragent().getName() + "\n ИНН контрагента: " + contract.getKontragent().getInn() + "\n Номер контракта: " + contract.getNomGK() + "\n Дата контракта: " + DateTimeFormatter.ofPattern("dd.MM.yyyy").format(contract.getDateGK().toLocalDate()) + "\n Вид обеспечения: " + contract.getVidObesp().getName() + "\n Сумма: " + contract.getSumOk();
-
-            System.out.println("Дней " + days);
+            //System.out.println("Дней " + days);
             if (days >= 0 && days <= 4) {
 
+                String subject = "\"Предупреждение! Возврат обеспечения исполнения контракта!\"!";
+                String text = "Осталось дней: " + days +
+                        "\n Наименование контрагента: " + contract.getKontragent().getName() +
+                        "\n ИНН контрагента: " + contract.getKontragent().getInn() +
+                        "\n Номер контракта: " + contract.getNomGK() +
+                        "\n Дата контракта: " + (contract.getDateGK() == null ? " Дата контракта не введена!" : DateTimeFormatter.ofPattern("dd.MM.yyyy").format(contract.getDateGK().toLocalDate())) +
+                        "\n Вид обеспечения: " + contract.getVidObesp().getName() +
+                        "\n Сумма: " + contract.getSumOk();
+
                 try {
+                    //письмо создателю
                     String emailUser = zirServise.getEmailUserById(Integer.parseInt(String.valueOf(contract.getUser().getId_user_zir())));
-                    System.out.println("Создатель " + emailUser);
+                    //System.out.println("Создатель " + emailUser);
 
                     mailSender.send(zirServise.getEmailUserById(Integer.parseInt(String.valueOf(contract.getUser().getId_user_zir()))), subject, text); //сообщение создателю
                     String emailBoss = null;
                     try {
                         emailBoss = zirServise.getEmailBossById(Integer.parseInt(String.valueOf(contract.getUser().getId_user_zir())));
 
-                        System.out.println("Босс " + emailBoss);
+                        //System.out.println("Босс " + emailBoss);
                         if (emailBoss != null && !emailUser.equals(emailBoss)) {
                             mailSender.send(emailBoss, subject, text); //сообщение начальнику отдела
                         }
-
-                    } catch (Exception e) {
-                    }
-
-
-                    for (Notification notification : contract.getNotifications()) {
-                        String email = zirServise.getEmailUserById(Integer.parseInt(String.valueOf(notification.getId_user())));
-                        System.out.println("Кто то " + email);
-                        if (!emailUser.equals(email) && (emailBoss != null && !emailBoss.equals(email))) {
-                            mailSender.send(email, subject, text);//сообщение остальным
+                    } finally { //если с боссом возникли проблемы все равно отправить уведомления
+                        for (Notification notification : contract.getNotifications()) {
+                            String email = zirServise.getEmailUserById(Integer.parseInt(String.valueOf(notification.getId_user())));
+                            //System.out.println("Кто то " + email);
+                            if (!emailUser.equals(email) && (emailBoss != null && !emailBoss.equals(email))) {
+                                mailSender.send(email, subject, text);//сообщение остальным
+                            }
                         }
                     }
-
                 /*String emailUser = zirServise.getEmailUserById(1997);
                 System.out.println("Создатель " + emailUser);
                 mailSender.send(

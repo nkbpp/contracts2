@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.pfr.contracts2.entity.contracts.entity.Contract;
 import ru.pfr.contracts2.entity.user.User;
 import ru.pfr.contracts2.service.contracts.ContractService;
@@ -30,8 +31,9 @@ public class MainController {
     final VidObespService vidObespService;
 
     @GetMapping("/main")
-    public String main(@AuthenticationPrincipal User user,
-                       Model model) {
+    public String main(
+            @AuthenticationPrincipal User user,
+            Model model) {
 
         List<Contract> contracts = contractService.findAll();
 

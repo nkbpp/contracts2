@@ -2,7 +2,7 @@ package ru.pfr.contracts2.repository.it;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import ru.pfr.contracts2.entity.contractIT.entity.NaturalIndicator;
+import ru.pfr.contracts2.entity.contractOtdel.contractAxo.entity.NaturalIndicator;
 
 import java.util.List;
 

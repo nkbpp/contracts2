@@ -14,9 +14,11 @@ import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequ
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import ru.pfr.contracts2.config.sec.WithMockCustomUser;
-import ru.pfr.contracts2.entity.contractIT.entity.ContractIT;
-import ru.pfr.contracts2.entity.contractIT.mapper.ContractItMapper;
-import ru.pfr.contracts2.entity.contractIT.mapper.DopDocumentsMapper;
+import ru.pfr.contracts2.entity.contractOtdel.contractDop.dto.StatusGk;
+import ru.pfr.contracts2.entity.contractOtdel.contractIT.entity.ContractIT;
+import ru.pfr.contracts2.entity.contractOtdel.contractDop.entity.Months;
+import ru.pfr.contracts2.entity.contractOtdel.contractIT.mapper.ContractItMapper;
+import ru.pfr.contracts2.entity.contractOtdel.contractDop.mapper.DopDocumentsMapper;
 import ru.pfr.contracts2.service.it.ContractItService;
 
 import java.time.LocalDate;
@@ -63,20 +65,24 @@ class ContractItControllerRestUnitTest {
                 .dateGK(LocalDateTime.of(LocalDate.of(1993, 8, 13), LocalTime.of(10, 20)))
                 .dateGKs(LocalDateTime.of(LocalDate.of(1993, 12, 13), LocalTime.of(10, 20)))
                 .dateGKpo(LocalDateTime.of(LocalDate.of(2018, 7, 13), LocalTime.of(16, 15)))
-                .statusGK("Действующий")
+                .statusGK(StatusGk.EXECUTED)
                 .sum(100D)
-                .month1(1D)
-                .month2(2D)
-                .month3(3D)
-                .month4(4D)
-                .month5(5D)
-                .month6(6D)
-                .month7(7D)
-                .month8(8D)
-                .month9(9D)
-                .month10(10D)
-                .month11(11D)
-                .month12(12D)
+                .months(Months.builder()
+                        .month1(1D)
+                        .month2(2D)
+                        .month3(3D)
+                        .month4(4D)
+                        .month5(5D)
+                        .month6(6D)
+                        .month7(7D)
+                        .month8(8D)
+                        .month9(9D)
+                        .month10(10D)
+                        .month11(11D)
+                        .month12(12D)
+                        .build()
+                )
+
 
                 .idzirot(1)
                 .nameot("Господин Работник")

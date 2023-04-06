@@ -19,18 +19,20 @@ public class KontragentController {
 
     private final KontragentService kontragentService;
 
-    @ModelAttribute(name = "kontragents")
+/*    @ModelAttribute(name = "kontragents")
     public List<Kontragent> kontragents() {
         return kontragentService.findAll();
-    }
+    }*/
 
     @GetMapping("/kontragentViev")
     public String kontragentViev() {
+
         return "fragment/kontragent :: kontragent";
     }
 
     @GetMapping("/modalKontragentViev") //контрагент
     public String modalKontragentViev() {
+
         return "fragment/modalKontragent :: modalKontragentTable";
     }
 

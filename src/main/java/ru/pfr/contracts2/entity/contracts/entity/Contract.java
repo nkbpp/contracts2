@@ -2,6 +2,8 @@ package ru.pfr.contracts2.entity.contracts.entity;
 
 
 import lombok.*;
+import org.hibernate.annotations.Type;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import ru.pfr.contracts2.entity.AuditEntity;
 import ru.pfr.contracts2.entity.user.User;
 import ru.pfr.contracts2.global.MyNumbers;
@@ -20,6 +22,7 @@ import java.util.List;
 @NoArgsConstructor // создания пустого конструктора
 @AllArgsConstructor // конструктора включающего все возможные поля
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Contract extends AuditEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,6 +41,7 @@ public class Contract extends AuditEntity {
 
     private LocalDateTime dateGK; //дата ГК
 
+    @Type(type = "text")
     private String predmet_contract; //краткое содержание предмета контракта
 
     @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)

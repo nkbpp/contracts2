@@ -160,7 +160,6 @@ public class LoggingAspect {
     @AfterThrowing(value = "controllerRestOrController()", throwing = "exception")
     public void recordFailedExecution(JoinPoint joinPoint, Exception exception) {
         User userInfo = getUserInfo();
-
         service.save(
                 Logi.builder()
                         .type("Danger")
@@ -171,7 +170,6 @@ public class LoggingAspect {
                         .user(userInfo.getLogin())
                         .build()
         );
-
     }
 
     private User getUserInfo() {

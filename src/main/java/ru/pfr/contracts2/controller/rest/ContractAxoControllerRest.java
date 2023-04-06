@@ -7,18 +7,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.pfr.contracts2.entity.contractIT.dto.ContractAxoDto;
-import ru.pfr.contracts2.entity.contractIT.entity.ContractAxo;
-import ru.pfr.contracts2.entity.contractIT.entity.ContractAxoSpecification;
-import ru.pfr.contracts2.entity.contractIT.entity.ContractAxo_;
-import ru.pfr.contracts2.entity.contractIT.entity.DopDocuments;
-import ru.pfr.contracts2.entity.contractIT.mapper.ContractAxoMapper;
-import ru.pfr.contracts2.entity.contractIT.mapper.DopDocumentsMapper;
+import ru.pfr.contracts2.entity.contractOtdel.contractAxo.dto.ContractAxoDto;
+import ru.pfr.contracts2.entity.contractOtdel.contractAxo.entity.ContractAxo;
+import ru.pfr.contracts2.entity.contractOtdel.contractAxo.entity.ContractAxoSpecification;
+import ru.pfr.contracts2.entity.contractOtdel.contractAxo.entity.ContractAxo_;
+import ru.pfr.contracts2.entity.contractOtdel.contractDop.entity.DopDocuments;
+import ru.pfr.contracts2.entity.contractOtdel.contractAxo.mapper.ContractAxoMapper;
+import ru.pfr.contracts2.entity.contractOtdel.contractDop.mapper.DopDocumentsMapper;
 import ru.pfr.contracts2.entity.user.User;
 import ru.pfr.contracts2.service.it.ContractAxoService;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 
@@ -41,9 +43,10 @@ public class ContractAxoControllerRest {
             }
     )
     public ResponseEntity<?> add(
+            @AuthenticationPrincipal User user,
             @RequestPart("file") List<MultipartFile> documents,
-            @RequestPart("contract") ContractAxoDto contractAxoDto,
-            @AuthenticationPrincipal User user) {
+            @Valid @RequestPart("contract") ContractAxoDto contractAxoDto,
+            Errors errors) {
         try {
 
             //проход по документам
@@ -75,9 +78,10 @@ public class ContractAxoControllerRest {
             }
     )
     public ResponseEntity<?> update(
+            @AuthenticationPrincipal User user,
             @RequestPart("file") List<MultipartFile> documents,
-            @RequestPart("contract") ContractAxoDto contractAxoDto,
-            @AuthenticationPrincipal User user) {
+            @Valid @RequestPart("contract") ContractAxoDto contractAxoDto,
+            Errors errors) {
         try {
 
             //проход по документам

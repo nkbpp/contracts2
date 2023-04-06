@@ -1,16 +1,16 @@
 let SORTK = 0;
 let SORTD = 0;
 $(document).ready(function () {
-    let itbody = $("body");
-    itbody.on('click', 'a', function () {
+    let rspbody = $("body");
+    rspbody.on('click', 'a', function () {
 
-        if ($(this).attr('id') === "menurspcontract") { //Кнопка ИТ контракты
+        if ($(this).attr('name') === "menudopcontract") { //Кнопка ИТ контракты
             SORTK = 0;
             SORTD = 0;
             let mainContainer = $("#mainContainer");
             mainContainer.html(getSpinner());
             mainContainer.load("/contract/rsp/vievTable", "", function () {
-                ajaxContractIt(getContractItJson(), "");
+                ajaxContractRsp(getContractRspJson(), "");
                 $('.datepicker').datepicker({
                     format: 'dd.mm.yyyy',
                     language: "ru"
@@ -19,7 +19,7 @@ $(document).ready(function () {
             return false;
         }
 
-        if ($(this).attr('id') === "menurspaddcontract") { //Кнопка Добавить ИТ контракт
+        if ($(this).attr('name') === "menudopaddcontract") { //Кнопка Добавить ИТ контракт
             $("#mainContainer").load("/contract/rsp/add", "", function () {
                 $('.datepicker').datepicker({
                     format: 'dd.mm.yyyy',
@@ -29,22 +29,20 @@ $(document).ready(function () {
             return false;
         }
 
-        if ($(this).attr('id') === "deleteItContract") { //Удалить контракт
+        if ($(this).attr('id') === "deleteRspContract") { //Удалить контракт
             if (confirm("Вы точно хотите удалить заявление c порядковым номером = " +
                 $(this).parents("tr").children().eq(0).text())) {
 
-                let param = "id=" + $(this).attr('name');
                 let token = $('#_csrf').attr('content');
                 let header = $('#_csrf_header').attr('content');
                 $.ajax({
-                    url: '/contract/rsp/deleteContract',
-                    method: 'post',
-                    data: param,
+                    url: '/contract/rsp/' + $(this).attr('name'),
+                    method: 'delete',
                     beforeSend: function (xhr) {
                         xhr.setRequestHeader(header, token);
                     },
                     success: function (data) {
-                        ajaxContractIt(getContractItJson(), getContractItParams())
+                        ajaxContractRsp(getContractRspJson(), getContractRspParams())
                         initialToats("Удаление прошло успешно", data, "success").show();
                     },
                     error: function (textStatus) {
@@ -56,7 +54,7 @@ $(document).ready(function () {
         }
 
 
-        if ($(this).attr('id') === "updateItContract") { //перейти на вкладку изменения ItContract
+        if ($(this).attr('id') === "updateRspContract") { //перейти на вкладку изменения RspContract
             let param = $(this).attr('name');
 
             $("#mainContainer").load("/contract/rsp/updateViev/" + param, "", function () {
@@ -65,13 +63,12 @@ $(document).ready(function () {
                 let header = $('#_csrf_header').attr('content');
                 $.ajax({
                     url: '/contract/rsp/getContract/' + param,
-                    method: 'post',
+                    method: 'get',
                     beforeSend: function (xhr) {
                         xhr.setRequestHeader(header, token);
                     },
                     success: function (data) {
-                        console.log(data)
-                        $("#addContractIt").attr("data-id-contract", data.id)
+                        $("#addContractRsp").attr("data-id-contract", data.id)
 
                         $('textarea[name=nomGK]').val(data.nomGK);
                         $('textarea[name=kontragent]').val(data.kontragent);
@@ -79,29 +76,29 @@ $(document).ready(function () {
                         $('input[name=dateGKs]').val(data.dateGKs);
                         $('input[name=dateGKpo]').val(data.dateGKpo);
                         $('input[name=sum]').val(data.sum.replace(',', '.'));
-                        $('input[name=January]').val(data.month1);
-                        $('input[name=February]').val(data.month2);
-                        $('input[name=March]').val(data.month3);
-                        $('input[name=April]').val(data.month4);
-                        $('input[name=May]').val(data.month5);
-                        $('input[name=June]').val(data.month6);
-                        $('input[name=July]').val(data.month7);
-                        $('input[name=August]').val(data.month8);
-                        $('input[name=September]').val(data.month9);
-                        $('input[name=October]').val(data.month10);
-                        $('input[name=November]').val(data.month11);
-                        $('input[name=December]').val(data.month12);
+                        $('input[name=month1]').val(data.months.month1);
+                        $('input[name=month2]').val(data.months.month2);
+                        $('input[name=month3]').val(data.months.month3);
+                        $('input[name=month4]').val(data.months.month4);
+                        $('input[name=month5]').val(data.months.month5);
+                        $('input[name=month6]').val(data.months.month6);
+                        $('input[name=month7]').val(data.months.month7);
+                        $('input[name=month8]').val(data.months.month8);
+                        $('input[name=month9]').val(data.months.month9);
+                        $('input[name=month10]').val(data.months.month10);
+                        $('input[name=month11]').val(data.months.month11);
+                        $('input[name=month12]').val(data.months.month12);
                         $('#statusGK').val(data.statusGK);
-                        $('#budgetClassification').val(data.budgetClassification !== null ? data.budgetClassification.id : "0");
+                        /*$('#budgetClassification').val(data.budgetClassification !== null ? data.budgetClassification.id : "0");*/
                         $('#notificationsSelect').val(data.idzirot);
 
                         for (let doc of data.documents) {
-                            let dv = $("#documentsItViev");
+                            let dv = $("#documentsRspViev");
                             dv.html(
                                 dv.html() +
                                 "<div class='mb-1' data-id-doc='" + doc.id + "'>" + doc.nameFile + " " +
                                 "<button class='btn btn-secondary btn-sm' " +
-                                "data-id-doc='" + doc.id + "' data-name-doc='delItDoc'>X</button>" +
+                                "data-id-doc='" + doc.id + "' data-name-doc='delRspDoc'>X</button>" +
                                 "</div>"
                             );
                         }
@@ -111,7 +108,7 @@ $(document).ready(function () {
                             language: "ru"
                         });
 
-                        $('#addContractIt').text("Изменить");
+                        $('#addContractRsp').text("Изменить");
 
                     },
                     error: function (textStatus) {
@@ -124,21 +121,21 @@ $(document).ready(function () {
         }
 
         //переключатели страниц pagination
-        if ($(this).parents("#paginationItContract").attr("id") === "paginationItContract") {
-            let list = clickPagination($(this), "#paginationItContract");
+        if ($(this).parents("#paginationRspContract").attr("id") === "paginationRspContract") {
+            clickPagination($(this), "#paginationRspContract");
             fpagination()
         }
 
     })
 
-    itbody.on('change', '#col', function () {
+    rspbody.on('change', '#col', function () {
         fpagination()
     });
 
     //сортировка
-    itbody.on('click', 'th', function () {
+    rspbody.on('click', 'th', function () {
         if ($(this).attr('id') === "sortD" || $(this).attr('id') === "sortK") {
-            clearPagination($("#paginationItContract  a"));
+            clearPagination($("#paginationRspContract  a"));
             if ($(this).attr('id') === "sortD") {
                 SORTD = (SORTD === 2 ? --SORTD : ++SORTD);
                 SORTK = 0;
@@ -150,33 +147,30 @@ $(document).ready(function () {
                 SORTD = 0;
                 $("#sortKspan").html(SORTK === 2 ? "&#9660" : "&#9650");
                 $("#sortDspan").text("");
-
             }
-            ajaxContractIt(getContractItJson(), getContractItParams());
+            ajaxContractRsp(getContractRspJson(), getContractRspParams());
         }
 
         return false;
     });
 
-    itbody.on('click', 'button', function () {
+    rspbody.on('click', 'button', function () {
 
-        if ($(this).attr('name') === "findContractIt") { //поиск
+        if ($(this).attr('name') === "findContractRsp") { //поиск
             SORTD = 0;
             SORTK = 0;
-            clearPagination($("#paginationItContract  a"))
-            ajaxContractIt(getContractItJson(), getContractItParams())
+            clearPagination($("#paginationRspContract  a"))
+            ajaxContractRsp(getContractRspJson(), getContractRspParams())
             return false;
         }
 
-        if ($(this).attr('data-name-doc') === "delItDoc") {
+        if ($(this).attr('data-name-doc') === "delRspDoc") {
             let id = $(this).attr('data-id-doc');
-            let param = "id=" + id;
             let token = $('#_csrf').attr('content');
             let header = $('#_csrf_header').attr('content');
             $.ajax({
-                url: '/contract/rsp/delItDoc',
-                method: 'post',
-                data: param,
+                url: '/contract/rsp/delRspDoc/' + id,
+                method: 'delete',
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader(header, token);
                 },
@@ -193,7 +187,8 @@ $(document).ready(function () {
             return false;
         }
 
-        if ($(this).attr('id') === "addContractIt") {
+        //Добавление Изменение
+        if ($(this).attr('id') === "addContractRsp") {
             // проверка заполнения основных полей
             if (
                 !$("#nomGK").val().trim()
@@ -203,42 +198,105 @@ $(document).ready(function () {
                 $(this).prop("disabled", true);//делаем кнопку не активной
                 $(this).prepend(getSpinnerButton());// крутилкa
 
-                let param = new FormData($('#formItContract')[0]);
-                param.append('id', encodeURIComponent($('#addContractIt').attr("data-id-contract")));
-                param.append('statusGK', $('#statusGK').val());
-                param.append('idzirot', $('#notificationsSelect').val());
-                param.append('budgetClassificationId', $('#budgetClassification').val());
+                let idContractRsp = $('#addContractRsp').attr("data-id-contract");
 
-                let ntinput = $('#nt').find('.col-3:not(.d-none) input');
-                let strntinput = "";
-                for (let i = 0; i < ntinput.length; i++) {
-                    strntinput += (ntinput.eq(i).val() + (((i + 1) != ntinput.length) ? ';' : ''));
+                let form = new FormData($('#formRspContract')[0]);
+                let jsonData = Object.fromEntries(form.entries());
+                jsonData.id = idContractRsp;
+                jsonData.statusGK = $('#statusGK').val();
+                jsonData.idzirot = $('#notificationsSelect').val();
+                jsonData.months = {
+                    month1: $('#month1').val(),
+                    month2: $('#month2').val(),
+                    month3: $('#month3').val(),
+                    month4: $('#month4').val(),
+                    month5: $('#month5').val(),
+                    month6: $('#month6').val(),
+                    month7: $('#month7').val(),
+                    month8: $('#month8').val(),
+                    month9: $('#month9').val(),
+                    month10: $('#month10').val(),
+                    month11: $('#month11').val(),
+                    month12: $('#month12').val(),
+                };
+
+                delete jsonData.dopDocuments;
+
+                let formDataFile = new FormData();
+                const blob = new Blob([JSON.stringify(jsonData)], {
+                    type: 'application/json'
+                });
+
+                formDataFile.append("contract", blob);
+
+                let ins = document.getElementById('dopDocuments').files.length;
+                if (ins === 0) {
+                    let form2 = new FormData($('#formRspContract')[0]);
+                    let jsonData2 = Object.fromEntries(form2.entries());
+                    let data = {};
+                    data.file = jsonData2['dopDocuments'];
+                    formDataFile.append("file", data.file);
+                } else {
+                    for (let x = 0; x < ins; x++) {
+                        formDataFile.append("file", document.getElementById('dopDocuments').files[x]);
+                    }
                 }
-                param.append('naturalIndicators', strntinput);
 
                 // Отправляем запрос
                 let token = $('#_csrf').attr('content');
                 let header = $('#_csrf_header').attr('content');
-                $.post({
-                    url: "/contract/rsp/upload",
-                    data: param,
-                    cache: false,
-                    processData: false, // Не обрабатываем файлы (Don't process the files)
-                    contentType: false, // Так jQuery скажет серверу что это строковой запрос
-                    beforeSend: function (xhr) {
-                        xhr.setRequestHeader(header, token);
-                    },
-                    success: function (data) {
-                        //после добавления показать таблицу
-                        $("#mainContainer").load("/contract/rsp/vievTable", "", function () {
-                            ajaxContractIt(getContractItJson(), "");
-                        });
-                        initialToats("Добавление прошло успешно", data, "success").show();
-                    },
-                    error: function (jqXHR, textStatus) {
-                        initialToats("Ошибка при добавлении!!!", jqXHR.responseText, "err").show();
-                    }
-                });
+
+                //ДОБАВЛЕНИЕ
+                if (idContractRsp === undefined) {
+                    $.ajax({
+                        url: "/contract/rsp",
+                        data: formDataFile,
+                        processData: false,
+                        contentType: false,
+                        type: "POST",
+                        headers: {
+                            "Content-Type": undefined
+                        },
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader(header, token);
+                        },
+                        success: function (data) {
+                            //после добавления показать таблицу
+                            $("#mainContainer").load("/contract/rsp/vievTable", "", function () {
+                                ajaxContractRsp(getContractRspJson(), "");
+                            });
+                            initialToats("Добавление прошло успешно", data, "success").show();
+                        },
+                        error: function (jqXHR) {
+                            initialToats("Ошибка при добавлении!!!", jqXHR.responseText, "err").show();
+                        }
+                    });
+                } else { //ИЗМЕНЕНИЕ
+                    $.ajax({
+                        url: "/contract/rsp",
+                        data: formDataFile,
+                        processData: false,
+                        contentType: false,
+                        type: "PUT",
+                        headers: {
+                            "Content-Type": undefined
+                        },
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader(header, token);
+                        },
+                        success: function (data) {
+                            //после изменения показать таблицу
+                            $("#mainContainer").load("/contract/rsp/vievTable", "", function () {
+                                ajaxContractRsp(getContractRspJson(), "");
+                            });
+                            initialToats("Изменение прошло успешно", data, "success").show();
+                        },
+                        error: function (jqXHR) {
+                            initialToats("Ошибка при изменении!!!", jqXHR.responseText, "err").show();
+                        }
+                    });
+                }
+
             }
             return false;
         }
@@ -248,10 +306,10 @@ $(document).ready(function () {
 
 
 function fpagination() {
-    ajaxContractIt(getContractItJson(), getContractItParams())
+    ajaxContractRsp(getContractRspJson(), getContractRspParams())
 }
 
-function getContractItJson() {
+function getContractRspJson() {
     let object = {};
     object['poleFindByNomGK'] = $("[data-name=poleFindByNomGK]").val();
     object['poleFindByKontragent'] = $("[data-name=poleFindByKontragent]").val();
@@ -263,16 +321,15 @@ function getContractItJson() {
     return JSON.stringify(object);
 }
 
-function getContractItParams() {
-    return "param=" + activeList("#paginationItContract") +
+function getContractRspParams() {
+    return "param=" + activeList("#paginationRspContract") +
         "&col=" + $("#col").val();
 }
 
-function ajaxContractIt(json, params) {
+function ajaxContractRsp(json, params) {
 
-    getSpinnerTable("tableContractIt")
-    console.log("params = " + params)
-    console.log("json = " + json)
+    getSpinnerTable("tableContractRsp")
+
     let token = $('#_csrf').attr('content');
     let header = $('#_csrf_header').attr('content');
     $.ajax({
@@ -285,63 +342,63 @@ function ajaxContractIt(json, params) {
         },
         success: function (response) {
             let trHTML = '';
-            $('#tableContractIt tbody').html("");
-            let start = (+activeList("#paginationItContract") - 1) * $("#col").val();
+            $('#tableContractRsp tbody').html("");
+            let start = (+activeList("#paginationRspContract") - 1) * $("#col").val();
             console.log("ststartr=" + start)
-            $.each(response, function (i, item) {
+            $.each(response, function (i, data) {
                 let docum = "";
-                for (let doc of item.documents) {
+                for (let doc of data.documents) {
                     docum +=
                         '<div><a class="btn btn-link" href="/contract/rsp/download?id=' + doc.id + '">' + replaceNull(doc.nameFile) + '</a></div>';
                 }
 
-                let bc = "";
-                if (item.budgetClassification === null || item.budgetClassification === "" || item.budgetClassification === undefined) {
-
-                } else {
-                    bc = replaceNull(item.budgetClassification.kod);
-                }
+                let tecdate = new Date();
+                let mydate1 = new Date(replaceNull(data.dateGKpo).replace(/(\d+).(\d+).(\d+)/, '$3/$2/$1'));
+                let bDate = (tecdate.getTime() > mydate1.getTime()) && (replaceNull(data.statusGK) === "Действующий")
 
                 trHTML +=
-                    '<tr class="' + (replaceNull(item.ostatoc) === "0.00" ? "table-success" : "") + '">' +
+                    '<tr class="' + (replaceNull(data.ostatoc) === "0.00" ?
+                            "table-success" :
+                            bDate ? "table-danger" : ""
+                    ) + '">' +
                     '<th>' + (start + +i + 1) + '</th>' +
-                    /*'<td>' + replaceNull(item.id) + '</td>' +*/
-                    '<td class="fix">' + replaceNull(item.nomGK) + '</td>' +
-                    '<td>' + replaceNull(item.kontragent) + '</td>' +
-                    '<td>' + replaceNull(item.dateGK) + '</td>' +
-                    '<td>' + replaceNull(item.dateGKs) + '</td>' +
-                    '<td>' + replaceNull(item.dateGKpo) + '</td>' +
-                    '<td>' + replaceNull(item.sum) + '</td>' +
-                    '<td>' + replaceNull(item.statusGK) + '</td>' +
-                    '<td>' + bc + '</td>' +
-                    '<td>' + replaceNull(item.month1) + '</td>' +
-                    '<td>' + replaceNull(item.month2) + '</td>' +
-                    '<td>' + replaceNull(item.month3) + '</td>' +
-                    '<td>' + replaceNull(item.month4) + '</td>' +
-                    '<td>' + replaceNull(item.month5) + '</td>' +
-                    '<td>' + replaceNull(item.month6) + '</td>' +
-                    '<td>' + replaceNull(item.month7) + '</td>' +
-                    '<td>' + replaceNull(item.month8) + '</td>' +
-                    '<td>' + replaceNull(item.month9) + '</td>' +
-                    '<td>' + replaceNull(item.month10) + '</td>' +
-                    '<td>' + replaceNull(item.month11) + '</td>' +
-                    '<td>' + replaceNull(item.month12) + '</td>' +
-                    '<td>' + replaceNull(item.ostatoc) + '</td>' +
-                    '<td>' + replaceNull(item.nameot) + '</td>' +
+                    '<td class="fix">' + replaceNull(data.nomGK) + '</td>' +
+                    '<td>' + replaceNull(data.kontragent) + '</td>' +
+                    '<td>' + replaceNull(data.dateGK) + '</td>' +
+                    '<td>' + replaceNull(data.dateGKs) + '</td>' +
+                    '<td>' + replaceNull(data.dateGKpo) + '</td>' +
+                    '<td>' + replaceNull(data.sum) + '</td>' +
+                    '<td>' + replaceNull(data.statusGK) + '</td>' +
+                    /*'<td>' + bc + '</td>' +*/
+                    '<td>' + replaceNull(data.months.month1) + '</td>' +
+                    '<td>' + replaceNull(data.months.month2) + '</td>' +
+                    '<td>' + replaceNull(data.months.month3) + '</td>' +
+                    '<td>' + replaceNull(data.months.month4) + '</td>' +
+                    '<td>' + replaceNull(data.months.month5) + '</td>' +
+                    '<td>' + replaceNull(data.months.month6) + '</td>' +
+                    '<td>' + replaceNull(data.months.month7) + '</td>' +
+                    '<td>' + replaceNull(data.months.month8) + '</td>' +
+                    '<td>' + replaceNull(data.months.month9) + '</td>' +
+                    '<td>' + replaceNull(data.months.month10) + '</td>' +
+                    '<td>' + replaceNull(data.months.month11) + '</td>' +
+                    '<td>' + replaceNull(data.months.month12) + '</td>' +
+                    '<td>' + replaceNull(data.ostatoc) + '</td>' +
+                    '<td>' + replaceNull(data.nameot) + '</td>' +
                     '<td>' + docum + '</td>' +
                     '<td>' +
-                    '<div><a name="' + item.id + '" id="updateItContract" href="#">Изменить</a></div>' +
-                    '<div><a name="' + item.id + '" id="deleteItContract" href="#">Удалить</a></div>' +
+                    '<div><a name="' + data.id + '" id="updateRspContract" href="#">Изменить</a></div>' +
+                    '<div><a name="' + data.id + '" id="deleteRspContract" href="#">Удалить</a></div>' +
                     '</td>' +
                     '</tr>';
             });
-            $('#tableContractIt').append(trHTML);
-            $('#wrapper1 .div1').attr('style', 'width: ' + $('#tableContractIt').width() + 'px;');
-            $('#wrapper2 .div2').attr('style', 'width: ' + $('#tableContractIt').width() + 'px;');
+            let tableContractRsp = $('#tableContractRsp');
+            tableContractRsp.append(trHTML);
+            $('#wrapper1 .div1').attr('style', 'width: ' + tableContractRsp.width() + 'px;');
+            $('#wrapper2 .div2').attr('style', 'width: ' + tableContractRsp.width() + 'px;');
         },
         error: function (response) {
-            initialToats("Ошибка!", response.responseJSON.message, "err").show();
-            $('#tableContractIt tbody').html("");
+            inialToats("Ошибка!", response.responseJSON.message, "err").show();
+            $('#tableContractRsp tbody').html("");
         }
     });
 }

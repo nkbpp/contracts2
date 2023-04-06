@@ -1,0 +1,229 @@
+package ru.pfr.contracts2.controller.rest;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import ru.pfr.contracts2.aop.log.valid.ValidError;
+import ru.pfr.contracts2.entity.contractOtdel.contractDop.dto.ContractItRosRequest;
+import ru.pfr.contracts2.entity.contractOtdel.contractDop.dto.FilterContractItRsp;
+import ru.pfr.contracts2.entity.contractOtdel.contractDop.dto.StatisticDto;
+import ru.pfr.contracts2.entity.contractOtdel.contractDop.dto.StatusGk;
+import ru.pfr.contracts2.entity.contractOtdel.contractDop.entity.DopDocuments;
+import ru.pfr.contracts2.entity.contractOtdel.contractDop.mapper.DopDocumentsMapper;
+import ru.pfr.contracts2.entity.contractOtdel.contractIT.entity.ContractIT;
+import ru.pfr.contracts2.entity.contractOtdel.contractIT.entity.ContractITSpecification;
+import ru.pfr.contracts2.entity.contractOtdel.contractIT.entity.ContractIT_;
+import ru.pfr.contracts2.entity.contractOtdel.contractRsp.entity.ContractRsp;
+import ru.pfr.contracts2.entity.contractOtdel.contractRsp.entity.ContractRspSpecification;
+import ru.pfr.contracts2.entity.contractOtdel.contractRsp.mapper.ContractRspMapper;
+import ru.pfr.contracts2.entity.user.User;
+import ru.pfr.contracts2.service.it.ContractRspService;
+
+import javax.validation.Valid;
+import java.util.List;
+import java.util.Objects;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping(value = {"/contract/rsp"})
+public class ContractRspControllerRest {
+
+    private final ContractRspService contractRspService;
+    private final DopDocumentsMapper documentsMapper;
+    private final ContractRspMapper contractRspMapper;
+
+    /**
+     * Добавить контракт
+     */
+    @ValidError
+    @PostMapping(
+            value = "",
+            consumes = {
+                    MediaType.MULTIPART_FORM_DATA_VALUE
+            }
+    )
+    public ResponseEntity<?> add(
+            @AuthenticationPrincipal User user,
+            @RequestPart("file") List<MultipartFile> documents,
+            @Valid @RequestPart("contract") ContractItRosRequest contractItRosRequest,
+            Errors errors) {
+        try {
+
+            //проход по документам
+            List<DopDocuments> listDocuments = documents
+                    .stream()
+                    .map(documentsMapper::fromMultipart)
+                    .filter(Objects::nonNull)
+                    .toList();
+
+            ContractRsp contract = contractRspMapper
+                    .fromDto(contractItRosRequest);
+            contract.setAllDocuments(listDocuments);
+            contract.setUser(user);
+
+            contractRspService.save(contract);
+            return ResponseEntity.ok("Данные добавлены!");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Ошибка!");
+        }
+    }
+
+    /**
+     * Изменить контракт
+     */
+    @ValidError
+    @PutMapping(
+            value = "",
+            consumes = {
+                    MediaType.MULTIPART_FORM_DATA_VALUE
+            }
+    )
+    public ResponseEntity<?> update(
+            @AuthenticationPrincipal User user,
+            @RequestPart("file") List<MultipartFile> documents,
+            @Valid @RequestPart("contract") ContractItRosRequest contractItRosRequest,
+            Errors errors) {
+        try {
+
+            //проход по документам
+            List<DopDocuments> listDocuments = documents
+                    .stream()
+                    .map(documentsMapper::fromMultipart)
+                    .filter(Objects::nonNull)
+                    .toList();
+
+            ContractRsp contract = contractRspMapper
+                    .fromDto(contractItRosRequest);
+
+            contract.setAllDocuments(listDocuments);
+            contract.setUser(user);
+
+            contractRspService.update(contract);
+            return ResponseEntity.ok("Данные изменены!");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Ошибка!");
+        }
+    }
+
+    /**
+     * Удалить контракт по id +?
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteContract(
+            @PathVariable("id") Long id
+    ) {
+        try {
+            contractRspService.delete(id);
+            return ResponseEntity.ok("Контракт с ID = " + id + " успешно удален!");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Ошибка!");
+        }
+    }
+
+    /**
+     * Получить контракт по id
+     */
+    @GetMapping("/getContract/{id}")
+    public ResponseEntity<?> getContract(
+            @PathVariable Long id
+    ) {
+        try {
+            return new ResponseEntity<>(
+                    contractRspMapper.toDto(contractRspService.findById(id)),
+                    HttpStatus.OK
+            );
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Ошибка!");
+        }
+    }
+
+    /**
+     * Фильтр
+     */
+    @ValidError
+    @PostMapping(value = "/findTable")
+    public ResponseEntity<?> findTable(
+            @Valid @RequestBody FilterContractItRsp filterContractItRsp,
+
+            @RequestParam(defaultValue = "1") Integer param,
+            @RequestParam(defaultValue = "10") Integer col,
+            Errors errors
+    ) {
+
+        try {
+            Sort sort = Sort.by(ContractIT_.ID).descending();
+            if (filterContractItRsp.getSortd() == 1) {
+                sort = Sort.by(ContractIT_.DATE_GK).and(Sort.by(ContractIT_.ID).descending());
+            } else if (filterContractItRsp.getSortd() == 2) {
+                sort = Sort.by(ContractIT_.DATE_GK).descending().and(Sort.by(ContractIT_.ID).descending());
+            }
+            if (filterContractItRsp.getSortk() == 1) {
+                sort = Sort.by(ContractIT_.KONTRAGENT).and(Sort.by(ContractIT_.ID).descending());
+            } else if (filterContractItRsp.getSortk() == 2) {
+                sort = Sort.by(ContractIT_.KONTRAGENT).descending().and(Sort.by(ContractIT_.ID).descending());
+            }
+
+            List<ContractRsp> contracts = contractRspService.findAll(
+                    ContractRspSpecification.filterContract(
+                            filterContractItRsp//, GetOtdel.get(authentication)
+                    ),
+                    PageRequest.of(
+                            param - 1, col,
+                            sort
+                    )
+            );
+
+            return new ResponseEntity<>(
+                    (contracts == null) ? null : contracts
+                            .stream()
+                            .map(contractRspMapper::toDto)
+                            .toList(),
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Ошибка!");
+        }
+    }
+
+    /***
+     * Статистика
+     */
+    @GetMapping("/stat")
+    public ResponseEntity<?> stat() {
+        try {
+            return new ResponseEntity<>(
+                    new StatisticDto(
+                            contractRspService.findAll().size(),
+                            contractRspService.findAll(
+                                    ContractRspSpecification.statusGKEquals(
+                                            StatusGk.EXECUTED
+                                    )
+                            ).size(),
+                            contractRspService.findAll(
+                                    ContractRspSpecification.statusGKEquals(
+                                            StatusGk.CURRENT
+                                    )
+                            ).size(),
+                            contractRspService.findAll(
+                                    ContractRspSpecification.statusGKEquals(
+                                            StatusGk.TERMINATED
+                                    )
+                            ).size(),
+                            contractRspService.findAll(
+                                    ContractRspSpecification.statusGKisEmpty()
+                            ).size()
+                    ),
+                    HttpStatus.OK
+            );
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+}

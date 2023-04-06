@@ -1,6 +1,7 @@
 package ru.pfr.contracts2.entity.user;
 
 public enum ROLE_ENUM {
+
     ROLE_READ("READ"),
     ROLE_UPDATE("UPDATE"),
     ROLE_ADMIN("ADMIN"),

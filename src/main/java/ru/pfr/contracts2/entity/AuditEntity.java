@@ -10,7 +10,7 @@ import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
 
 @MappedSuperclass
-public class AuditEntity {
+public abstract class AuditEntity {
 
     @LastModifiedDate
     private LocalDateTime date_update;

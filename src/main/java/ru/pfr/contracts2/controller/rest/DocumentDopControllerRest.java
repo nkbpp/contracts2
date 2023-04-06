@@ -5,7 +5,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.pfr.contracts2.entity.contractIT.entity.DopDocuments;
+import ru.pfr.contracts2.entity.contractOtdel.contractDop.entity.DopDocuments;
 import ru.pfr.contracts2.global.Translit;
 import ru.pfr.contracts2.service.it.ItDocumentsService;
 

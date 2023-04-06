@@ -4,6 +4,7 @@ package ru.pfr.contracts2.entity.contracts.entity;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.Join;
+import java.time.LocalDate;
 
 public class ContractSpecification {
 
@@ -73,5 +74,6 @@ public class ContractSpecification {
                         .and(innFilter(inn))
         );
     }
+
 
 }

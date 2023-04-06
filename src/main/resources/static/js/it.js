@@ -76,21 +76,22 @@ $(document).ready(function () {
                         $('input[name=dateGKs]').val(data.dateGKs);
                         $('input[name=dateGKpo]').val(data.dateGKpo);
                         $('input[name=sum]').val(data.sum.replace(',', '.'));
-                        $('input[name=month1]').val(data.month1);
-                        $('input[name=month2]').val(data.month2);
-                        $('input[name=month3]').val(data.month3);
-                        $('input[name=month4]').val(data.month4);
-                        $('input[name=month5]').val(data.month5);
-                        $('input[name=month6]').val(data.month6);
-                        $('input[name=month7]').val(data.month7);
-                        $('input[name=month8]').val(data.month8);
-                        $('input[name=month9]').val(data.month9);
-                        $('input[name=month10]').val(data.month10);
-                        $('input[name=month11]').val(data.month11);
-                        $('input[name=month12]').val(data.month12);
+                        $('input[name=month1]').val(data.months.month1);
+                        $('input[name=month2]').val(data.months.month2);
+                        $('input[name=month3]').val(data.months.month3);
+                        $('input[name=month4]').val(data.months.month4);
+                        $('input[name=month5]').val(data.months.month5);
+                        $('input[name=month6]').val(data.months.month6);
+                        $('input[name=month7]').val(data.months.month7);
+                        $('input[name=month8]').val(data.months.month8);
+                        $('input[name=month9]').val(data.months.month9);
+                        $('input[name=month10]').val(data.months.month10);
+                        $('input[name=month11]').val(data.months.month11);
+                        $('input[name=month12]').val(data.months.month12);
                         $('#statusGK').val(data.statusGK);
                         /*$('#budgetClassification').val(data.budgetClassification !== null ? data.budgetClassification.id : "0");*/
                         $('#notificationsSelect').val(data.idzirot);
+                        $('#dayNotification').val(data.dayNotification);
 
                         for (let doc of data.documents) {
                             let dv = $("#documentsItViev");
@@ -205,6 +206,20 @@ $(document).ready(function () {
                 jsonData.id = idContractIt;
                 jsonData.statusGK = $('#statusGK').val();
                 jsonData.idzirot = $('#notificationsSelect').val();
+                jsonData.months = {
+                    month1: $('#month1').val(),
+                    month2: $('#month2').val(),
+                    month3: $('#month3').val(),
+                    month4: $('#month4').val(),
+                    month5: $('#month5').val(),
+                    month6: $('#month6').val(),
+                    month7: $('#month7').val(),
+                    month8: $('#month8').val(),
+                    month9: $('#month9').val(),
+                    month10: $('#month10').val(),
+                    month11: $('#month11').val(),
+                    month12: $('#month12').val(),
+                };
 
                 delete jsonData.dopDocuments;
 
@@ -331,49 +346,49 @@ function ajaxContractIt(json, params) {
             $('#tableContractIt tbody').html("");
             let start = (+activeList("#paginationItContract") - 1) * $("#col").val();
             console.log("ststartr=" + start)
-            $.each(response, function (i, item) {
+            $.each(response, function (i, data) {
                 let docum = "";
-                for (let doc of item.documents) {
+                for (let doc of data.documents) {
                     docum +=
                         '<div><a class="btn btn-link" href="/contract/it/download?id=' + doc.id + '">' + replaceNull(doc.nameFile) + '</a></div>';
                 }
 
                 let tecdate = new Date();
-                let mydate1 = new Date(replaceNull(item.dateGKpo).replace(/(\d+).(\d+).(\d+)/, '$3/$2/$1'));
-                let bDate = (tecdate.getTime() > mydate1.getTime()) && (replaceNull(item.statusGK) === "Действующий")
+                let mydate1 = new Date(replaceNull(data.dateGKpo).replace(/(\d+).(\d+).(\d+)/, '$3/$2/$1'));
+                let bDate = (tecdate.getTime() > mydate1.getTime()) && (replaceNull(data.statusGK) === "Действующий")
 
                 trHTML +=
-                    '<tr class="' + (replaceNull(item.ostatoc) === "0.00" ?
+                    '<tr class="' + (replaceNull(data.ostatoc) === "0.00" ?
                             "table-success" :
                             bDate ? "table-danger" : ""
                     ) + '">' +
                     '<th>' + (start + +i + 1) + '</th>' +
-                    '<td class="fix">' + replaceNull(item.nomGK) + '</td>' +
-                    '<td>' + replaceNull(item.kontragent) + '</td>' +
-                    '<td>' + replaceNull(item.dateGK) + '</td>' +
-                    '<td>' + replaceNull(item.dateGKs) + '</td>' +
-                    '<td>' + replaceNull(item.dateGKpo) + '</td>' +
-                    '<td>' + replaceNull(item.sum) + '</td>' +
-                    '<td>' + replaceNull(item.statusGK) + '</td>' +
+                    '<td class="fix">' + replaceNull(data.nomGK) + '</td>' +
+                    '<td>' + replaceNull(data.kontragent) + '</td>' +
+                    '<td>' + replaceNull(data.dateGK) + '</td>' +
+                    '<td>' + replaceNull(data.dateGKs) + '</td>' +
+                    '<td>' + replaceNull(data.dateGKpo) + '</td>' +
+                    '<td>' + replaceNull(data.sum) + '</td>' +
+                    '<td>' + replaceNull(data.statusGK) + '</td>' +
                     /*'<td>' + bc + '</td>' +*/
-                    '<td>' + replaceNull(item.month1) + '</td>' +
-                    '<td>' + replaceNull(item.month2) + '</td>' +
-                    '<td>' + replaceNull(item.month3) + '</td>' +
-                    '<td>' + replaceNull(item.month4) + '</td>' +
-                    '<td>' + replaceNull(item.month5) + '</td>' +
-                    '<td>' + replaceNull(item.month6) + '</td>' +
-                    '<td>' + replaceNull(item.month7) + '</td>' +
-                    '<td>' + replaceNull(item.month8) + '</td>' +
-                    '<td>' + replaceNull(item.month9) + '</td>' +
-                    '<td>' + replaceNull(item.month10) + '</td>' +
-                    '<td>' + replaceNull(item.month11) + '</td>' +
-                    '<td>' + replaceNull(item.month12) + '</td>' +
-                    '<td>' + replaceNull(item.ostatoc) + '</td>' +
-                    '<td>' + replaceNull(item.nameot) + '</td>' +
+                    '<td>' + replaceNull(data.months.month1) + '</td>' +
+                    '<td>' + replaceNull(data.months.month2) + '</td>' +
+                    '<td>' + replaceNull(data.months.month3) + '</td>' +
+                    '<td>' + replaceNull(data.months.month4) + '</td>' +
+                    '<td>' + replaceNull(data.months.month5) + '</td>' +
+                    '<td>' + replaceNull(data.months.month6) + '</td>' +
+                    '<td>' + replaceNull(data.months.month7) + '</td>' +
+                    '<td>' + replaceNull(data.months.month8) + '</td>' +
+                    '<td>' + replaceNull(data.months.month9) + '</td>' +
+                    '<td>' + replaceNull(data.months.month10) + '</td>' +
+                    '<td>' + replaceNull(data.months.month11) + '</td>' +
+                    '<td>' + replaceNull(data.months.month12) + '</td>' +
+                    '<td>' + replaceNull(data.ostatoc) + '</td>' +
+                    '<td>' + replaceNull(data.nameot) + '</td>' +
                     '<td>' + docum + '</td>' +
                     '<td>' +
-                    '<div><a name="' + item.id + '" id="updateItContract" href="#">Изменить</a></div>' +
-                    '<div><a name="' + item.id + '" id="deleteItContract" href="#">Удалить</a></div>' +
+                    '<div><a name="' + data.id + '" id="updateItContract" href="#">Изменить</a></div>' +
+                    '<div><a name="' + data.id + '" id="deleteItContract" href="#">Удалить</a></div>' +
                     '</td>' +
                     '</tr>';
             });

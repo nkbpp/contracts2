@@ -11,7 +11,6 @@ import ru.pfr.contracts2.config.audit.AuditorAwareImpl;
 
 @SpringBootApplication
 public class Contracts2Application {
-
     public static void main(String[] args) {
         SpringApplication.run(Contracts2Application.class, args);
     }

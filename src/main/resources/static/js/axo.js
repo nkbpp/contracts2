@@ -21,18 +21,18 @@ $(document).ready(function () {
                         $('textarea[name=kontragent]').val(data.kontragent);
                         $('input[name=dateGK]').val(data.dateGK);
                         $('input[name=sum]').val(data.sum.replace(',', '.'));
-                        $('input[name=month1]').val(data.month1);
-                        $('input[name=month2]').val(data.month2);
-                        $('input[name=month3]').val(data.month3);
-                        $('input[name=month4]').val(data.month4);
-                        $('input[name=month5]').val(data.month5);
-                        $('input[name=month6]').val(data.month6);
-                        $('input[name=month7]').val(data.month7);
-                        $('input[name=month8]').val(data.month8);
-                        $('input[name=month9]').val(data.month9);
-                        $('input[name=month10]').val(data.month10);
-                        $('input[name=month11]').val(data.month11);
-                        $('input[name=month12]').val(data.month12);
+                        $('input[name=month1]').val(data.months.month1);
+                        $('input[name=month2]').val(data.months.month2);
+                        $('input[name=month3]').val(data.months.month3);
+                        $('input[name=month4]').val(data.months.month4);
+                        $('input[name=month5]').val(data.months.month5);
+                        $('input[name=month6]').val(data.months.month6);
+                        $('input[name=month7]').val(data.months.month7);
+                        $('input[name=month8]').val(data.months.month8);
+                        $('input[name=month9]').val(data.months.month9);
+                        $('input[name=month10]').val(data.months.month10);
+                        $('input[name=month11]').val(data.months.month11);
+                        $('input[name=month12]').val(data.months.month12);
 
                         $('input[name=sumNaturalIndicators]').val(data.sumNaturalIndicators);
                         $('#range').val(data.naturalIndicators.length);
@@ -165,7 +165,20 @@ $(document).ready(function () {
                 }
                 ;
                 jsonData.naturalIndicators = ntArr;
-
+                jsonData.months = {
+                    month1: $('#month1').val(),
+                    month2: $('#month2').val(),
+                    month3: $('#month3').val(),
+                    month4: $('#month4').val(),
+                    month5: $('#month5').val(),
+                    month6: $('#month6').val(),
+                    month7: $('#month7').val(),
+                    month8: $('#month8').val(),
+                    month9: $('#month9').val(),
+                    month10: $('#month10').val(),
+                    month11: $('#month11').val(),
+                    month12: $('#month12').val(),
+                };
 
                 delete jsonData.dopDocuments;
 
@@ -189,21 +202,9 @@ $(document).ready(function () {
                     }
                 }
 
-                /*                let param = new FormData($('#formAxoContract')[0]);
-                                param.append('id', encodeURIComponent($('#addContractAxo').attr("data-id-contract")));
-                
-                                let ntinput = $('#nt').find('.col-3:not(.d-none) input');
-                                let strntinput = "";
-                                for (let i = 0; i < ntinput.length; i++) {
-                                    strntinput += (ntinput.eq(i).val() + (((i + 1) != ntinput.length) ? ';' : ''));
-                                }
-                                param.append('naturalIndicators', strntinput);*/
-
-
                 // Отправляем запрос
                 let token = $('#_csrf').attr('content');
                 let header = $('#_csrf_header').attr('content');
-                console.log(idContractAxo)
                 //ДОБАВЛЕНИЕ
                 if (idContractAxo === undefined) {
                     console.log("add")
@@ -232,8 +233,6 @@ $(document).ready(function () {
                         }
                     });
                 } else {
-                    console.log("update")
-                    console.log(jsonData)
                     $.ajax({
                         url: "/contract/axo",
                         data: formDataFile,
@@ -258,26 +257,6 @@ $(document).ready(function () {
                         }
                     });
                 }
-                /*$.post({
-                    url: "/contract/axo/upload",
-                    data: param,
-                    cache: false,
-                    processData: false, // Не обрабатываем файлы (Don't process the files)
-                    contentType: false, // Так jQuery скажет серверу что это строковой запрос
-                    beforeSend: function (xhr) {
-                        xhr.setRequestHeader(header, token);
-                    },
-                    success: function (data) {
-                        //после добавления показать таблицу
-                        $("#mainContainer").load("/contract/axo/vievTable", "", function () {
-                            ajaxContractAxoNoNatural("");
-                        });
-                        initialToats("Добавление прошло успешно", data, "success").show();
-                    },
-                    error: function (jqXHR, textStatus) {
-                        initialToats("Ошибка при добавлении!!!", jqXHR.responseText, "err").show();
-                    }
-                });*/
             }
             return false;
         }
@@ -397,39 +376,39 @@ function ajaxContractAxoNoNatural(params) {
             $('#tableContractAxo tbody').html("");
             let start = (+activeList("#paginationAxoContract") - 1) * $("#col").val();
             console.log("ststartr=" + start)
-            $.each(response, function (i, item) {
+            $.each(response, function (i, data) {
                 let docum = "";
-                for (let doc of item.documents) {
+                for (let doc of data.documents) {
                     docum +=
                         '<div><a class="btn btn-link" href="/contract/dop/download?id=' + doc.id + '">' + replaceNull(doc.nameFile) + '</a></div>';
                 }
 
                 trHTML +=
-                    '<tr class="' + (replaceNull(item.ostatoc) === "0.00" ? "table-success" : "") + '">' +
+                    '<tr class="' + (replaceNull(data.ostatoc) === "0.00" ? "table-success" : "") + '">' +
                     '<th>' + (start + +i + 1) + '</th>' +
-                    /*'<td>' + replaceNull(item.id) + '</td>' +*/
-                    '<td class="fix">' + replaceNull(item.nomGK) + '</td>' +
-                    '<td>' + replaceNull(item.kontragent) + '</td>' +
-                    '<td>' + replaceNull(item.dateGK) + '</td>' +
-                    '<td>' + replaceNull(item.sum) + '</td>' +
-                    '<td>' + replaceNull(item.month1) + '</td>' +
-                    '<td>' + replaceNull(item.month2) + '</td>' +
-                    '<td>' + replaceNull(item.month3) + '</td>' +
-                    '<td>' + replaceNull(item.month4) + '</td>' +
-                    '<td>' + replaceNull(item.month5) + '</td>' +
-                    '<td>' + replaceNull(item.month6) + '</td>' +
-                    '<td>' + replaceNull(item.month7) + '</td>' +
-                    '<td>' + replaceNull(item.month8) + '</td>' +
-                    '<td>' + replaceNull(item.month9) + '</td>' +
-                    '<td>' + replaceNull(item.month10) + '</td>' +
-                    '<td>' + replaceNull(item.month11) + '</td>' +
-                    '<td>' + replaceNull(item.month12) + '</td>' +
-                    '<td>' + replaceNull(item.ostatoc) + '</td>' +
-                    /*'<td>' + replaceNull(item.documentu) + '</td>' +*/
+                    /*'<td>' + replaceNull(data.id) + '</td>' +*/
+                    '<td class="fix">' + replaceNull(data.nomGK) + '</td>' +
+                    '<td>' + replaceNull(data.kontragent) + '</td>' +
+                    '<td>' + replaceNull(data.dateGK) + '</td>' +
+                    '<td>' + replaceNull(data.sum) + '</td>' +
+                    '<td>' + replaceNull(data.months.month1) + '</td>' +
+                    '<td>' + replaceNull(data.months.month2) + '</td>' +
+                    '<td>' + replaceNull(data.months.month3) + '</td>' +
+                    '<td>' + replaceNull(data.months.month4) + '</td>' +
+                    '<td>' + replaceNull(data.months.month5) + '</td>' +
+                    '<td>' + replaceNull(data.months.month6) + '</td>' +
+                    '<td>' + replaceNull(data.months.month7) + '</td>' +
+                    '<td>' + replaceNull(data.months.month8) + '</td>' +
+                    '<td>' + replaceNull(data.months.month9) + '</td>' +
+                    '<td>' + replaceNull(data.months.month10) + '</td>' +
+                    '<td>' + replaceNull(data.months.month11) + '</td>' +
+                    '<td>' + replaceNull(data.months.month12) + '</td>' +
+                    '<td>' + replaceNull(data.ostatoc) + '</td>' +
+                    /*'<td>' + replaceNull(data.documentu) + '</td>' +*/
                     '<td>' + docum + '</td>' +
                     '<td>' +
-                    '<div><a name="' + item.id + '" id="updateAxoContract" href="#">Изменить</a></div>' +
-                    '<div><a name="' + item.id + '" id="deleteAxoContract" href="#">Удалить</a></div>' +
+                    '<div><a name="' + data.id + '" id="updateAxoContract" href="#">Изменить</a></div>' +
+                    '<div><a name="' + data.id + '" id="deleteAxoContract" href="#">Удалить</a></div>' +
                     '</td>' +
                     '</tr>';
             });
@@ -502,34 +481,34 @@ function ajaxContractAxoNatural(params) {
             let trHTML = '';
             $('#tableContractAxo tbody').html("");
             let start = (+activeList("#paginationAxoContract") - 1) * $("#col").val();
-            $.each(response, function (i, item) {
+            $.each(response, function (i, data) {
 
                 trHTML +=
-                    '<tr class="' + (replaceNull(item.ostatoc) === "0.00" ? "table-success" : "") + '">' +
+                    '<tr class="' + (replaceNull(data.ostatoc) === "0.00" ? "table-success" : "") + '">' +
                     '<th>' + (start + +i + 1) + '</th>' +
-                    /*'<td>' + replaceNull(item.id) + '</td>' +*/
-                    '<td class="fix">' + replaceNull(item.nomGK) + '</td>' +
-                    '<td>' + replaceNull(item.kontragent) + '</td>' +
-                    '<td>' + replaceNull(item.dateGK) + '</td>' +
-                    '<td>' + replaceNull(item.sumNaturalIndicators) + '</td>' +
-                    '<td>' + (item.naturalIndicators[0] === null || item.naturalIndicators[0] === undefined ? '' : replaceNull(item.naturalIndicators[0].sum)) + '</td>' +
-                    '<td>' + (item.naturalIndicators[1] === null || item.naturalIndicators[1] === undefined ? '' : replaceNull(item.naturalIndicators[1].sum)) + '</td>' +
-                    '<td>' + (item.naturalIndicators[2] === null || item.naturalIndicators[2] === undefined ? '' : replaceNull(item.naturalIndicators[2].sum)) + '</td>' +
-                    '<td>' + (item.naturalIndicators[3] === null || item.naturalIndicators[3] === undefined ? '' : replaceNull(item.naturalIndicators[3].sum)) + '</td>' +
-                    '<td>' + (item.naturalIndicators[4] === null || item.naturalIndicators[4] === undefined ? '' : replaceNull(item.naturalIndicators[4].sum)) + '</td>' +
-                    '<td>' + (item.naturalIndicators[5] === null || item.naturalIndicators[5] === undefined ? '' : replaceNull(item.naturalIndicators[5].sum)) + '</td>' +
-                    '<td>' + (item.naturalIndicators[6] === null || item.naturalIndicators[6] === undefined ? '' : replaceNull(item.naturalIndicators[6].sum)) + '</td>' +
-                    '<td>' + (item.naturalIndicators[7] === null || item.naturalIndicators[7] === undefined ? '' : replaceNull(item.naturalIndicators[7].sum)) + '</td>' +
-                    '<td>' + (item.naturalIndicators[8] === null || item.naturalIndicators[8] === undefined ? '' : replaceNull(item.naturalIndicators[8].sum)) + '</td>' +
-                    '<td>' + (item.naturalIndicators[9] === null || item.naturalIndicators[9] === undefined ? '' : replaceNull(item.naturalIndicators[9].sum)) + '</td>' +
-                    '<td>' + (item.naturalIndicators[10] === null || item.naturalIndicators[10] === undefined ? '' : replaceNull(item.naturalIndicators[10].sum)) + '</td>' +
-                    '<td>' + (item.naturalIndicators[11] === null || item.naturalIndicators[11] === undefined ? '' : replaceNull(item.naturalIndicators[11].sum)) + '</td>' +
-                    '<td>' + replaceNull(item.ojidRashodMonth) + '</td>' +
-                    '<td>' + replaceNull(item.factRashodMonth) + '</td>' +
-                    '<td>' + replaceNull(item.ostatocNatural) + '</td>' +
+                    /*'<td>' + replaceNull(data.id) + '</td>' +*/
+                    '<td class="fix">' + replaceNull(data.nomGK) + '</td>' +
+                    '<td>' + replaceNull(data.kontragent) + '</td>' +
+                    '<td>' + replaceNull(data.dateGK) + '</td>' +
+                    '<td>' + replaceNull(data.sumNaturalIndicators) + '</td>' +
+                    '<td>' + (data.naturalIndicators[0] === null || data.naturalIndicators[0] === undefined ? '' : replaceNull(data.naturalIndicators[0].sum)) + '</td>' +
+                    '<td>' + (data.naturalIndicators[1] === null || data.naturalIndicators[1] === undefined ? '' : replaceNull(data.naturalIndicators[1].sum)) + '</td>' +
+                    '<td>' + (data.naturalIndicators[2] === null || data.naturalIndicators[2] === undefined ? '' : replaceNull(data.naturalIndicators[2].sum)) + '</td>' +
+                    '<td>' + (data.naturalIndicators[3] === null || data.naturalIndicators[3] === undefined ? '' : replaceNull(data.naturalIndicators[3].sum)) + '</td>' +
+                    '<td>' + (data.naturalIndicators[4] === null || data.naturalIndicators[4] === undefined ? '' : replaceNull(data.naturalIndicators[4].sum)) + '</td>' +
+                    '<td>' + (data.naturalIndicators[5] === null || data.naturalIndicators[5] === undefined ? '' : replaceNull(data.naturalIndicators[5].sum)) + '</td>' +
+                    '<td>' + (data.naturalIndicators[6] === null || data.naturalIndicators[6] === undefined ? '' : replaceNull(data.naturalIndicators[6].sum)) + '</td>' +
+                    '<td>' + (data.naturalIndicators[7] === null || data.naturalIndicators[7] === undefined ? '' : replaceNull(data.naturalIndicators[7].sum)) + '</td>' +
+                    '<td>' + (data.naturalIndicators[8] === null || data.naturalIndicators[8] === undefined ? '' : replaceNull(data.naturalIndicators[8].sum)) + '</td>' +
+                    '<td>' + (data.naturalIndicators[9] === null || data.naturalIndicators[9] === undefined ? '' : replaceNull(data.naturalIndicators[9].sum)) + '</td>' +
+                    '<td>' + (data.naturalIndicators[10] === null || data.naturalIndicators[10] === undefined ? '' : replaceNull(data.naturalIndicators[10].sum)) + '</td>' +
+                    '<td>' + (data.naturalIndicators[11] === null || data.naturalIndicators[11] === undefined ? '' : replaceNull(data.naturalIndicators[11].sum)) + '</td>' +
+                    '<td>' + replaceNull(data.ojidRashodMonth) + '</td>' +
+                    '<td>' + replaceNull(data.factRashodMonth) + '</td>' +
+                    '<td>' + replaceNull(data.ostatocNatural) + '</td>' +
                     '<td>' +
-                    '<div><a name="' + item.id + '" id="updateAxoContract" href="#">Изменить</a></div>' +
-                    '<div><a name="' + item.id + '" id="deleteAxoContract" href="#">Удалить</a></div>' +
+                    '<div><a name="' + data.id + '" id="updateAxoContract" href="#">Изменить</a></div>' +
+                    '<div><a name="' + data.id + '" id="deleteAxoContract" href="#">Удалить</a></div>' +
                     '</td>' +
                     '</tr>';
             });

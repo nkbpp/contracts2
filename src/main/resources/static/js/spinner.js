@@ -6,16 +6,28 @@ function getSpinner() {
         "</div>";
 }
 
-
 function getSpinnerTable(idTable) { // передать id таблицу
     let ths = "";
-    for (let i = 0; i < $('#' + idTable + ' thead tr th').length - 1; i++) {
+    for (let i = 0; i < $('#' + idTable + '').tableCellCount() - 1; i++) {
         ths += "<th></th>"
     }
     $('#' + idTable + ' tbody').html('<tr><th>' + getSpinner() + '</th>' + ths + '</tr>');//спинер
 }
 
+/*function getSpinnerTable(idTable) { // передать id таблицу
+    let ths = "";
+    for (let i = 0; i < $('#' + idTable + ' thead tr th').length - 1; i++) {
+        ths += "<th></th>"
+    }
+    $('#' + idTable + ' tbody').html('<tr><th>' + getSpinner() + '</th>' + ths + '</tr>');//спинер
+}*/
+
 function getSpinnerButton() {
     return '<span class="spinner-border spinner-border-sm mx-2" role="status" aria-hidden="true"></span>';
 }
 
+$.fn.tableCellCount = function () {
+    return $(this).find('tr:first td, tr:first th').get().reduce(function (a, b) {
+        return a + (b.colSpan ? parseInt(b.colSpan) : 1);
+    }, 0)
+}
