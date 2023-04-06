@@ -2,7 +2,7 @@ package ru.pfr.contracts2.service.contracts;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.pfr.contracts2.entity.contracts.entity.MyDocuments;
+import ru.pfr.contracts2.entity.contracts.parent.entity.MyDocuments;
 import ru.pfr.contracts2.repository.contracts.MyDocumentsRepository;
 
 import javax.transaction.Transactional;

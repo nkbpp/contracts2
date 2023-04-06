@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.pfr.contracts2.entity.contractOtdel.contractDop.dto.StatisticDto;
-import ru.pfr.contracts2.entity.contractOtdel.contractDop.dto.StatusGk;
-import ru.pfr.contracts2.entity.contractOtdel.contractIT.entity.ContractITSpecification;
-import ru.pfr.contracts2.entity.contracts.entity.Kontragent;
+import ru.pfr.contracts2.entity.contracts.parent.entity.Kontragent;
 import ru.pfr.contracts2.service.contracts.KontragentService;
 
 @RestController

@@ -11,16 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.pfr.contracts2.entity.contractOtdel.contractDop.dto.StatusGk;
 import ru.pfr.contracts2.entity.contractOtdel.contractIT.entity.ContractIT;
 import ru.pfr.contracts2.entity.contractOtdel.contractIT.entity.ContractITSpecification;
-import ru.pfr.contracts2.entity.contracts.entity.Contract;
-import ru.pfr.contracts2.entity.contracts.entity.ContractSpecification;
-import ru.pfr.contracts2.entity.contracts.entity.Notification;
-import ru.pfr.contracts2.entity.log.Logi;
 import ru.pfr.contracts2.repository.it.ContractItRepository;
 import ru.pfr.contracts2.service.mail.MailSender;
 import ru.pfr.contracts2.service.zir.ZirServise;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 

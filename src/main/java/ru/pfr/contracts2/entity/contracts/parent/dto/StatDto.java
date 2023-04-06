@@ -1,4 +1,4 @@
-package ru.pfr.contracts2.entity.contracts.dto;
+package ru.pfr.contracts2.entity.contracts.parent.dto;
 
 public record StatDto(
         Integer size,

@@ -2,7 +2,7 @@ package ru.pfr.contracts2.repository.contracts;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import ru.pfr.contracts2.entity.contracts.entity.Kontragent;
+import ru.pfr.contracts2.entity.contracts.parent.entity.Kontragent;
 
 import java.util.List;
 import java.util.Optional;

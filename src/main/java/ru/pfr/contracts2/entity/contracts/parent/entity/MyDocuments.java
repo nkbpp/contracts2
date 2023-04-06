@@ -1,4 +1,4 @@
-package ru.pfr.contracts2.entity.contracts.entity;
+package ru.pfr.contracts2.entity.contracts.parent.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -14,28 +14,27 @@ import javax.persistence.*;
 @AllArgsConstructor // конструктора включающего все возможные поля
 @Entity
 @Builder
-//@Table(name = "notification")
-public class Notification { //уведомление
+public class MyDocuments {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private Long id_user; //id в зире
-
-    private String name; //id в зире
-
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "dokument", columnDefinition = "LONGBLOB", nullable = true)
+    private byte[] dokument;
+    @Column(name = "namefile", nullable = true/*, length = 400*/)
+    private String nameFile;
     @ManyToOne(fetch = FetchType.LAZY)
-    //@Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "contract_id")
-    private Contract contract;
+    private ContractParent contract;
 
-    @JsonIgnore
-    public Contract getContract() {
-        return contract;
+    public MyDocuments(byte[] dokument, String nameFile) {
+        this.dokument = dokument;
+        this.nameFile = nameFile;
     }
 
-    public Notification(Long id_user, String name) {
-        this.id_user = id_user;
-        this.name = name;
+    @JsonIgnore
+    public ContractParent getContract() {
+        return contract;
     }
 }

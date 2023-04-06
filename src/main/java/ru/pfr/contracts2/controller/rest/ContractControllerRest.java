@@ -7,22 +7,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.pfr.contracts2.aop.log.valid.ValidError;
-import ru.pfr.contracts2.entity.contracts.dto.ContractDto;
-import ru.pfr.contracts2.entity.contracts.dto.StatDto;
-import ru.pfr.contracts2.entity.contracts.entity.Contract;
-import ru.pfr.contracts2.entity.contracts.entity.Contract_;
-import ru.pfr.contracts2.entity.contracts.entity.ContractSpecification;
-import ru.pfr.contracts2.entity.contracts.entity.MyDocuments;
-import ru.pfr.contracts2.entity.contracts.entity.Notification;
-import ru.pfr.contracts2.entity.contracts.mapper.ContractMapper;
-import ru.pfr.contracts2.entity.contracts.mapper.MyDocumentsMapper;
+import ru.pfr.contracts2.entity.contracts.contractDK.dto.ContractDkDto;
+import ru.pfr.contracts2.entity.contracts.contractDK.entity.ContractDk;
+import ru.pfr.contracts2.entity.contracts.contractDK.entity.ContractDkSpecification;
+import ru.pfr.contracts2.entity.contracts.contractDK.entity.ContractDk_;
+import ru.pfr.contracts2.entity.contracts.contractDK.mapper.ContractDkMapper;
+import ru.pfr.contracts2.entity.contracts.parent.dto.StatDto;
+import ru.pfr.contracts2.entity.contracts.parent.entity.MyDocuments;
+import ru.pfr.contracts2.entity.contracts.parent.entity.Notification;
+import ru.pfr.contracts2.entity.contracts.parent.mapper.MyDocumentsMapper;
 import ru.pfr.contracts2.entity.user.User;
-import ru.pfr.contracts2.service.contracts.ContractService;
+import ru.pfr.contracts2.service.contracts.ContractDkService;
 import ru.pfr.contracts2.service.zir.ZirServise;
 
 import javax.validation.Valid;
@@ -36,8 +35,8 @@ import java.util.Objects;
 public class ContractControllerRest {
 
     private final MyDocumentsMapper myDocumentsMapper;
-    private final ContractMapper contractMapper;
-    private final ContractService contractService;
+    private final ContractDkMapper contractDkMapper;
+    private final ContractDkService contractDkService;
     private final ZirServise zirServise;
 
     /**
@@ -52,17 +51,12 @@ public class ContractControllerRest {
     )
     public ResponseEntity<?> add(
             @RequestPart("file") List<MultipartFile> documents,
-            @Valid @RequestPart("contract") ContractDto contractDto,
+            @Valid @RequestPart("contract") ContractDkDto contractDto,
             @AuthenticationPrincipal User user,
             Errors errors
     ) {
-
-/*        if (errors.hasErrors()) {
-            return ResponseEntity.badRequest().body("Ошибка!");
-        }*/
-
         try {
-            Contract cont = contractMapper.fromDto(contractDto);
+            ContractDk cont = contractDkMapper.fromDto(contractDto);
 
             //проход по документам
             List<MyDocuments> listDocuments = documents
@@ -71,7 +65,7 @@ public class ContractControllerRest {
                     .filter(Objects::nonNull)
                     .toList();
 
-            Contract newContract = new Contract(
+            ContractDk newContract = new ContractDk(
                     null,
                     cont.getReceipt_date(), cont.getPlat_post(),
                     cont.getKontragent(),
@@ -89,7 +83,7 @@ public class ContractControllerRest {
                     user
             );
 
-            contractService.save(newContract);
+            contractDkService.save(newContract);
             return ResponseEntity.ok("Данные добавлены!");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Ошибка!");
@@ -108,16 +102,12 @@ public class ContractControllerRest {
     )
     public ResponseEntity<?> upload(
             @RequestPart("file") List<MultipartFile> documents,
-            @Valid @RequestPart("contract") ContractDto contractDto,
+            @Valid @RequestPart("contract") ContractDkDto contractDto,
             Errors errors
     ) {
 
-/*        if (errors.hasErrors()) {
-            return ResponseEntity.badRequest().body("Ошибка!");
-        }*/
-
         try {
-            Contract cont = contractMapper.fromDto(contractDto);
+            ContractDk cont = contractDkMapper.fromDto(contractDto);
 
             //проход по документам
             List<MyDocuments> listDocuments = documents
@@ -126,7 +116,7 @@ public class ContractControllerRest {
                     .filter(Objects::nonNull)
                     .toList();
 
-            Contract newContract = contractService.findById(cont.getId());
+            ContractDk newContract = contractDkService.findById(cont.getId());
             newContract.setPlat_post(cont.getPlat_post());
             newContract.setReceipt_date(cont.getReceipt_date());
             newContract.setKontragent(cont.getKontragent());
@@ -147,7 +137,7 @@ public class ContractControllerRest {
 
             newContract.setAllDocuments(listDocuments);
 
-            contractService.save(newContract);
+            contractDkService.save(newContract);
             return ResponseEntity.ok("Данные обновлены!");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Ошибка при изменении!");
@@ -162,7 +152,7 @@ public class ContractControllerRest {
             @PathVariable("id") Long id
     ) {
         try {
-            contractService.delete(id);
+            contractDkService.delete(id);
             return ResponseEntity.ok("Контракт с ID = " + id + " успешно удален!");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Ошибка!");
@@ -177,8 +167,8 @@ public class ContractControllerRest {
             @PathVariable("id") Long id
     ) {
         try {
-            Contract contract = contractService.findById(id);
-            return new ResponseEntity<>(contractMapper.toDto(contract), HttpStatus.OK);
+            ContractDk contract = contractDkService.findById(id);
+            return new ResponseEntity<>(contractDkMapper.toDto(contract), HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Ошибка!");
         }
@@ -192,9 +182,9 @@ public class ContractControllerRest {
             @PathVariable("id") Long id
     ) {
         try {
-            Contract contract = contractService.findById(id);
+            ContractDk contract = contractDkService.findById(id);
             contract.setIspolneno(!contract.getIspolneno());
-            contractService.save(contract);
+            contractDkService.save(contract);
             return ResponseEntity.ok("Отметка добавлена!");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Ошибка при изменении отметки об исполнении ID = " + id + "!");
@@ -237,7 +227,7 @@ public class ContractControllerRest {
     @PostMapping("/viewBadge")
     public ResponseEntity<?> viewBadge() {
         try {
-            return ResponseEntity.ok(contractService.getColNotispolnenosrok());
+            return ResponseEntity.ok(contractDkService.getColNotispolnenosrok());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Ошибка!");
         }
@@ -256,21 +246,21 @@ public class ContractControllerRest {
             @RequestParam(defaultValue = "true") Boolean poleFindByNotIspolneno
     ) {
         try {
-            List<Contract> contracts = contractService.findAll(
-                    ContractSpecification.filterContract(
+            List<ContractDk> contracts = contractDkService.findAll(
+                    ContractDkSpecification.filterContract(
                             poleFindByNomGK, poleFindByINN,
                             poleFindByIspolneno, poleFindByNotIspolneno
                     ),
                     PageRequest.of(
                             page == 0 ? 0 : page - 1,
-                            ContractService.SIZE,
-                            Sort.by(Contract_.ID).descending()
+                            ContractDkService.SIZE,
+                            Sort.by(ContractDk_.ID).descending()
                     )
             );
 
             return new ResponseEntity<>(
                     contracts.stream()
-                            .map(contractMapper::toDto)
+                            .map(contractDkMapper::toDto)
                             .toList(),
                     HttpStatus.OK
             );
@@ -286,9 +276,9 @@ public class ContractControllerRest {
     public ResponseEntity<?> statProsrocheno() {
         try {
             return new ResponseEntity<>(
-                    contractService.getProsrocheno()
+                    contractDkService.getProsrocheno()
                             .stream()
-                            .map(contractMapper::toDto)
+                            .map(contractDkMapper::toDto)
                             .toList(),
                     HttpStatus.OK
             );
@@ -304,9 +294,9 @@ public class ContractControllerRest {
     public ResponseEntity<?> statNodate() {
         try {
             return new ResponseEntity<>(
-                    contractService.getNodate()
+                    contractDkService.getNodate()
                             .stream()
-                            .map(contractMapper::toDto)
+                            .map(contractDkMapper::toDto)
                             .toList(),
                     HttpStatus.OK);
         } catch (Exception e) {
@@ -321,9 +311,9 @@ public class ContractControllerRest {
     public ResponseEntity<?> statNotIspolnenoSrok() {
         try {
             return new ResponseEntity<>(
-                    contractService.getNotispolnenosrok()
+                    contractDkService.getNotispolnenosrok()
                             .stream()
-                            .map(contractMapper::toDto)
+                            .map(contractDkMapper::toDto)
                             .toList(),
                     HttpStatus.OK
             );
@@ -340,12 +330,12 @@ public class ContractControllerRest {
         try {
             return new ResponseEntity<>(
                     new StatDto(
-                            contractService.getColSize(),
-                            contractService.getColIspolneno(),
-                            contractService.getColNotispolneno(),
-                            contractService.getColNotispolnenosrok(),
-                            contractService.getColNodate(),
-                            contractService.getColProsrocheno()
+                            contractDkService.getColSize(),
+                            contractDkService.getColIspolneno(),
+                            contractDkService.getColNotispolneno(),
+                            contractDkService.getColNotispolnenosrok(),
+                            contractDkService.getColNodate(),
+                            contractDkService.getColProsrocheno()
                     ),
                     HttpStatus.OK
             );

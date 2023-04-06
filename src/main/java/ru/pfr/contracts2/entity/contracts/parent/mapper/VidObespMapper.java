@@ -1,9 +1,9 @@
-package ru.pfr.contracts2.entity.contracts.mapper;
+package ru.pfr.contracts2.entity.contracts.parent.mapper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.pfr.contracts2.entity.contracts.dto.VidObespDto;
-import ru.pfr.contracts2.entity.contracts.entity.VidObesp;
+import ru.pfr.contracts2.entity.contracts.parent.dto.VidObespDto;
+import ru.pfr.contracts2.entity.contracts.parent.entity.VidObesp;
 
 @Component
 @RequiredArgsConstructor

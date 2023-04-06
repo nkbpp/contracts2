@@ -1,4 +1,4 @@
-package ru.pfr.contracts2.entity.contracts.dto;
+package ru.pfr.contracts2.entity.contracts.parent.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,9 +10,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class MyDocumentsDto {
+public class NotificationDto { //уведомление
 
     private Long id;
-    private String nameFile;
+    private Long id_user; //id в зире
+    private String name; //id в зире
 
 }

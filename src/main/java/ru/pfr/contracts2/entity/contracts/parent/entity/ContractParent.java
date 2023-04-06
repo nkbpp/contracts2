@@ -1,9 +1,9 @@
-package ru.pfr.contracts2.entity.contracts.entity;
+package ru.pfr.contracts2.entity.contracts.parent.entity;
 
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Type;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import ru.pfr.contracts2.entity.AuditEntity;
 import ru.pfr.contracts2.entity.user.User;
 import ru.pfr.contracts2.global.MyNumbers;
@@ -15,15 +15,16 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
-//@Data
-// 	генерация всех служебных методов, заменяет сразу команды @ToString, @EqualsAndHashCode, Getter, Setter, @RequiredArgsConstructor
-@Setter
 @Getter
+@Setter
+@SuperBuilder
 @NoArgsConstructor // создания пустого конструктора
-@AllArgsConstructor // конструктора включающего все возможные поля
 @Entity
-@EntityListeners(AuditingEntityListener.class)
-public class Contract extends AuditEntity {
+@Table(name = "contract")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "role",
+        discriminatorType = DiscriminatorType.STRING)
+public class ContractParent extends AuditEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,8 +35,6 @@ public class Contract extends AuditEntity {
 
     @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     private Kontragent kontragent;
-
-    //private String name_koltr; //наименование контрагента ???
 
     private String nomGK; //номер ГК
 
@@ -55,6 +54,7 @@ public class Contract extends AuditEntity {
 
     private LocalDateTime raschet_date; //Расчетная дата (дата исполнения ГК + кол дней по условиям возврата + 1 день)
 
+    @Builder.Default
     //@OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     @OneToMany(mappedBy = "contract", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Notification> notifications = new ArrayList<>();//кого оповестить
@@ -65,6 +65,7 @@ public class Contract extends AuditEntity {
 
     private LocalDateTime dateZajavkiNaVozvrat; //Номер заявки на возврат
 
+    @Builder.Default
     //@OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     @OneToMany(mappedBy = "contract", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MyDocuments> myDocuments = new ArrayList<>();
@@ -76,13 +77,16 @@ public class Contract extends AuditEntity {
         return MyNumbers.okrug(sum);
     }
 
-    @Builder
-    public Contract(Long id, LocalDateTime receipt_date, String plat_post,
-                    Kontragent kontragent, String nomGK,
-                    LocalDateTime dateGK, String predmet_contract, VidObesp vidObesp, Double sum,
-                    LocalDateTime date_ispolnenija_GK, Integer col_days, List<Notification> notifications,
-                    Boolean ispolneno, List<MyDocuments> myDocuments, String nomerZajavkiNaVozvrat,
-                    LocalDateTime dateZajavkiNaVozvrat, User user) {
+    @Column(insertable = false, updatable = false)
+    private String role;
+
+
+    public ContractParent(Long id, LocalDateTime receipt_date, String plat_post,
+                          Kontragent kontragent, String nomGK,
+                          LocalDateTime dateGK, String predmet_contract, VidObesp vidObesp, Double sum,
+                          LocalDateTime date_ispolnenija_GK, Integer col_days, List<Notification> notifications,
+                          Boolean ispolneno, List<MyDocuments> myDocuments, String nomerZajavkiNaVozvrat,
+                          LocalDateTime dateZajavkiNaVozvrat, User user) {
         this.id = id;
         this.receipt_date = receipt_date;
         this.plat_post = plat_post;
@@ -99,9 +103,11 @@ public class Contract extends AuditEntity {
         this.ispolneno = ispolneno;
         this.nomerZajavkiNaVozvrat = nomerZajavkiNaVozvrat;
         this.dateZajavkiNaVozvrat = dateZajavkiNaVozvrat;
+        this.notifications = notifications;
+        this.myDocuments = myDocuments;
 
-        setAllNotification(notifications);
-        setAllDocuments(myDocuments);
+        /*setAllNotification(notifications);
+        setAllDocuments(myDocuments);*/
         this.user = user;
     }
 
@@ -111,10 +117,6 @@ public class Contract extends AuditEntity {
     }
 
     public void setAllDocuments(List<MyDocuments> myDocs) {
-        //вроде это не требуется
-/*        while (myDocuments.size()>0){
-            removeDocuments(myDocuments.get(0));
-        }*/
         if (myDocs != null) {
             for (MyDocuments d :
                     myDocs) {
@@ -122,11 +124,6 @@ public class Contract extends AuditEntity {
             }
         }
     }
-
-/*    public void removeDocuments(MyDocuments myDoc) {
-        this.myDocuments.remove(myDoc);
-        myDoc.setContract(null);
-    }*/
 
     public void addNotification(Notification notif) {
         this.notifications.add(notif);
@@ -136,7 +133,6 @@ public class Contract extends AuditEntity {
     public void setAllNotification(List<Notification> notif) {
         while (notifications.size() > 0) {
             removeNotification(notifications.get(0));
-            //notifications.clear();
         }
         for (Notification n :
                 notif) {
@@ -172,6 +168,5 @@ public class Contract extends AuditEntity {
     public long getProcent() { //дней всего
         return 100 * (getDayVsego() - getDaysOst()) / getDayVsego();
     }
-
 
 }

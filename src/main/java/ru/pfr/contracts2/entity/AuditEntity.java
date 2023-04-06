@@ -1,5 +1,8 @@
 package ru.pfr.contracts2.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -10,6 +13,9 @@ import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
 
 @MappedSuperclass
+@NoArgsConstructor
+@AllArgsConstructor
+@SuperBuilder
 public abstract class AuditEntity {
 
     @LastModifiedDate

@@ -1,10 +1,11 @@
-package ru.pfr.contracts2.entity.contracts.mapper;
+package ru.pfr.contracts2.entity.contracts.parent.mapper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.pfr.contracts2.entity.contracts.dto.ContractDto;
-import ru.pfr.contracts2.entity.contracts.entity.Contract;
-import ru.pfr.contracts2.entity.contracts.entity.Notification;
+
+import ru.pfr.contracts2.entity.contracts.parent.dto.ContractParentDto;
+import ru.pfr.contracts2.entity.contracts.parent.entity.ContractParent;
+import ru.pfr.contracts2.entity.contracts.parent.entity.Notification;
 import ru.pfr.contracts2.entity.user.UserMapper;
 import ru.pfr.contracts2.service.contracts.KontragentService;
 import ru.pfr.contracts2.service.contracts.VidObespService;
@@ -15,9 +16,10 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Component
 @RequiredArgsConstructor
-public class ContractMapper {
+public class ContractParentMapper {
 
     private final KontragentMapper kontragentMapper;
     private final KontragentService kontragentService;
@@ -29,8 +31,8 @@ public class ContractMapper {
 
     private final ZirServise zirServise;
 
-    public ContractDto toDto(Contract obj) {
-        return ContractDto.builder()
+    public ContractParentDto toDto(ContractParent obj) {
+        return ContractParentDto.builder()
                 .id(obj.getId())
                 .receipt_date(
                         obj.getReceipt_date() == null ? null :
@@ -80,7 +82,7 @@ public class ContractMapper {
                 .build();
     }
 
-    public Contract fromDto(ContractDto dto) {
+    public ContractParent fromDto(ContractParentDto dto) {
 
         List<Notification> notifications = new ArrayList<>();
         for (var n :
@@ -96,7 +98,7 @@ public class ContractMapper {
             );
         }
 
-        return Contract.builder()
+        return ContractParent.builder()
                 .id(dto.getId())
                 .receipt_date(
                         dto.getReceipt_date() == null ? null :

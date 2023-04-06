@@ -1,9 +1,9 @@
-package ru.pfr.contracts2.entity.contracts.mapper;
+package ru.pfr.contracts2.entity.contracts.parent.mapper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.pfr.contracts2.entity.contracts.dto.NotificationDto;
-import ru.pfr.contracts2.entity.contracts.entity.Notification;
+import ru.pfr.contracts2.entity.contracts.parent.dto.NotificationDto;
+import ru.pfr.contracts2.entity.contracts.parent.entity.Notification;
 
 @Component
 @RequiredArgsConstructor

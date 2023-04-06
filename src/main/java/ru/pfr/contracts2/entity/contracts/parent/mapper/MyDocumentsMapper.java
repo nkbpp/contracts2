@@ -1,10 +1,10 @@
-package ru.pfr.contracts2.entity.contracts.mapper;
+package ru.pfr.contracts2.entity.contracts.parent.mapper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import ru.pfr.contracts2.entity.contracts.dto.MyDocumentsDto;
-import ru.pfr.contracts2.entity.contracts.entity.MyDocuments;
+import ru.pfr.contracts2.entity.contracts.parent.dto.MyDocumentsDto;
+import ru.pfr.contracts2.entity.contracts.parent.entity.MyDocuments;
 
 @Component
 @RequiredArgsConstructor

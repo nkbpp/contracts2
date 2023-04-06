@@ -4,13 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import ru.pfr.contracts2.entity.contracts.entity.Kontragent;
 import ru.pfr.contracts2.service.contracts.KontragentService;
-
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -18,11 +14,6 @@ import java.util.List;
 public class KontragentController {
 
     private final KontragentService kontragentService;
-
-/*    @ModelAttribute(name = "kontragents")
-    public List<Kontragent> kontragents() {
-        return kontragentService.findAll();
-    }*/
 
     @GetMapping("/kontragentViev")
     public String kontragentViev() {

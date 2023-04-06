@@ -14,8 +14,6 @@ import java.util.List;
 
 @Getter
 @Setter
-// 	генерация всех служебных методов, заменяет сразу команды @ToString, @EqualsAndHashCode, Getter, Setter, @RequiredArgsConstructor
-
 @Entity
 @Table(name = "contractit")
 @NoArgsConstructor // создания пустого конструктора

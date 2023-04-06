@@ -7,7 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ru.pfr.contracts2.entity.contracts.entity.Notification;
+import ru.pfr.contracts2.entity.contracts.parent.entity.Notification;
 import ru.pfr.contracts2.service.zir.ZirServise;
 
 import java.util.List;

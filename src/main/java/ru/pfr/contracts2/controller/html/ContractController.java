@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import ru.pfr.contracts2.entity.contracts.entity.Kontragent;
-import ru.pfr.contracts2.entity.contracts.entity.VidObesp;
+import ru.pfr.contracts2.entity.contracts.parent.entity.Kontragent;
+import ru.pfr.contracts2.entity.contracts.parent.entity.VidObesp;
 import ru.pfr.contracts2.entity.user.User;
-import ru.pfr.contracts2.service.contracts.ContractService;
+import ru.pfr.contracts2.service.contracts.ContractDkService;
 import ru.pfr.contracts2.service.contracts.KontragentService;
 import ru.pfr.contracts2.service.contracts.VidObespService;
 import ru.pfr.contracts2.service.zir.ZirServise;
@@ -24,7 +24,7 @@ import java.util.List;
 @RequestMapping(value = {"/contract/main"})
 public class ContractController {
 
-    private final ContractService contractService;
+    private final ContractDkService contractDkService;
     private final VidObespService vidObespService;
     private final KontragentService kontragentService;
     private final ZirServise zirServise;
@@ -71,7 +71,7 @@ public class ContractController {
     public String updateViev(
             @RequestParam Long id,
             Model model) {
-        model.addAttribute("contract", contractService.findById(id));
+        model.addAttribute("contract", contractDkService.findById(id));
 
         return "fragment/contractAdd :: contractAdd";
     }
@@ -89,37 +89,14 @@ public class ContractController {
         model.addAttribute("users", users);
         return "fragment/contractAdd :: notifications";
     }
-
-
+    
     @GetMapping("/getProgress")
     public String getProgress(
             @RequestParam Long id,
             Model model) {
 
-        model.addAttribute("c", contractService.findById(id));
+        model.addAttribute("c", contractDkService.findById(id));
 
         return "fragment/table :: progress";
     }
-
-/*    @GetMapping("/stat")
-    public String stat(
-            Model model) {
-
-        model.addAttribute("size",
-                contractService.getColSize());
-        model.addAttribute("ispolneno",
-                contractService.getColIspolneno());
-        model.addAttribute("notispolneno",
-                contractService.getColNotispolneno());
-        model.addAttribute("notispolnenosrok",
-                contractService.getColNotispolnenosrok());
-        model.addAttribute("nodate",
-                contractService.getColNodate());
-        model.addAttribute("prosrocheno",
-                contractService.getColProsrocheno());
-
-        return "fragment/stat :: stat";
-    }*/
-
-
 }

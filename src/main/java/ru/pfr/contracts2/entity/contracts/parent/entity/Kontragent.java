@@ -1,4 +1,4 @@
-package ru.pfr.contracts2.entity.contracts.entity;
+package ru.pfr.contracts2.entity.contracts.parent.entity;
 
 import lombok.Builder;
 import lombok.Data;

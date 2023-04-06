@@ -10,12 +10,12 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.pfr.contracts2.entity.contracts.entity.Contract;
-import ru.pfr.contracts2.entity.contracts.entity.ContractSpecification;
+import ru.pfr.contracts2.entity.contracts.contractDK.entity.ContractDk;
+import ru.pfr.contracts2.entity.contracts.contractDK.entity.ContractDkSpecification;
 import ru.pfr.contracts2.entity.contracts.entity.Contract_;
-import ru.pfr.contracts2.entity.contracts.entity.Notification;
+import ru.pfr.contracts2.entity.contracts.parent.entity.Notification;
 import ru.pfr.contracts2.entity.log.Logi;
-import ru.pfr.contracts2.repository.contracts.ContractRepository;
+import ru.pfr.contracts2.repository.contracts.ContractDkRepository;
 import ru.pfr.contracts2.service.log.LogiService;
 import ru.pfr.contracts2.service.mail.MailSender;
 import ru.pfr.contracts2.service.zir.ZirServise;
@@ -29,68 +29,68 @@ import java.util.List;
 @EnableAsync
 //@EnableScheduling
 @Transactional
-public class ContractService {
+public class ContractDkService {
 
     private final MailSender mailSender;
     private final ZirServise zirServise;
-    final ContractRepository contractRepository;
+    final ContractDkRepository contractDkRepository;
     private final LogiService logiService;
     public static final int SIZE = 30;
 
-    public Contract findById(Long id) {
-        return contractRepository.findById(id).orElse(null);
+    public ContractDk findById(Long id) {
+        return contractDkRepository.findById(id).orElse(null);
     }
 
-    public List<Contract> findAll() {
-        return contractRepository.findAllByOrderByIdDesc();
+    public List<ContractDk> findAll() {
+        return contractDkRepository.findAllByOrderByIdDesc();
     }
 
-    public List<Contract> findAll(int page) {
+    public List<ContractDk> findAll(int page) {
 
         //для обрезки
         PageRequest pageRequest = PageRequest.of(page, SIZE, Sort.by(Contract_.ID).descending());
-        return contractRepository.findAll(pageRequest).getContent();
+        return contractDkRepository.findAll(pageRequest).getContent();
 
     }
 
-    public List<Contract> findAll(Specification<Contract> specification) {
-        return contractRepository.findAll(specification);
+    public List<ContractDk> findAll(Specification<ContractDk> specification) {
+        return contractDkRepository.findAll(specification);
     }
 
-    public List<Contract> findAll(Specification<Contract> specification, Pageable pageable) {
-        return contractRepository.findAll(specification, pageable).getContent();
+    public List<ContractDk> findAll(Specification<ContractDk> specification, Pageable pageable) {
+        return contractDkRepository.findAll(specification, pageable).getContent();
     }
 
-    public void save(Contract contract) {
+    public void save(ContractDk contract) {
         //рассчитываем расчетную дату
         LocalDateTime date = contract.getDate_ispolnenija_GK();
         if (date != null) {
             contract.setRaschet_date(date.plusDays(2));
         }
-        contractRepository.save(contract);
+        contractDkRepository.save(contract);
     }
 
     public void delete(Long id) {
-        contractRepository.deleteById(id);
+        contractDkRepository.deleteById(id);
     }
 
     public int getColSize() {
-        List<Contract> contracts = findAll();
+        List<ContractDk> contracts = findAll();
         return contracts.size();
     }
 
     public int getColIspolneno() {
-        List<Contract> contracts = findAll(ContractSpecification.ispolnenoIs(true));
+        List<ContractDk> contracts = findAll(ContractDkSpecification.ispolnenoIs(true));
         return contracts.size();
     }
 
     public int getColNotispolneno() {
-        List<Contract> contracts = findAll(ContractSpecification.ispolnenoIs(false));
+        List<ContractDk> contracts = findAll(ContractDkSpecification.ispolnenoIs(false));
         return contracts.size();
     }
 
-    public List<Contract> getNotispolnenosrok() {
-        return findAll(ContractSpecification.ispolnenoIs(false))
+    public List<ContractDk> getNotispolnenosrok() {
+        return findAll(ContractDkSpecification.ispolnenoIs(false))
                 .stream()
                 .filter(contract ->
                         contract.getDaysOst() <= 4 &&
@@ -103,8 +103,8 @@ public class ContractService {
         return getNotispolnenosrok().size();
     }
 
-    public List<Contract> getNodate() {
-        return findAll(ContractSpecification.ispolnenoIs(false))
+    public List<ContractDk> getNodate() {
+        return findAll(ContractDkSpecification.ispolnenoIs(false))
                 .stream()
                 .filter(contract ->
                         contract.getDaysOst() < 0 &&
@@ -116,8 +116,8 @@ public class ContractService {
         return getNodate().size();
     }
 
-    public List<Contract> getProsrocheno() {
-        return findAll(ContractSpecification.ispolnenoIs(false))
+    public List<ContractDk> getProsrocheno() {
+        return findAll(ContractDkSpecification.ispolnenoIs(false))
                 .stream()
                 .filter(contract ->
                         contract.getDaysOst() < 0 &&
@@ -135,8 +135,8 @@ public class ContractService {
     @Async
     @Transactional
     public void sendEmails() {
-        List<Contract> contracts = this.findAll(
-                ContractSpecification.ispolnenoEquals(false)
+        List<ContractDk> contracts = this.findAll(
+                ContractDkSpecification.ispolnenoEquals(false)
         );
 
         contracts.forEach(contract -> {

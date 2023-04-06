@@ -12,7 +12,7 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
-import ru.pfr.contracts2.entity.contracts.entity.Notification;
+import ru.pfr.contracts2.entity.contracts.parent.entity.Notification;
 import ru.pfr.contracts2.entity.user.User;
 
 import java.io.IOException;

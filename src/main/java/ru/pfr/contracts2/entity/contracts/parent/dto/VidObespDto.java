@@ -1,4 +1,4 @@
-package ru.pfr.contracts2.entity.contracts.dto;
+package ru.pfr.contracts2.entity.contracts.parent.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,11 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class KontragentDto {
+public class VidObespDto {
 
     private Long id;
     private String name;
-    private String inn;
-    private String nameInn;
 
 }

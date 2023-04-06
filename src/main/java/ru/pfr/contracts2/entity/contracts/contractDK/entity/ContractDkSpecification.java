@@ -1,25 +1,25 @@
-package ru.pfr.contracts2.entity.contracts.entity;
+package ru.pfr.contracts2.entity.contracts.contractDK.entity;
 
 
 import org.springframework.data.jpa.domain.Specification;
+import ru.pfr.contracts2.entity.contracts.parent.entity.Kontragent;
+import ru.pfr.contracts2.entity.contracts.parent.entity.Kontragent_;
 
 import javax.persistence.criteria.Join;
-import java.time.LocalDate;
 
-public class ContractSpecification {
+public class ContractDkSpecification {
 
-
-    public static Specification<Contract> ispolnenoIs(Boolean b) {
+    public static Specification<ContractDk> ispolnenoIs(Boolean b) {
         return (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get(Contract_.ISPOLNENO), b);
+                criteriaBuilder.equal(root.get(ContractDk_.ISPOLNENO), b);
     }
 
-    public static Specification<Contract> ispolnenoEquals(Boolean ispolneno) {
+    public static Specification<ContractDk> ispolnenoEquals(Boolean ispolneno) {
         return (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get(Contract_.ISPOLNENO), ispolneno);
+                criteriaBuilder.equal(root.get(ContractDk_.ISPOLNENO), ispolneno);
     }
 
-    public static Specification<Contract> ispolnenoFilter(Boolean poleFindByIspolneno, Boolean poleFindByNotIspolneno) {
+    public static Specification<ContractDk> ispolnenoFilter(Boolean poleFindByIspolneno, Boolean poleFindByNotIspolneno) {
         if (poleFindByIspolneno && poleFindByNotIspolneno) {
             return (root, query, criteriaBuilder) ->
                     criteriaBuilder.isTrue(criteriaBuilder.literal(true)); //всегда истинно criteriaBuilder.and()
@@ -34,7 +34,7 @@ public class ContractSpecification {
                 criteriaBuilder.isTrue(criteriaBuilder.literal(false));
     }
 
-    public static Specification<Contract> nomGKFilter(String nomGK) {
+    public static Specification<ContractDk> nomGKFilter(String nomGK) {
         if (nomGK == null || nomGK.equals("")) {
             return (root, query, criteriaBuilder) ->
                     criteriaBuilder.isTrue(criteriaBuilder.literal(true)); //всегда истинно criteriaBuilder.and()
@@ -43,21 +43,21 @@ public class ContractSpecification {
         return nomGKLike(nomGK);
     }
 
-    public static Specification<Contract> nomGKLike(String nomGK) {
+    public static Specification<ContractDk> nomGKLike(String nomGK) {
         return (root, query, criteriaBuilder) ->
-                criteriaBuilder.like(root.get(Contract_.NOM_GK), "%" + nomGK + "%");
+                criteriaBuilder.like(root.get(ContractDk_.NOM_GK), "%" + nomGK + "%");
     }
 
 
-    public static Specification<Contract> innLike(String inn) {
+    public static Specification<ContractDk> innLike(String inn) {
         return (root, query, criteriaBuilder) -> {
-            Join<Contract, Kontragent> groupJoin = root.join(Contract_.kontragent);
+            Join<ContractDk, Kontragent> groupJoin = root.join(ContractDk_.kontragent);
             return criteriaBuilder.like(criteriaBuilder.lower(groupJoin.get(Kontragent_.INN)), "%" + inn + "%");
         };
 
     }
 
-    public static Specification<Contract> innFilter(String inn) {
+    public static Specification<ContractDk> innFilter(String inn) {
         if (inn == null || inn.equals("")) {
             return (root, query, criteriaBuilder) ->
                     criteriaBuilder.isTrue(criteriaBuilder.literal(true)); //всегда истинно criteriaBuilder.and()
@@ -67,7 +67,7 @@ public class ContractSpecification {
         return innLike(inn);
     }
 
-    public static Specification<Contract> filterContract(String nomGK, String inn, Boolean poleFindByIspolneno, Boolean poleFindByNotIspolneno) {
+    public static Specification<ContractDk> filterContract(String nomGK, String inn, Boolean poleFindByIspolneno, Boolean poleFindByNotIspolneno) {
         return Specification.where(
                 nomGKFilter(nomGK)
                         .and(ispolnenoFilter(poleFindByIspolneno, poleFindByNotIspolneno))

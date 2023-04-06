@@ -1,9 +1,10 @@
-package ru.pfr.contracts2.entity.contracts.mapper;
+package ru.pfr.contracts2.entity.contracts.parent.mapper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.pfr.contracts2.entity.contracts.dto.KontragentDto;
-import ru.pfr.contracts2.entity.contracts.entity.Kontragent;
+import ru.pfr.contracts2.entity.contracts.parent.dto.KontragentDto;
+import ru.pfr.contracts2.entity.contracts.parent.entity.Kontragent;
+
 
 @Component
 @RequiredArgsConstructor
@@ -26,7 +27,5 @@ public class KontragentMapper {
                 .inn(dto.getInn())
                 .name(dto.getName())
                 .build();
-
-
     }
 }
