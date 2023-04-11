@@ -11,17 +11,16 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.pfr.contracts2.aop.log.valid.ValidError;
-import ru.pfr.contracts2.entity.contractOtdel.contractDop.entity.DopDocuments;
 import ru.pfr.contracts2.entity.contractOtdel.contractDop.dto.ContractItRosRequest;
 import ru.pfr.contracts2.entity.contractOtdel.contractDop.dto.FilterContractItRsp;
 import ru.pfr.contracts2.entity.contractOtdel.contractDop.dto.StatisticDto;
-
-import ru.pfr.contracts2.entity.contractOtdel.contractIT.entity.ContractIT;
 import ru.pfr.contracts2.entity.contractOtdel.contractDop.dto.StatusGk;
+import ru.pfr.contracts2.entity.contractOtdel.contractDop.entity.DopDocuments;
+import ru.pfr.contracts2.entity.contractOtdel.contractDop.mapper.DopDocumentsMapper;
+import ru.pfr.contracts2.entity.contractOtdel.contractIT.entity.ContractIT;
 import ru.pfr.contracts2.entity.contractOtdel.contractIT.entity.ContractITSpecification;
 import ru.pfr.contracts2.entity.contractOtdel.contractIT.entity.ContractIT_;
 import ru.pfr.contracts2.entity.contractOtdel.contractIT.mapper.ContractItMapper;
-import ru.pfr.contracts2.entity.contractOtdel.contractDop.mapper.DopDocumentsMapper;
 import ru.pfr.contracts2.entity.user.User;
 import ru.pfr.contracts2.service.it.ContractItService;
 
@@ -98,13 +97,28 @@ public class ContractItControllerRest {
                     .filter(Objects::nonNull)
                     .toList();
 
-            ContractIT contract = contractItMapper
-                    .fromDto(contractItRosRequest);
+            ContractIT dto = contractItMapper.fromDto(contractItRosRequest);
 
-            contract.setAllDocuments(listDocuments);
-            contract.setUser(user);
+            ContractIT contractIT = contractItService.findById(dto.getId());
+            contractIT.setNomGK(dto.getNomGK());
+            contractIT.setKontragent(dto.getKontragent());
+            contractIT.setDateGK(dto.getDateGK());
+            contractIT.setDateGKs(dto.getDateGKs());
+            contractIT.setDateGKpo(dto.getDateGKpo());
+            contractIT.setStatusGK(dto.getStatusGK());
+            contractIT.setSum(dto.getSum());
+            contractIT.setMonths(dto.getMonths());
+            contractIT.setIdzirot(dto.getIdzirot());
+            contractIT.setNameot(dto.getNameot());
+            contractIT.setDayNotification(dto.getDayNotification());
 
-            contractItService.update(contract);
+            /*ContractIT contract = contractItMapper
+                    .fromDto(contractItRosRequest);*/
+
+            contractIT.setAllDocuments(listDocuments);
+            contractIT.setUser(user);
+
+            contractItService.update(contractIT);
             return ResponseEntity.ok("Данные изменены!");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Ошибка!");

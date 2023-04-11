@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <body>
 
-<div class="row" id="contractAdd" th:fragment="contractAdd">
+<div class="row" id="contractAddDk" th:fragment="contractAdd">
     <div class="col-2"></div>
 
     <div class="col-8">
@@ -53,7 +53,6 @@
                                min="0" step="1" data-bind="value:replyNumber"
                                onkeypress="return ((event.charCode != 45 && event.charCode != 44 && event.charCode != 101) && /^\d*\.{0,1}\d*$/.test(this.value));"
                         />
-
                     </div>
                 </div>
             </div>
@@ -72,20 +71,12 @@
                                         th:value="${v.id}"
                                 ></option>
                             </select>
-                            <!--<label>Вид обеспечения</label>-->
                         </div>
                     </div>
                     <div class="col-3">
-
                         <button class="btn btn-secondary" data-bs-toggle="modal"
                                 data-bs-target="#modalKontragent" type="button">Выбрать
                         </button>
-                        <!-- <a
-                          class="waves-effect waves-light btn modal-trigger"
-                          href="#modalKontragent"
-                        >
-                          Выбрать
-                        </a> -->
                     </div>
                 </div>
             </div>
@@ -120,7 +111,6 @@
                 <div class="col-12 row ">
                     <div class="col-3 align-self-center">Дата исполнения ГК</div>
                     <div class="col-3">
-                        <!-- <label for="date_ispolnenija_GK" class="form-label m-0">Дата исполнения ГК</label> -->
                         <input type="text" placeholder="дд.мм.гггг"
                                class="form-control datepicker"
                                id="date_ispolnenija_GK"
@@ -135,7 +125,6 @@
                 <div class="col-12 row ">
                     <div class="col-3 align-self-center">Количество дней от исполнения</div>
                     <div class="col-3">
-                        <!-- <label for="col_days" class="form-label m-0">Количество дней от исполнения</label> -->
                         <input class="form-control"
                                type="number"
                                id="col_days"
@@ -242,7 +231,6 @@
             tabindex="-1"
             aria-labelledby="modalKontragentLabel"
             aria-hidden="true"
-
     >
         <div class="modal-dialog modal-lg" th:fragment="modalKontragent(kontragent2)">
             <div class="modal-content">
@@ -265,21 +253,9 @@
                     >
                         Закрыть
                     </button>
-                    <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
                 </div>
             </div>
         </div>
-    </div>
-</div>
-
-
-<div class="row" th:fragment="notifications">
-    <div class="col-12">
-        <select id="notificationsSelect" class="form-select">
-            <option th:each="u : ${users}" th:text="${u.login}"
-                    th:value="${u.id_user_zir}"></option>
-            <label>Добавить</label>
-        </select>
     </div>
 </div>
 

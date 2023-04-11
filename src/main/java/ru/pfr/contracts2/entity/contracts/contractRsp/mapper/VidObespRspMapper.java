@@ -1,23 +1,23 @@
-package ru.pfr.contracts2.entity.contracts.parent.mapper;
+package ru.pfr.contracts2.entity.contracts.contractRsp.mapper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import ru.pfr.contracts2.entity.contracts.contractRsp.entity.VidObespRsp;
 import ru.pfr.contracts2.entity.contracts.parent.dto.VidObespDto;
-import ru.pfr.contracts2.entity.contracts.parent.entity.VidObesp;
 
 @Component
 @RequiredArgsConstructor
-public class VidObespMapper {
+public class VidObespRspMapper {
 
-    public VidObespDto toDto(VidObesp obj) {
+    public VidObespDto toDto(VidObespRsp obj) {
         return VidObespDto.builder()
                 .id(obj.getId())
                 .name(obj.getName())
                 .build();
     }
 
-    public VidObesp fromDto(VidObespDto dto) {
-        return VidObesp.builder()
+    public VidObespRsp fromDto(VidObespDto dto) {
+        return VidObespRsp.builder()
                 .id(dto.getId())
                 .name(dto.getName())
                 .build();

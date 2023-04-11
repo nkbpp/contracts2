@@ -5,6 +5,8 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Type;
 import ru.pfr.contracts2.entity.AuditEntity;
+import ru.pfr.contracts2.entity.contracts.contractDK.entity.Kontragent;
+import ru.pfr.contracts2.entity.contracts.contractDK.entity.VidObesp;
 import ru.pfr.contracts2.entity.user.User;
 import ru.pfr.contracts2.global.MyNumbers;
 
@@ -33,18 +35,12 @@ public class ContractParent extends AuditEntity {
 
     private String plat_post; //Платежное поручение
 
-    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
-    private Kontragent kontragent;
-
     private String nomGK; //номер ГК
 
     private LocalDateTime dateGK; //дата ГК
 
     @Type(type = "text")
     private String predmet_contract; //краткое содержание предмета контракта
-
-    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
-    private VidObesp vidObesp; //вид обеспечения
 
     private Double sum; //сумма
 
@@ -82,19 +78,17 @@ public class ContractParent extends AuditEntity {
 
 
     public ContractParent(Long id, LocalDateTime receipt_date, String plat_post,
-                          Kontragent kontragent, String nomGK,
-                          LocalDateTime dateGK, String predmet_contract, VidObesp vidObesp, Double sum,
+                          String nomGK,
+                          LocalDateTime dateGK, String predmet_contract, Double sum,
                           LocalDateTime date_ispolnenija_GK, Integer col_days, List<Notification> notifications,
                           Boolean ispolneno, List<MyDocuments> myDocuments, String nomerZajavkiNaVozvrat,
                           LocalDateTime dateZajavkiNaVozvrat, User user) {
         this.id = id;
         this.receipt_date = receipt_date;
         this.plat_post = plat_post;
-        this.kontragent = kontragent;
         this.nomGK = nomGK;
         this.dateGK = dateGK;
         this.predmet_contract = predmet_contract;
-        this.vidObesp = vidObesp;
         this.sum = sum;
         this.date_ispolnenija_GK = date_ispolnenija_GK;
         this.col_days = col_days;

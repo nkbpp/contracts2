@@ -24,33 +24,12 @@
                 language: "ru"
             });
 
-            /*$(".datepicker").mask('99.99.9999');
-            $(".snils").mask('999-999-999 99');
-            $(".year").mask('9999');*/
         });
     </script>
 
     <script type="text/javascript" th:src="@{/js/pagination.js}"></script>
     <script type="text/javascript" th:src="@{/js/spinner.js}"></script>
     <script type="text/javascript" th:src="@{/js/globalFunction.js}"></script>
-
-    <!--    <style>
-            .table-fixed thead {
-                width: 97%;
-            }
-            .table-fixed tbody {
-                height: 230px;
-                overflow-y: auto;
-                width: 100%;
-            }
-            .table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
-                display: block;
-            }
-            .table-fixed tbody td, .table-fixed thead > tr> th {
-                float: left;
-                border-bottom-width: 0;
-            }
-        </style>-->
 
     <script type="text/javascript">
 
@@ -73,31 +52,7 @@
                 }
             });
 
-            body.on('click', 'button', function () {
-                if ($(this).hasClass('minusNotif')) { //удалить уведомление
-                    $("#notifications #" + $(this).attr('name')).detach();
-                    return false;
-                }
-            });
-
             body.on('click', 'a', function () {
-
-                if ($(this).attr('id') === "notificationsVibor") {
-                    console.log("notificationsVibor");
-                    let val = $("#notificationsSelect").val();
-                    if ($("#notifications div").is('#' + val)) {
-                        alert("Вы уже добавили этого человека!");
-                    } else {
-                        let notif = $("#notifications");
-                        notif.html(notif.html() +
-
-                            "<div class='mb-1' id='" + val + "'>" +
-                            $("#notificationsSelect option:selected").text() +
-                            "<button class='btn btn-secondary btn-sm minusNotif' type='button' " +
-                            "name=" + val + ">X</button></div>")
-                    }
-                    return false;
-                }
 
                 /*кнопка выбрать в модальной форме*/
                 if (typeof $(this).attr('data-id-modal-kontragent') !== 'undefined' &&
@@ -108,7 +63,6 @@
                     return false;
                 }
 
-
                 //переключатели страниц MKpagination
                 if ($(this).parents("#MKpagination").attr("id") === "MKpagination") {
                     let list = clickPagination($(this), "#MKpagination");
@@ -116,9 +70,7 @@
                     $("#dliazamenyKontragentTable").load("/contract/main/kontragent/modalKontragentViev", param, function () {
                     });
                 }
-
             });
-
         });
 
         //переключатели страниц
@@ -140,8 +92,12 @@
 
     <script type="text/javascript" th:src="@{/js/pagination.js}"></script>
     <script type="text/javascript" th:src="@{/js/documents.js}"></script>
-    <script type="text/javascript" th:src="@{/js/spisok.js}"></script>
+    <script sec:authorize="hasRole('ROLE_UPDATE')" type="text/javascript" th:src="@{/js/vidObesp.js}"></script>
+    <script sec:authorize="hasRole('ROLE_UPDATERSP')" type="text/javascript" th:src="@{/js/vidObespRsp.js}"></script>
+    <script sec:authorize="hasAnyRole('ROLE_UPDATERSP','ROLE_READRSP','ROLE_UPDATE','ROLE_READ')" type="text/javascript"
+            th:src="@{/js/contractParent.js}"></script>
     <script sec:authorize="hasRole('ROLE_UPDATE')" type="text/javascript" th:src="@{/js/kontragent.js}"></script>
+    <script sec:authorize="hasRole('ROLE_UPDATERSP')" type="text/javascript" th:src="@{/js/kontragentRsp.js}"></script>
     <script sec:authorize="hasAnyRole('ROLE_UPDATE','ROLE_READ')" type="text/javascript"
             th:src="@{/js/contract.js}"></script>
     <script type="text/javascript" th:src="@{/js/wrapper.js}"></script>
@@ -160,7 +116,7 @@
 </head>
 <body class="bg-dark" style="--bs-bg-opacity: .05;">
 
-<div class="container-fluid p-0"><!--container-xxl-->
+<div class="container-fluid p-0">
 
     <div th:insert="fragment/menu :: menu"></div>
 
@@ -228,12 +184,6 @@
             $(myToast).removeClass("show");
         }, 7000);
     }
-
-    /*    function myToastHide(){
-            setTimeout( function () {
-                $(".toast-container .show").first().removeClass("show");
-            }, 7000);
-        }*/
 
     function getToats(id) {
         return "<div id='myToast" + id + "' class='toast hide' role='alert' aria-live='assertive' aria-atomic='true' style='--bs-bg-opacity: .2;'>" +

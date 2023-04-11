@@ -1,5 +1,5 @@
 function vievKontragent() {
-    $("#mainContainer").load("/contract/main/kontragent/kontragentViev", "", function () {
+    $("#mainContainer").load("/contract/rsp/kontragent/kontragentViev", "", function () {
 
         let idKontrT = "spravKontrTable";
         getSpinnerTable(idKontrT)
@@ -7,7 +7,7 @@ function vievKontragent() {
         let token = $('#_csrf').attr('content');
         let header = $('#_csrf_header').attr('content');
         $.ajax({
-            url: "/contract/main/kontragent/all",
+            url: "/contract/rsp/kontragent/all",
             type: 'get',
             contentType: "application/json",
             beforeSend: function (xhr) {
@@ -28,7 +28,7 @@ function vievKontragent() {
                         '<input class="form-control"' +
                         'data-disabledInputKontragent-id="' + data.id + '"' +
                         "value='" + data.name + "'" +
-                        'name="disabledInputKontragentName"' +
+                        'name="disabledInputKontragentNameRsp"' +
                         'type="text"' +
                         'disabled readOnly>' +
                         '</td>' +
@@ -36,12 +36,12 @@ function vievKontragent() {
                         '<input class="form-control"' +
                         'data-disabledInputKontragent-id="' + data.id + '"' +
                         'value="' + data.inn + '"' +
-                        'name="disabledInputKontragentInn"' +
+                        'name="disabledInputKontragentInnRsp"' +
                         'type="text"' +
                         'disabled readOnly>' +
                         '</td>' +
                         '<td>' +
-                        '<a name="delSpisokKontragent" id="' + data.id + '"' +
+                        '<a name="delSpisokKontragentRsp" id="' + data.id + '"' +
                         'class="btn btn-secondary">X</a>' +
                         '</td>' +
                         '</tr>';
@@ -65,8 +65,8 @@ $(document).ready(function () {
 
     spisokKontr.on('keypress', 'input', function (e) { //изменение на событие клик по enter
         if (e.keyCode === 13) {
-            if ($(this).attr('name') === "disabledInputKontragentName" ||
-                $(this).attr('name') === "disabledInputKontragentInn") {
+            if ($(this).attr('name') === "disabledInputKontragentNameRsp" ||
+                $(this).attr('name') === "disabledInputKontragentInnRsp") {
                 console.log("enter")
                 $(this).blur();
                 return false;
@@ -75,18 +75,18 @@ $(document).ready(function () {
     });
 
     spisokKontr.on('blur', 'input', function () { //изменение на событие потери фокуса
-        if ($(this).attr('name') === "disabledInputKontragentName" ||
-            $(this).attr('name') === "disabledInputKontragentInn") {  //список вид обесп
+        if ($(this).attr('name') === "disabledInputKontragentNameRsp" ||
+            $(this).attr('name') === "disabledInputKontragentInnRsp") {  //список вид обесп
             let tek = $(this);
             let id = tek.attr('data-disabledInputKontragent-id');
-            let name = $('[data-disabledInputKontragent-id=' + id + '][name=disabledInputKontragentName]').val();
-            let inn = $('[data-disabledInputKontragent-id=' + id + '][name=disabledInputKontragentInn]').val();
+            let name = $('[data-disabledInputKontragent-id=' + id + '][name=disabledInputKontragentNameRsp]').val();
+            let inn = $('[data-disabledInputKontragent-id=' + id + '][name=disabledInputKontragentInnRsp]').val();
             let param = "id=" + id + "&name=" + name + "&inn=" + inn;
             console.log(param)
             let token = $('#_csrf').attr('content');
             let header = $('#_csrf_header').attr('content');
             $.ajax({
-                url: '/contract/main/kontragent/update',
+                url: '/contract/rsp/kontragent/update',
                 method: 'post',
                 data: param,
                 beforeSend: function (xhr) {
@@ -105,8 +105,8 @@ $(document).ready(function () {
     });
 
     spisokKontr.on('dblclick', 'input', function () {
-        if ($(this).attr('name') === "disabledInputKontragentName" ||
-            $(this).attr('name') === "disabledInputKontragentInn") {
+        if ($(this).attr('name') === "disabledInputKontragentNameRsp" ||
+            $(this).attr('name') === "disabledInputKontragentInnRsp") {
             /*let id = $(this).attr('data-disabledInputKontragent-id');
             console.log("dbclick",id);*/
             $(this).removeAttr('disabled').removeAttr('readonly');
@@ -119,7 +119,7 @@ $(document).ready(function () {
         //загрузить таблицу в модальное окно
         if ($(this).attr('data-bs-target') === "#modalKontragent") {
             let param = "param=1";
-            $("#dliazamenyKontragentTable").load("/contract/main/kontragent/modalKontragentViev", param, function () {
+            $("#dliazamenyKontragentTable").load("/contract/rsp/kontragent/modalKontragentViev", param, function () {
                 clearPaginationMK();
 
                 let idKontrT = "kontragentTableVibor";
@@ -128,7 +128,7 @@ $(document).ready(function () {
                 let token = $('#_csrf').attr('content');
                 let header = $('#_csrf_header').attr('content');
                 $.ajax({
-                    url: "/contract/main/kontragent/all",
+                    url: "/contract/rsp/kontragent/all",
                     type: 'get',
                     contentType: "application/json",
                     beforeSend: function (xhr) {
@@ -163,11 +163,11 @@ $(document).ready(function () {
 
     spisokKontr.on('click', 'a', function () {
 
-        if ($(this).attr('id') == "kontragentSpisokViev") {  //список контрагент
+        if ($(this).attr('id') == "kontragentSpisokVievRsp") {  //список контрагент
             vievKontragent();
         }
 
-        if ($(this).attr('id') == "buttonaddKontragent") {
+        if ($(this).attr('id') == "buttonaddKontragentRsp") {
             $(this).prop("disabled", true);
 
             //let param = "name=" + $("#addNameKontragent").val() + "&inn=" + $("#addINNKontragent").val();
@@ -175,9 +175,9 @@ $(document).ready(function () {
             let token = $('#_csrf').attr('content');
             let header = $('#_csrf_header').attr('content');
             $.ajax({
-                url: '/contract/main/kontragent/add',
+                url: '/contract/rsp/kontragent/add',
                 method: 'post',
-                data: $("#addKontrForm").serialize(),
+                data: $("#addKontrFormRsp").serialize(),
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader(header, token);
                 },
@@ -195,12 +195,12 @@ $(document).ready(function () {
         }
 
 
-        if ($(this).attr('name') == "delSpisokKontragent") {
+        if ($(this).attr('name') == "delSpisokKontragentRsp") {
             let param = "id=" + $(this).attr('id');
             let token = $('#_csrf').attr('content');
             let header = $('#_csrf_header').attr('content');
             $.ajax({
-                url: '/contract/main/kontragent/delette',
+                url: '/contract/rsp/kontragent/delette',
                 method: 'post',
                 data: param,
                 beforeSend: function (xhr) {

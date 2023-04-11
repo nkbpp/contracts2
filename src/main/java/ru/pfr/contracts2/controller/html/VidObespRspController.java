@@ -5,21 +5,21 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ru.pfr.contracts2.service.contracts.VidObespService;
+import ru.pfr.contracts2.service.contracts.VidObespRspService;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping(value = {"/contract/main"})
-public class VidObespController {
+@RequestMapping(value = {"/contract/rsp"})
+public class VidObespRspController {
 
-    private final VidObespService vidObespService;
+    private final VidObespRspService vidObespService;
 
     @GetMapping("/vidObespSpisokViev")
     public String vidObespSpisokViev(
             Model model) {
         model.addAttribute("vidObesps", vidObespService.findAll());
         model.addAttribute("type", "vidObesp");
-        return "fragment/spisokfrag :: spisokfrag";
+        return "fragment/vidObespRsp :: spisokfrag";
     }
 
 }

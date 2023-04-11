@@ -11,7 +11,7 @@ import ru.pfr.contracts2.service.contracts.MyDocumentsService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = {"/contract/main"})
+@RequestMapping(value = {"/contract/main", "/contract/rsp"})
 public class ContractDocumentControllerRest {
     private final MyDocumentsService myDocumentsService;
 

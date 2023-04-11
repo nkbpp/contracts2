@@ -2,13 +2,12 @@ package ru.pfr.contracts2.entity.contractOtdel.contractIT.mapper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import ru.pfr.contracts2.entity.contractOtdel.contractDop.dto.ContractItRosRequest;
+import ru.pfr.contracts2.entity.contractOtdel.contractDop.dto.StatusGk;
 import ru.pfr.contracts2.entity.contractOtdel.contractDop.mapper.DopDocumentsMapper;
 import ru.pfr.contracts2.entity.contractOtdel.contractDop.mapper.MonthsMapper;
-import ru.pfr.contracts2.entity.contractOtdel.contractDop.dto.ContractItRosRequest;
 import ru.pfr.contracts2.entity.contractOtdel.contractIT.dto.ContractITDto;
 import ru.pfr.contracts2.entity.contractOtdel.contractIT.entity.ContractIT;
-import ru.pfr.contracts2.entity.contractOtdel.contractDop.dto.StatusGk;
-import ru.pfr.contracts2.service.it.ContractItService;
 import ru.pfr.contracts2.service.zir.ZirServise;
 
 import javax.validation.Valid;
@@ -25,7 +24,6 @@ public class ContractItMapper {
 
     private final ZirServise zirServise;
 
-    private final ContractItService contractItService;
     private final MonthsMapper monthsMapper;
 
     public ContractITDto toDto(ContractIT obj) {
@@ -61,26 +59,11 @@ public class ContractItMapper {
 
     public ContractIT fromDto(@Valid ContractItRosRequest dto) {
 
-        String fio = "";
+        String fio;
         try {
             fio = zirServise.getNameUserById(dto.getIdzirot());
         } catch (Exception e) {
-        }
-
-        if (dto.getId() != null) {
-            ContractIT contractIT = contractItService.findById(dto.getId());
-            contractIT.setNomGK(dto.getNomGK());
-            contractIT.setKontragent(dto.getKontragent());
-            contractIT.setDateGK(dto.getDateGK());
-            contractIT.setDateGKs(dto.getDateGKs());
-            contractIT.setDateGKpo(dto.getDateGKpo());
-            contractIT.setStatusGK(StatusGk.customValueOf(dto.getStatusGK()));
-            contractIT.setSum(dto.getSum());
-            contractIT.setMonths(monthsMapper.fromDto(dto.getMonths()));
-            contractIT.setIdzirot(dto.getIdzirot());
-            contractIT.setNameot(fio);
-            contractIT.setDayNotification(dto.getDayNotification());
-            return contractIT;
+            fio = "";
         }
 
         return ContractIT.builder()

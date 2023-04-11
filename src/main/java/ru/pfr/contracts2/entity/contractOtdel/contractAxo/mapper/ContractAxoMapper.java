@@ -7,7 +7,6 @@ import ru.pfr.contracts2.entity.contractOtdel.contractAxo.entity.ContractAxo;
 import ru.pfr.contracts2.entity.contractOtdel.contractAxo.entity.NaturalIndicator;
 import ru.pfr.contracts2.entity.contractOtdel.contractDop.mapper.DopDocumentsMapper;
 import ru.pfr.contracts2.entity.contractOtdel.contractDop.mapper.MonthsMapper;
-import ru.pfr.contracts2.service.it.ContractAxoService;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -20,10 +19,7 @@ public class ContractAxoMapper {
 
     private final DopDocumentsMapper documentsMapper;
     private final NaturalIndicatorMapper naturalIndicatorMapper;
-    private final ContractAxoService contractAxoService;
-
     private final MonthsMapper monthsMapper;
-
 
     public ContractAxoDto toDto(ContractAxo obj) {
         return ContractAxoDto.builder()
@@ -81,19 +77,8 @@ public class ContractAxoMapper {
                         )
                         .toList();
 
-        if (dto.getId() != null) {
-            ContractAxo contractAxo = contractAxoService.findById(dto.getId());
-            contractAxo.setNomGK(dto.getNomGK());
-            contractAxo.setKontragent(dto.getKontragent());
-            contractAxo.setDateGK(dto.getDateGK());
-            contractAxo.setSum(dto.getSum());
-            contractAxo.setMonths(monthsMapper.fromDto(dto.getMonths()));
-            contractAxo.setSumNaturalIndicators(dto.getSumNaturalIndicators());
-            contractAxo.setAllNaturalIndicators(nat);
-            return contractAxo;
-        }
         return ContractAxo.builder()
-                //.id(dto.getId())
+                .id(dto.getId())
                 .nomGK(dto.getNomGK())
                 .kontragent(dto.getKontragent())
                 .dateGK(dto.getDateGK())

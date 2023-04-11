@@ -1,15 +1,20 @@
 package ru.pfr.contracts2.controller.html;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ru.pfr.contracts2.entity.contracts.parent.entity.Notification;
+import org.springframework.web.bind.annotation.RequestParam;
+import ru.pfr.contracts2.entity.contracts.contractRsp.entity.KontragentRsp;
+import ru.pfr.contracts2.entity.contracts.contractRsp.entity.VidObespRsp;
+import ru.pfr.contracts2.entity.user.User;
+import ru.pfr.contracts2.service.contracts.*;
 import ru.pfr.contracts2.service.zir.ZirServise;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -17,36 +22,75 @@ import java.util.List;
 @RequestMapping(value = {"/contract/rsp"})
 public class ContractRspController {
 
+    private final ContractRspService contractRspService;
+    private final VidObespRspService vidObespService;
+    private final KontragentRspService kontragentService;
     private final ZirServise zirServise;
 
-    @ModelAttribute(name = "notifications")
-    public List<Notification> notifications(
-            Authentication authentication
-    ) {
-        return List.of();/*switch (GetOtdel.get(authentication)) {
-            //case "IT" -> zirServise.getNotification("148", "149");
-            case "RSP" -> List.of(); //todo добавить отделы для выбора ответственных
-            default -> List.of();
-        };*/
+    @ModelAttribute(name = "vidObesp")
+    public List<VidObespRsp> vidObesp() {
+        return vidObespService.findAllwithPusto();
+    }
+
+    @ModelAttribute(name = "kontragent")
+    public List<KontragentRsp> kontragent() {
+        return kontragentService.findAllwithPusto();
+    }
+
+    @ModelAttribute(name = "kontragent2")
+    public List<KontragentRsp> kontragent2() {
+        return kontragentService.findAll();
+    }
+
+    @GetMapping("/dopTable")  //дополнительная информация
+    public String dopTable() {
+        return "fragment/modalKontragent :: tableContractDop";
     }
 
     @GetMapping("/vievTable")
-    public String vievTable(
-            Model model
-    ) {
-        model.addAttribute("findContractName", "findContractRsp");
-        return "fragment/rsp/viev :: vievTable";
+    public String vievTable() {
+        return "fragment/table :: vievTable";
     }
 
     @GetMapping("/add")
-    public String add() {
-        return "fragment/rsp/add :: addviev";
+    public String add(@AuthenticationPrincipal User user,
+                      Model model) {
+        model.addAttribute("nameBoss",
+                zirServise.getNameBossById
+                        (Integer.parseInt(String.valueOf(user.getId_user_zir())))
+        );
+        return "fragment/contractAddRsp :: contractAdd";
     }
 
-    @GetMapping("/updateViev/{id}")
-    public String updateViev() {
-        return "fragment/rsp/add :: addviev";
+    @GetMapping("/updateViev")
+    public String updateViev(
+            @RequestParam Long id,
+            Model model) {
+        model.addAttribute("contract", contractRspService.findById(id));
+        return "fragment/contractAddRsp :: contractAdd";
     }
 
+    @GetMapping("/getnotification")
+    public String getnotification(@AuthenticationPrincipal User user,
+                                  Model model) {
+        List<User> users = new ArrayList<>();
 
+        /*if (!user.getId_user_zir().equals(147L)) {
+            users.addAll(zirServise.getFindAllOtdelByIdAddPusto(147L));
+        }*/
+        users.addAll(zirServise.getFindAllOtdelByIdAddPusto(user.getId_user_zir()));
+
+        model.addAttribute("users", users);
+        return "fragment/contractNotification :: notifications";
+    }
+
+    @GetMapping("/getProgress")
+    public String getProgress(
+            @RequestParam Long id,
+            Model model) {
+
+        model.addAttribute("c", contractRspService.findById(id));
+
+        return "fragment/table :: progress";
+    }
 }

@@ -91,12 +91,21 @@ public class ContractAxoControllerRest {
                     .filter(Objects::nonNull)
                     .toList();
 
-            ContractAxo contract = contractAxoMapper
+            ContractAxo dto = contractAxoMapper
                     .fromDto(contractAxoDto);
-            contract.setAllDocuments(listDocuments);
-            contract.setUser(user);
 
-            contractAxoService.update(contract);
+            ContractAxo contractAxo = contractAxoService.findById(dto.getId());
+            contractAxo.setNomGK(dto.getNomGK());
+            contractAxo.setKontragent(dto.getKontragent());
+            contractAxo.setDateGK(dto.getDateGK());
+            contractAxo.setSum(dto.getSum());
+            contractAxo.setMonths(dto.getMonths());
+            contractAxo.setSumNaturalIndicators(dto.getSumNaturalIndicators());
+            contractAxo.setAllNaturalIndicators(dto.getNaturalIndicators());
+            contractAxo.setAllDocuments(listDocuments);
+            contractAxo.setUser(user);
+
+            contractAxoService.update(contractAxo);
             return ResponseEntity.ok("Данные изменены!");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Ошибка!");

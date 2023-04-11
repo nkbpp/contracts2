@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import ru.pfr.contracts2.entity.contracts.parent.entity.Kontragent;
-import ru.pfr.contracts2.entity.contracts.parent.entity.VidObesp;
+import ru.pfr.contracts2.entity.contracts.contractDK.entity.Kontragent;
+import ru.pfr.contracts2.entity.contracts.contractDK.entity.VidObesp;
 import ru.pfr.contracts2.entity.user.User;
 import ru.pfr.contracts2.service.contracts.ContractDkService;
 import ru.pfr.contracts2.service.contracts.KontragentService;
@@ -22,7 +22,7 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping(value = {"/contract/main"})
-public class ContractController {
+public class ContractDkController {
 
     private final ContractDkService contractDkService;
     private final VidObespService vidObespService;
@@ -64,7 +64,7 @@ public class ContractController {
                         (Integer.parseInt(String.valueOf(user.getId_user_zir())))
         );
 
-        return "fragment/contractAdd :: contractAdd";
+        return "fragment/contractAddDk :: contractAdd";
     }
 
     @GetMapping("/updateViev")
@@ -73,7 +73,7 @@ public class ContractController {
             Model model) {
         model.addAttribute("contract", contractDkService.findById(id));
 
-        return "fragment/contractAdd :: contractAdd";
+        return "fragment/contractAddDk :: contractAdd";
     }
 
     @GetMapping("/getnotification")
@@ -87,9 +87,9 @@ public class ContractController {
         users.addAll(zirServise.getFindAllOtdelByIdAddPusto(user.getId_user_zir()));
 
         model.addAttribute("users", users);
-        return "fragment/contractAdd :: notifications";
+        return "fragment/contractNotification :: notifications";
     }
-    
+
     @GetMapping("/getProgress")
     public String getProgress(
             @RequestParam Long id,

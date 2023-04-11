@@ -4,15 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.pfr.contracts2.entity.contracts.contractDK.entity.Kontragent;
-import ru.pfr.contracts2.service.contracts.KontragentService;
+import ru.pfr.contracts2.entity.contracts.contractRsp.entity.KontragentRsp;
+import ru.pfr.contracts2.service.contracts.KontragentRspService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = {"/contract/main/kontragent"})
-public class KontragentControllerRest {
+@RequestMapping(value = {"/contract/rsp/kontragent"})
+public class KontragentRspControllerRest {
 
-    private final KontragentService kontragentService;
+    private final KontragentRspService kontragentService;
 
     @PostMapping("/update")
     public ResponseEntity<?> update(
@@ -21,7 +21,7 @@ public class KontragentControllerRest {
             @RequestParam String inn
     ) {
         try {
-            Kontragent kontragent = kontragentService.findById(id);
+            KontragentRsp kontragent = kontragentService.findById(id);
             String oldName = kontragent.getName();
             String oldInn = kontragent.getInn();
             kontragent.setName(name);
@@ -41,7 +41,7 @@ public class KontragentControllerRest {
             @RequestParam String inn
     ) {
         try {
-            kontragentService.save(new Kontragent(name, inn));
+            kontragentService.save(new KontragentRsp(name, inn));
             return ResponseEntity.ok("Данные добавлены!");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Ошибка при добавлении!");

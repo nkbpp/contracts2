@@ -1,17 +1,17 @@
-package ru.pfr.contracts2.entity.contracts.parent.mapper;
+package ru.pfr.contracts2.entity.contracts.contractRsp.mapper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import ru.pfr.contracts2.entity.contracts.contractRsp.entity.KontragentRsp;
 import ru.pfr.contracts2.entity.contracts.parent.dto.KontragentDto;
-import ru.pfr.contracts2.entity.contracts.parent.entity.Kontragent;
 
 
 @Component
 @RequiredArgsConstructor
-public class KontragentMapper {
+public class KontragentRspMapper {
 
 
-    public KontragentDto toDto(Kontragent obj) {
+    public KontragentDto toDto(KontragentRsp obj) {
         return KontragentDto.builder()
                 .id(obj.getId())
                 .inn(obj.getInn())
@@ -20,9 +20,9 @@ public class KontragentMapper {
                 .build();
     }
 
-    public Kontragent fromDto(KontragentDto dto) {
+    public KontragentRsp fromDto(KontragentDto dto) {
 
-        return Kontragent.builder()
+        return KontragentRsp.builder()
                 .id(dto.getId())
                 .inn(dto.getInn())
                 .name(dto.getName())

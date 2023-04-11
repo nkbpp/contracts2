@@ -1,41 +1,40 @@
-package ru.pfr.contracts2.entity.contracts.contractDK.mapper;
+package ru.pfr.contracts2.entity.contracts.contractRsp.mapper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.pfr.contracts2.entity.contracts.contractDK.dto.ContractDkDto;
-import ru.pfr.contracts2.entity.contracts.contractDK.entity.ContractDk;
-import ru.pfr.contracts2.entity.contracts.parent.mapper.*;
-import ru.pfr.contracts2.service.contracts.KontragentService;
-import ru.pfr.contracts2.service.contracts.VidObespService;
+import ru.pfr.contracts2.entity.contracts.contractRsp.dto.ContractRspDto;
+import ru.pfr.contracts2.entity.contracts.contractRsp.entity.ContractRsp;
+import ru.pfr.contracts2.entity.contracts.parent.mapper.ContractParentMapper;
+import ru.pfr.contracts2.service.contracts.KontragentRspService;
+import ru.pfr.contracts2.service.contracts.VidObespRspService;
 
 
 @Component
 @RequiredArgsConstructor
-public class ContractDkMapper {
+public class ContractRspMapper {
 
     private final ContractParentMapper contractParentMapper;
-    private final KontragentService kontragentService;
-    private final KontragentMapper kontragentMapper;
-    private final VidObespMapper vidObespMapper;
-    private final VidObespService vidObespService;
 
-    public ContractDkDto toDto(ContractDk obj) {
+    private final KontragentRspService kontragentService;
+    private final KontragentRspMapper kontragentMapper;
+    private final VidObespRspMapper vidObespMapper;
+    private final VidObespRspService vidObespService;
+
+    public ContractRspDto toDto(ContractRsp obj) {
         var parent = contractParentMapper.toDto(obj);
 
-        return ContractDkDto.builder()
+        return ContractRspDto.builder()
                 .id(parent.getId())
                 .receipt_date(parent.getReceipt_date())//дата поступления
                 .plat_post(parent.getPlat_post())//Платежное поручение
                 .kontragent(
-                        obj.getKontragent() == null ? null :
-                                kontragentMapper.toDto(obj.getKontragent()))
-                //.kontragent(parent.getKontragent())
+                        obj.getKontragentRsp() == null ? null :
+                                kontragentMapper.toDto(obj.getKontragentRsp()))
                 .nomGK(parent.getNomGK())//номер ГК
                 .dateGK(parent.getDateGK())//дата ГК
                 .predmet_contract(parent.getPredmet_contract())//краткое содержание предмета контракта
-                //.vidObesp(parent.getVidObesp())//вид обеспечения
-                .vidObesp(obj.getVidObesp() == null ? null :
-                        vidObespMapper.toDto(obj.getVidObesp()))//вид обеспечения
+                .vidObesp(obj.getVidObespRsp() == null ? null :
+                        vidObespMapper.toDto(obj.getVidObespRsp()))//вид обеспечения
                 .sum(parent.getSum())//сумма
                 .date_ispolnenija_GK(parent.getDate_ispolnenija_GK())//дата исполнения ГК
                 .col_days(parent.getCol_days())//Условия возврата ГК (количество дней от исполнения)
@@ -52,20 +51,20 @@ public class ContractDkMapper {
 
     }
 
-    public ContractDk fromDto(ContractDkDto dto) {
+    public ContractRsp fromDto(ContractRspDto dto) {
         var parent = contractParentMapper.fromDto(dto);
 
         return (
-                ContractDk.builder()
+                ContractRsp.builder()
                         .id(parent.getId())
                         .receipt_date(parent.getReceipt_date())//дата поступления
                         .plat_post(parent.getPlat_post())//Платежное поручение
-                        .kontragent(
+                        .kontragentRsp(
                                 kontragentService.findById(
                                         kontragentMapper.fromDto(dto.getKontragent()).getId()
                                 )
                         )
-                        .vidObesp(
+                        .vidObespRsp(
                                 vidObespService.findById(
                                         vidObespMapper.fromDto(dto.getVidObesp()).getId()
                                 )

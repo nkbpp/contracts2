@@ -3,9 +3,9 @@ package ru.pfr.contracts2.service.contracts;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import ru.pfr.contracts2.entity.contracts.contractDK.entity.VidObesp;
-import ru.pfr.contracts2.entity.contracts.contractDK.entity.VidObesp_;
-import ru.pfr.contracts2.repository.contracts.VidObespRepository;
+import ru.pfr.contracts2.entity.contracts.contractRsp.entity.VidObespRsp;
+import ru.pfr.contracts2.entity.contracts.contractRsp.entity.VidObespRsp_;
+import ru.pfr.contracts2.repository.contracts.VidObespRspRepository;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -14,27 +14,27 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor // создать конструктор для финализируемых полей
 @Transactional
-public class VidObespService {
+public class VidObespRspService {
 
-    final VidObespRepository vidObespRepository;
+    final VidObespRspRepository vidObespRepository;
 
-    public List<VidObesp> findAll() {
-        return vidObespRepository.findAll(Sort.by(VidObesp_.ID).descending());
+    public List<VidObespRsp> findAll() {
+        return vidObespRepository.findAll(Sort.by(VidObespRsp_.ID).descending());
     }
 
-    public List<VidObesp> findAllwithPusto() {
-        List<VidObesp> vidObesps = new ArrayList<>();
-        vidObesps.add(new VidObesp(0L, ""));
+    public List<VidObespRsp> findAllwithPusto() {
+        List<VidObespRsp> vidObesps = new ArrayList<>();
+        vidObesps.add(new VidObespRsp(0L, ""));
         vidObesps.addAll(findAll());
         return vidObesps;
     }
 
-    public VidObesp findById(Long id) {
+    public VidObespRsp findById(Long id) {
         return vidObespRepository.findById(id).orElse(null);
     }
 
 
-    public void save(VidObesp vidObesp) {
+    public void save(VidObespRsp vidObesp) {
         vidObespRepository.save(vidObesp);
     }
 

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<body>
+
+<div th:fragment="kontragent">
+    <form id="addKontrFormRsp">
+        <div class="row mb-2 mt-2">
+            <div class="col-3">
+                <label for="addNameKontragent" class="form-label m-0">Наименование</label>
+                <input type="text" class="form-control" id="addNameKontragent" name="name">
+            </div>
+            <div class="col-3">
+                <label for="addINNKontragent" class="form-label m-0">ИНН</label>
+                <input type="text" class="form-control" id="addINNKontragent" name="inn">
+            </div>
+            <div class="col-2 d-flex align-items-end">
+                <a class="btn btn-secondary" id="buttonaddKontragentRsp">Добавить</a>
+            </div>
+        </div>
+    </form>
+
+    <table class="table table-block table-secondary table-striped
+    table-hover table-bordered text-center caption-top table-sm"
+           id="spravKontrTable">
+        <caption>Контрагенты</caption>
+        <thead>
+        <tr>
+            <th>Номер п.п</th>
+            <th>Наименование</th>
+            <th>ИНН</th>
+            <th>Удалить</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

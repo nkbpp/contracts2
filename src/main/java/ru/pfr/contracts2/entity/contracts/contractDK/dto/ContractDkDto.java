@@ -1,15 +1,10 @@
 package ru.pfr.contracts2.entity.contracts.contractDK.dto;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import ru.pfr.contracts2.entity.contracts.parent.dto.KontragentDto;
-import ru.pfr.contracts2.entity.contracts.parent.dto.MyDocumentsDto;
-import ru.pfr.contracts2.entity.contracts.parent.dto.NotificationDto;
-import ru.pfr.contracts2.entity.contracts.parent.dto.VidObespDto;
-import ru.pfr.contracts2.entity.contracts.parent.dto.ContractParentDto;
+import ru.pfr.contracts2.entity.contracts.parent.dto.*;
 import ru.pfr.contracts2.entity.user.UserDto;
 
 import java.time.LocalDate;

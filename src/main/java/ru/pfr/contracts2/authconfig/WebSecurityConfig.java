@@ -41,6 +41,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         ROLE_ENUM.ROLE_UPDATE_AXO.getStringNoRole(),
                         ROLE_ENUM.ROLE_READ_RSP.getStringNoRole(),
                         ROLE_ENUM.ROLE_UPDATE_RSP.getStringNoRole())
+                .antMatchers("/contract/ob/**").hasAnyRole(
+                        ROLE_ENUM.ROLE_UPDATE.getStringNoRole(),
+                        ROLE_ENUM.ROLE_READ_RSP.getStringNoRole(),
+                        ROLE_ENUM.ROLE_UPDATE_RSP.getStringNoRole())
                 .antMatchers("/contract/it/**").hasAnyRole(
                         ROLE_ENUM.ROLE_UPDATE_IT.getStringNoRole(),
                         ROLE_ENUM.ROLE_READ_IT.getStringNoRole())

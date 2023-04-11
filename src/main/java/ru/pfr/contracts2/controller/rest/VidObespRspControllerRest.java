@@ -4,22 +4,22 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.pfr.contracts2.entity.contracts.contractDK.entity.VidObesp;
-import ru.pfr.contracts2.service.contracts.VidObespService;
+import ru.pfr.contracts2.entity.contracts.contractRsp.entity.VidObespRsp;
+import ru.pfr.contracts2.service.contracts.VidObespRspService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = {"/contract/main/vidobesp"})
-public class VidObespControllerRest {
+@RequestMapping(value = {"/contract/rsp/vidobesp"})
+public class VidObespRspControllerRest {
 
-    private final VidObespService vidObespService;
+    private final VidObespRspService vidObespService;
 
     @PostMapping("/add")
     public ResponseEntity<?> add(
             @RequestParam String name
     ) {
         try {
-            vidObespService.save(new VidObesp(name));
+            vidObespService.save(new VidObespRsp(name));
             return ResponseEntity.ok("Данные добавлены!");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Ошибка при добавлении!");
@@ -32,7 +32,7 @@ public class VidObespControllerRest {
             @RequestParam String name
     ) {
         try {
-            VidObesp vidObesp = vidObespService.findById(id);
+            VidObespRsp vidObesp = vidObespService.findById(id);
             String old = vidObesp.getName();
             vidObesp.setName(name);
             vidObespService.save(vidObesp);

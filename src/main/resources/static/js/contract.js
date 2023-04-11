@@ -4,22 +4,6 @@ $(document).ready(function () {
 
     body.on('click', 'a', function () {
 
-        //переключатели страниц pagination
-        if ($(this).parents("#pagination").attr("id") === "pagination") {
-            let list = clickPagination($(this), "#pagination");
-            let param = "param=" + list +
-                "&poleFindByNomGK=" + $("[data-name=poleFindByNomGK]").val() +
-                "&poleFindByINN=" + $("[data-name=poleFindByINN]").val() +
-                "&poleFindByIspolneno=" + $('[data-name=poleFindByIspolneno]').prop("checked") +
-                "&poleFindByNotIspolneno=" + $('[data-name=poleFindByNotIspolneno]').prop("checked");
-            ajaxContractAll(param)
-        }
-
-        if ($(this).attr('id') === "menuViev") { //Кнопка просмотр
-            loadMenuView("");
-            return false;
-        }
-
         if ($(this).attr('id') === "menuAdd") { //Добавить контракт
             $("#mainContainer").load("/contract/main/add", "", function () {
                 $("#containerNotification").load("/contract/main/getnotification", "", function () {
@@ -53,6 +37,22 @@ $(document).ready(function () {
                     }
                 });
             });
+            return false;
+        }
+
+        //переключатели страниц pagination
+        if ($(this).parents("[name=paginationDk]").attr("id") === "pagination") {
+            let list = clickPagination($(this), "#pagination");
+            let param = "param=" + list +
+                "&poleFindByNomGK=" + $("[data-name=poleFindByNomGK]").val() +
+                "&poleFindByINN=" + $("[data-name=poleFindByINN]").val() +
+                "&poleFindByIspolneno=" + $('[data-name=poleFindByIspolneno]').prop("checked") +
+                "&poleFindByNotIspolneno=" + $('[data-name=poleFindByNotIspolneno]').prop("checked");
+            ajaxContractAll(param)
+        }
+
+        if ($(this).attr('id') === "menuViev") { //Кнопка просмотр
+            loadMenuView("");
             return false;
         }
 
@@ -162,7 +162,7 @@ $(document).ready(function () {
         }
 
         //дополнительная инфа
-        if ($(this).attr('data-a-dop-modal') === "dataADopModal") {
+        if ($(this).attr('data-id-dop-modal') === "dataADopModal") {
             let id = $(this).attr('name');
             $("#modalDopContainerContent").load("/contract/main/dopTable", "", function () {
 
@@ -248,19 +248,7 @@ $(document).ready(function () {
 
     body.on('click', 'button', function () {
 
-
-        //поиск
-        if ($(this).attr('name') === "findContract") {
-            let param = "poleFindByNomGK=" + $("[data-name=poleFindByNomGK]").val() +
-                "&poleFindByINN=" + $("[data-name=poleFindByINN]").val() +
-                "&poleFindByIspolneno=" + $('[data-name=poleFindByIspolneno]').prop("checked") +
-                "&poleFindByNotIspolneno=" + $('[data-name=poleFindByNotIspolneno]').prop("checked");
-            ajaxContractAll(param);
-            clearPagination1();
-            return false;
-        }
-
-        //изменение контракта
+        //изменение/добавление контракта
         if ($(this).attr('id') === "addContracts") {
             let vidObesp = $("#vidObesp").val();
             let kontragent = $("#kontragent").val();
@@ -384,6 +372,17 @@ $(document).ready(function () {
             return false;
         }
 
+        //поиск
+        if ($(this).attr('name') === "findContract") {
+            let param = "poleFindByNomGK=" + $("[data-name=poleFindByNomGK]").val() +
+                "&poleFindByINN=" + $("[data-name=poleFindByINN]").val() +
+                "&poleFindByIspolneno=" + $('[data-name=poleFindByIspolneno]').prop("checked") +
+                "&poleFindByNotIspolneno=" + $('[data-name=poleFindByNotIspolneno]').prop("checked");
+            ajaxContractAll(param);
+            clearPagination1();
+            return false;
+        }
+
         //удалить документ
         if ($(this).attr('data-name-doc') === "delDoc") {
             let id = $(this).attr('data-id-doc');
@@ -416,6 +415,7 @@ function loadMenuView() {
     mainContainer.html(getSpinner());
     mainContainer.load("/contract/main/vievTable", "", function () {
         ajaxContractAll("");
+        $("#pagination").attr("name", "paginationDk")
     });
 }
 
@@ -440,7 +440,6 @@ function ajaxContractAll(params) {
         },
         error: function (response) {
             initialToats("Ошибка!", response.responseJSON.message, "err").show();
-            tableContainer.html("");
         }
     });
 }
@@ -471,71 +470,6 @@ function ajaxContractSort(url) {
     });
 }
 
-function ajaxContractSuccess(response) {
-    let trHTML = '';
-    let tableContainer = $('#tableContainer tbody');
-    tableContainer.html("");
-    let start = (+activeList("#pagination") - 1) * 30;//$("#col").val();
 
-    console.log("response = ")
-    console.log(response)
-    $.each(response, function (i, item) {
-
-        trHTML +=
-            '<tr>' +
-            '<th>' + (start + +i + 1) + '</th>' +
-            '<td>' + replaceNull(item.plat_post) + '</td>' +
-            '<td>' + replaceNull(item.receipt_date) + '</td>' +
-            '<td>' + (item.kontragent === null ? "" : replaceNull(item.kontragent.nameInn)) + '</td>' +
-            '<td>' + replaceNull(item.nomGK) + '</td>' +
-            '<td>' + replaceNull(item.dateGK) + '</td>' +
-            '<td style="max-width: 290px">' + replaceNull(item.predmet_contract) + '</td>' +
-            '<td>' + replaceNull(item.vidObesp.name) + '</td>' +
-            '<td>' + replaceNull(item.sum) + '</td>' +
-            '<td>' +
-            '<label>' +
-            '<input type="checkbox" class="form-check-input" ' +
-            'name="' + item.id + '" id="checkboxIspolneno" ' +
-            (item.ispolneno ? 'checked=true' : '') + '/>' +
-            '<span class="marginonospan"></span>' +
-            '</label>' +
-            '<div data-progress-id="' + item.id + '">' +
-            '<div class="progress" title="Осталось ' + item.daysOst + ' дней">' +
-            '<div class="progress-bar ' +
-            (item.ispolneno ? 'bg-success' :
-                (item.daysOst <= 4 && item.daysOst >= 0) ? 'bg-danger progress-bar-striped ' :
-                    (item.procent >= 75) ? 'bg-danger' :
-                        (item.procent >= 50 ? 'bg-warning' :
-                            (item.procent >= 25 ? 'bg-info' : ''
-                            ))) + '" ' +
-
-            'role="progressbar" ' +
-            'style="width: ' + (item.ispolneno ? '100' : item.procent) + '%" ' +
-            'aria-valuenow="' + (item.ispolneno ? '100' : item.procent) + '" ' +
-            'aria-valuemin="0" ' +
-            'aria-valuemax="100" ' +
-
-            '">' + (item.ispolneno ? '' : item.daysOst) +
-            '</div>' +
-            '</div>' +
-            '</div>' +
-            '</td>' +
-            '<td>' +
-            '<div>' +
-            '<a data-bs-toggle="modal"' +
-            '        data-bs-target="#modalDopContainer"' +
-            '        href="#!"' +
-            '        data-a-dop-modal="dataADopModal"' +
-            '        name="' + item.id + '">Доп.информация' +
-            '</a>' +
-            '</div>' +
-            '<div><a name="' + item.id + '" id="updateContract" href="#">Изменить</a></div>' +
-            '<div><a name="' + item.id + '" id="deleteContract" href="#">Удалить</a></div>' +
-            '</td>' +
-
-            '</tr>';
-    });
-    tableContainer.append(trHTML);
-}
 
 

@@ -3,6 +3,8 @@ package ru.pfr.contracts2.entity.contracts.parent.mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import ru.pfr.contracts2.entity.contracts.contractDK.mapper.KontragentMapper;
+import ru.pfr.contracts2.entity.contracts.contractDK.mapper.VidObespMapper;
 import ru.pfr.contracts2.entity.contracts.parent.dto.ContractParentDto;
 import ru.pfr.contracts2.entity.contracts.parent.entity.ContractParent;
 import ru.pfr.contracts2.entity.contracts.parent.entity.Notification;
@@ -39,17 +41,17 @@ public class ContractParentMapper {
                                 obj.getReceipt_date().toLocalDate()
                 )//дата поступления
                 .plat_post(obj.getPlat_post())//Платежное поручение
-                .kontragent(
+/*                .kontragent(
                         obj.getKontragent() == null ? null :
-                                kontragentMapper.toDto(obj.getKontragent()))
+                                kontragentMapper.toDto(obj.getKontragent()))*/
                 .nomGK(obj.getNomGK())//номер ГК
                 .dateGK(
                         obj.getDateGK() == null ? null :
                                 obj.getDateGK().toLocalDate()
                 )//дата ГК
                 .predmet_contract(obj.getPredmet_contract())//краткое содержание предмета контракта
-                .vidObesp(obj.getVidObesp() == null ? null :
-                        vidObespMapper.toDto(obj.getVidObesp()))//вид обеспечения
+/*                .vidObesp(obj.getVidObesp() == null ? null :
+                        vidObespMapper.toDto(obj.getVidObesp()))//вид обеспечения*/
                 .sum(obj.getSum())//сумма
                 .date_ispolnenija_GK(
                         obj.getDate_ispolnenija_GK() == null ? null :
@@ -105,16 +107,7 @@ public class ContractParentMapper {
                                 LocalDateTime.of(dto.getReceipt_date(), LocalTime.now())
                 )//дата поступления
                 .plat_post(dto.getPlat_post())//Платежное поручение
-                .kontragent(
-                        kontragentService.findById(
-                                kontragentMapper.fromDto(dto.getKontragent()).getId()
-                        )
-                )
-                .vidObesp(
-                        vidObespService.findById(
-                                vidObespMapper.fromDto(dto.getVidObesp()).getId()
-                        )
-                )//вид обеспечения
+
                 .nomGK(dto.getNomGK())//номер ГК
                 .dateGK(
                         dto.getDateGK() == null ? null :

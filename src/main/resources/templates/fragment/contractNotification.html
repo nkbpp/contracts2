@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<body>
+
+<div class="row" th:fragment="notifications">
+    <div class="col-12">
+        <select id="notificationsSelect" class="form-select">
+            <option th:each="u : ${users}" th:text="${u.login}"
+                    th:value="${u.id_user_zir}"></option>
+            <label>Добавить</label>
+        </select>
+    </div>
+</div>
+
+</body>
+</html>

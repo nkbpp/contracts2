@@ -45,26 +45,25 @@
                 <li sec:authorize="hasAnyRole('ROLE_UPDATEIT','ROLE_READIT')" class="nav-item">
                     <a class="nav-link" href="#" id="menuitcontract" name="menudopcontract">Контракты IT</a>
                 </li>
+                <li sec:authorize="hasAnyRole('ROLE_UPDATEIT')" class="nav-item">
+                    <a class="nav-link" href="#" id="menuitaddcontract" name="menudopaddcontract">Добавить контракт</a>
+                </li>
 
                 <li sec:authorize="hasAnyRole('ROLE_UPDATEAXO','ROLE_READAXO')" class="nav-item">
                     <a class="nav-link" href="#" id="menuaxocontract">Контракты АХО</a>
                 </li>
-
-                <li sec:authorize="hasAnyRole('ROLE_UPDATERSP','ROLE_READRSP')" class="nav-item">
-                    <a class="nav-link" href="#" id="menurspcontract" name="menudopcontract">Контракты РСП</a>
-                </li>
-
-                <li sec:authorize="hasAnyRole('ROLE_UPDATEIT')" class="nav-item">
-                    <a class="nav-link" href="#" id="menuitaddcontract" name="menudopaddcontract">Добавить контракт</a>
-                </li>
                 <li sec:authorize="hasAnyRole('ROLE_UPDATEAXO')" class="nav-item">
                     <a class="nav-link" href="#" id="menuaxoaddcontract">Добавить контракт</a>
                 </li>
+
+                <li sec:authorize="hasAnyRole('ROLE_UPDATERSP','ROLE_READRSP')" class="nav-item">
+                    <a class="nav-link" href="#" id="menurspcontract">Контракты РСП</a>
+                </li>
                 <li sec:authorize="hasAnyRole('ROLE_UPDATERSP')" class="nav-item">
-                    <a class="nav-link" href="#" id="menurspaddcontract" name="menudopaddcontract">Добавить контракт</a>
+                    <a class="nav-link" href="#" id="menurspaddcontract">Добавить контракт РСП</a>
                 </li>
 
-                <li sec:authorize="hasRole('ROLE_UPDATE')" class="nav-item dropdown">
+                <li sec:authorize="hasAnyRole('ROLE_UPDATE','ROLE_UPDATERSP')" class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                        data-bs-toggle="dropdown" aria-expanded="false">
                         Справочники
@@ -74,6 +73,12 @@
                                                                       id="vidObespSpisokViev">Вид обеспечения</a></li>
                         <li sec:authorize="hasRole('ROLE_UPDATE')"><a class="dropdown-item" href="#"
                                                                       id="kontragentSpisokViev">Контрагент</a></li>
+                        <li sec:authorize="hasRole('ROLE_UPDATERSP')"><a class="dropdown-item" href="#"
+                                                                         id="vidObespSpisokVievRsp">Вид обеспечения</a>
+                        </li>
+                        <li sec:authorize="hasRole('ROLE_UPDATERSP')"><a class="dropdown-item" href="#"
+                                                                         id="kontragentSpisokVievRsp">Контрагент</a>
+                        </li>
                         <!--<li sec:authorize="hasAnyRole('ROLE_UPDATEIT','ROLE_UPDATERSP')">
                             <a class="dropdown-item"
                                href="#"
