@@ -20,9 +20,9 @@ public class MyDocuments {
     private Long id;
     @Lob
     @Basic(fetch = FetchType.LAZY)
-    @Column(name = "dokument", columnDefinition = "LONGBLOB", nullable = true)
+    @Column(name = "dokument", columnDefinition = "LONGBLOB")
     private byte[] dokument;
-    @Column(name = "namefile", nullable = true/*, length = 400*/)
+    @Column(name = "namefile")
     private String nameFile;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contract_id")

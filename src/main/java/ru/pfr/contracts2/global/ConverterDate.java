@@ -26,7 +26,7 @@ public class ConverterDate {
     //Строку в дату
     public static Date stringToDate(String dat) {
         DateFormat format;
-        Date date = new Date();
+        Date date;
         format = new SimpleDateFormat("yyyy-MM-dd");
         try {
             date = format.parse(dat);

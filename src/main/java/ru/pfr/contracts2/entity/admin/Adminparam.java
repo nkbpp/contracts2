@@ -11,12 +11,10 @@ import javax.persistence.*;
 @NoArgsConstructor // создания пустого конструктора
 @AllArgsConstructor // конструктора включающего все возможные поля
 @Entity
-//@Table(name = "adminparam")
 public class Adminparam {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@Column(name = "id")
     private Long id;
 
     private Long kolpopitok;
@@ -25,9 +23,4 @@ public class Adminparam {
 
     private Long block;
 
-    public Adminparam(Long kolpopitok, Long koefpopitok, Long block) {
-        this.kolpopitok = kolpopitok;
-        this.koefpopitok = koefpopitok;
-        this.block = block;
-    }
 }

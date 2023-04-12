@@ -43,7 +43,7 @@ class ContractItControllerRestUnitTest {
     private MockMvc mockMvc;
     @MockBean
     private ContractItService contractItService;
-    private ContractIT oldContractIT;
+    private final ContractIT oldContractIT;
 
     private final MockMultipartFile A_FILE1 = new MockMultipartFile(
             "document",

@@ -19,9 +19,9 @@ public class Logi {
     private Long id;
 
     private Date date;
-    @Column(length = 255)
+
     private String user;
-    @Column(length = 255)
+
     private String type;
     @Column(columnDefinition = "TEXT")
     private String text;

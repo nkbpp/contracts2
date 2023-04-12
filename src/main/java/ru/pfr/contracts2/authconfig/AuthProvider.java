@@ -231,6 +231,7 @@ public class AuthProvider implements AuthenticationProvider {
             }
             req = reqBuilder.setConfig(requestConfig).build();
             response = httpclient.execute(req);
+            httpclient.close();
             return response;
         } catch (URISyntaxException | IOException ex) {
             return null;

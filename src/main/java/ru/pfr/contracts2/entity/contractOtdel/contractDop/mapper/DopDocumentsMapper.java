@@ -26,7 +26,7 @@ public class DopDocumentsMapper {
 
     public DopDocuments fromMultipart(MultipartFile file) {
         String nameFile = file.getOriginalFilename();
-        if (!file.isEmpty() && !nameFile.equals("")) {
+        if (!file.isEmpty() && nameFile != null && !nameFile.equals("")) {
             try {
                 byte[] bytes = file.getBytes();
                 return new DopDocuments(bytes, nameFile);

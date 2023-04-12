@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import ru.pfr.contracts2.entity.contracts.parent.dto.KontragentDto;
-import ru.pfr.contracts2.entity.contracts.parent.dto.VidObespDto;
 import ru.pfr.contracts2.entity.contracts.parent.dto.*;
 import ru.pfr.contracts2.entity.user.UserDto;
 

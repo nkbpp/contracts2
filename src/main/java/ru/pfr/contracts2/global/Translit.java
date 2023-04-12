@@ -2,144 +2,76 @@ package ru.pfr.contracts2.global;
 
 public class Translit {
     public static String cyr2lat(char ch) {
-        switch (ch) {
-            case 'А':
-                return "A";
-            case 'Б':
-                return "B";
-            case 'В':
-                return "V";
-            case 'Г':
-                return "G";
-            case 'Д':
-                return "D";
-            case 'Е':
-                return "E";
-            case 'Ё':
-                return "JE";
-            case 'Ж':
-                return "ZH";
-            case 'З':
-                return "Z";
-            case 'И':
-                return "I";
-            case 'Й':
-                return "Y";
-            case 'К':
-                return "K";
-            case 'Л':
-                return "L";
-            case 'М':
-                return "M";
-            case 'Н':
-                return "N";
-            case 'О':
-                return "O";
-            case 'П':
-                return "P";
-            case 'Р':
-                return "R";
-            case 'С':
-                return "S";
-            case 'Т':
-                return "T";
-            case 'У':
-                return "U";
-            case 'Ф':
-                return "F";
-            case 'Х':
-                return "KH";
-            case 'Ц':
-                return "C";
-            case 'Ч':
-                return "CH";
-            case 'Ш':
-                return "SH";
-            case 'Щ':
-                return "JSH";
-            case 'Ъ':
-                return "HH";
-            case 'Ы':
-                return "IH";
-            case 'Ь':
-                return "JH";
-            case 'Э':
-                return "EH";
-            case 'Ю':
-                return "JU";
-            case 'Я':
-                return "JA";
-            case 'а':
-                return "a";
-            case 'б':
-                return "b";
-            case 'в':
-                return "v";
-            case 'г':
-                return "g";
-            case 'д':
-                return "d";
-            case 'е':
-                return "e";
-            case 'ё':
-                return "je";
-            case 'ж':
-                return "zh";
-            case 'з':
-                return "z";
-            case 'и':
-                return "i";
-            case 'й':
-                return "y";
-            case 'к':
-                return "k";
-            case 'л':
-                return "l";
-            case 'м':
-                return "m";
-            case 'н':
-                return "n";
-            case 'о':
-                return "o";
-            case 'п':
-                return "p";
-            case 'р':
-                return "r";
-            case 'с':
-                return "s";
-            case 'т':
-                return "t";
-            case 'у':
-                return "u";
-            case 'ф':
-                return "f";
-            case 'х':
-                return "kh";
-            case 'ц':
-                return "c";
-            case 'ч':
-                return "ch";
-            case 'ш':
-                return "sh";
-            case 'щ':
-                return "jsh";
-            case 'ъ':
-                return "hh";
-            case 'ы':
-                return "ih";
-            case 'ь':
-                return "jh";
-            case 'э':
-                return "eh";
-            case 'ю':
-                return "ju";
-            case 'я':
-                return "ja";
-            case '№':
-                return "#";
-            default:
-                return String.valueOf(ch);
-        }
+        return switch (ch) {
+            case 'А' -> "A";
+            case 'Б' -> "B";
+            case 'В' -> "V";
+            case 'Г' -> "G";
+            case 'Д' -> "D";
+            case 'Е' -> "E";
+            case 'Ё' -> "JE";
+            case 'Ж' -> "ZH";
+            case 'З' -> "Z";
+            case 'И' -> "I";
+            case 'Й' -> "Y";
+            case 'К' -> "K";
+            case 'Л' -> "L";
+            case 'М' -> "M";
+            case 'Н' -> "N";
+            case 'О' -> "O";
+            case 'П' -> "P";
+            case 'Р' -> "R";
+            case 'С' -> "S";
+            case 'Т' -> "T";
+            case 'У' -> "U";
+            case 'Ф' -> "F";
+            case 'Х' -> "KH";
+            case 'Ц' -> "C";
+            case 'Ч' -> "CH";
+            case 'Ш' -> "SH";
+            case 'Щ' -> "JSH";
+            case 'Ъ' -> "HH";
+            case 'Ы' -> "IH";
+            case 'Ь' -> "JH";
+            case 'Э' -> "EH";
+            case 'Ю' -> "JU";
+            case 'Я' -> "JA";
+            case 'а' -> "a";
+            case 'б' -> "b";
+            case 'в' -> "v";
+            case 'г' -> "g";
+            case 'д' -> "d";
+            case 'е' -> "e";
+            case 'ё' -> "je";
+            case 'ж' -> "zh";
+            case 'з' -> "z";
+            case 'и' -> "i";
+            case 'й' -> "y";
+            case 'к' -> "k";
+            case 'л' -> "l";
+            case 'м' -> "m";
+            case 'н' -> "n";
+            case 'о' -> "o";
+            case 'п' -> "p";
+            case 'р' -> "r";
+            case 'с' -> "s";
+            case 'т' -> "t";
+            case 'у' -> "u";
+            case 'ф' -> "f";
+            case 'х' -> "kh";
+            case 'ц' -> "c";
+            case 'ч' -> "ch";
+            case 'ш' -> "sh";
+            case 'щ' -> "jsh";
+            case 'ъ' -> "hh";
+            case 'ы' -> "ih";
+            case 'ь' -> "jh";
+            case 'э' -> "eh";
+            case 'ю' -> "ju";
+            case 'я' -> "ja";
+            case '№' -> "#";
+            default -> String.valueOf(ch);
+        };
     }
 
     public static String cyr2lat(String s) {
