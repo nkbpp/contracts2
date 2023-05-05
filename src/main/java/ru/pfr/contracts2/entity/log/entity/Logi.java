@@ -1,4 +1,4 @@
-package ru.pfr.contracts2.entity.log;
+package ru.pfr.contracts2.entity.log.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

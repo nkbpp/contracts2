@@ -5,6 +5,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.webjars.NotFoundException;
 import ru.pfr.contracts2.entity.contractOtdel.contractDop.entity.DopDocuments;
 import ru.pfr.contracts2.global.Translit;
 import ru.pfr.contracts2.service.it.ItDocumentsService;
@@ -20,7 +21,9 @@ public class DocumentDopControllerRest {
     ResponseEntity<?> download(
             @RequestParam Long id
     ) {
-        DopDocuments dopDocuments = itDocumentsService.findById(id);
+        DopDocuments dopDocuments = itDocumentsService.findById(id).orElseThrow(
+                () -> new NotFoundException("Documents with id = " + id + " not found")
+        );
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
                 .header(HttpHeaders.CONTENT_DISPOSITION,
@@ -36,7 +39,9 @@ public class DocumentDopControllerRest {
             @PathVariable("id") Long id
     ) {
         try {
-            String myDocumentsName = itDocumentsService.findById(id).getNameFile();
+            String myDocumentsName = itDocumentsService.findById(id).orElseThrow(
+                    () -> new NotFoundException("Documents with id = " + id + " not found")
+            ).getNameFile();
             itDocumentsService.delete(id);
             return ResponseEntity.ok(
                     "Документ с именем " + myDocumentsName + " успешно удален!");

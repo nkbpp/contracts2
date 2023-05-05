@@ -9,6 +9,7 @@ import ru.pfr.contracts2.entity.contractOtdel.contractAxo.entity.ContractAxo;
 import ru.pfr.contracts2.repository.it.ContractAxoRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,8 +18,8 @@ public class ContractAxoService {
 
     final ContractAxoRepository contractAxoRepository;
 
-    public ContractAxo findById(Long id) {
-        return contractAxoRepository.findById(id).orElse(null);
+    public Optional<ContractAxo> findById(Long id) {
+        return contractAxoRepository.findById(id);
     }
 
     public List<ContractAxo> findAll(Specification<ContractAxo> specification) {

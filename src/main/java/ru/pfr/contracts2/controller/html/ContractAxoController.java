@@ -24,7 +24,7 @@ public class ContractAxoController {
         return "fragment/axo/add :: addviev";
     }
 
-    @GetMapping("/updateViev/{id}")
+    @GetMapping("/updateViev")
     public String updateViev(
     ) {
         return "fragment/axo/add :: addviev";

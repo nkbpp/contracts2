@@ -10,6 +10,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.webjars.NotFoundException;
 import ru.pfr.contracts2.aop.log.valid.ValidError;
 import ru.pfr.contracts2.entity.contractOtdel.contractDop.dto.ContractItRosRequest;
 import ru.pfr.contracts2.entity.contractOtdel.contractDop.dto.FilterContractItRsp;
@@ -99,7 +100,9 @@ public class ContractItControllerRest {
 
             ContractIT dto = contractItMapper.fromDto(contractItRosRequest);
 
-            ContractIT contractIT = contractItService.findById(dto.getId());
+            ContractIT contractIT = contractItService.findById(dto.getId()).orElseThrow(
+                    () -> new NotFoundException("Contract with id = " + dto.getId() + " not found")
+            );
             contractIT.setNomGK(dto.getNomGK());
             contractIT.setKontragent(dto.getKontragent());
             contractIT.setDateGK(dto.getDateGK());
@@ -149,7 +152,10 @@ public class ContractItControllerRest {
     ) {
         try {
             return new ResponseEntity<>(
-                    contractItMapper.toDto(contractItService.findById(id)),
+                    contractItMapper.toDto(contractItService.findById(id).orElseThrow(
+                            () -> new NotFoundException("Contract with id = " + id + " not found")
+                            )
+                    ),
                     HttpStatus.OK
             );
         } catch (Exception e) {

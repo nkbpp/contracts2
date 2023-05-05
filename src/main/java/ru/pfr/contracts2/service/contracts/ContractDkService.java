@@ -14,7 +14,7 @@ import ru.pfr.contracts2.entity.contracts.contractDK.entity.ContractDk;
 import ru.pfr.contracts2.entity.contracts.contractDK.entity.ContractDkSpecification;
 import ru.pfr.contracts2.entity.contracts.contractDK.entity.ContractDk_;
 import ru.pfr.contracts2.entity.contracts.parent.entity.Notification;
-import ru.pfr.contracts2.entity.log.Logi;
+import ru.pfr.contracts2.entity.log.entity.Logi;
 import ru.pfr.contracts2.repository.contracts.ContractDkRepository;
 import ru.pfr.contracts2.service.log.LogiService;
 import ru.pfr.contracts2.service.mail.MailSender;
@@ -30,7 +30,6 @@ import java.util.List;
 //@EnableScheduling
 @Transactional
 public class ContractDkService {
-
     private final MailSender mailSender;
     private final ZirServise zirServise;
     final ContractDkRepository contractDkRepository;
@@ -46,11 +45,9 @@ public class ContractDkService {
     }
 
     public List<ContractDk> findAll(int page) {
-
         //для обрезки
         PageRequest pageRequest = PageRequest.of(page, SIZE, Sort.by(ContractDk_.ID).descending());
         return contractDkRepository.findAll(pageRequest).getContent();
-
     }
 
     public List<ContractDk> findAll(Specification<ContractDk> specification) {

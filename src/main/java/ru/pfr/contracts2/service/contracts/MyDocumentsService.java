@@ -12,8 +12,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 public class MyDocumentsService {
-    private final MyDocumentsRepository myDocumentsRepository;
 
+    private final MyDocumentsRepository myDocumentsRepository;
 
     public void save(MyDocuments myDocuments) {
         myDocumentsRepository.save(myDocuments);
@@ -30,4 +30,5 @@ public class MyDocumentsService {
     public MyDocuments findById(Long id) {
         return myDocumentsRepository.findById(id).orElse(null);
     }
+
 }

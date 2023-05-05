@@ -10,12 +10,13 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.webjars.NotFoundException;
 import ru.pfr.contracts2.entity.contractOtdel.contractAxo.dto.ContractAxoDto;
 import ru.pfr.contracts2.entity.contractOtdel.contractAxo.entity.ContractAxo;
 import ru.pfr.contracts2.entity.contractOtdel.contractAxo.entity.ContractAxoSpecification;
 import ru.pfr.contracts2.entity.contractOtdel.contractAxo.entity.ContractAxo_;
-import ru.pfr.contracts2.entity.contractOtdel.contractDop.entity.DopDocuments;
 import ru.pfr.contracts2.entity.contractOtdel.contractAxo.mapper.ContractAxoMapper;
+import ru.pfr.contracts2.entity.contractOtdel.contractDop.entity.DopDocuments;
 import ru.pfr.contracts2.entity.contractOtdel.contractDop.mapper.DopDocumentsMapper;
 import ru.pfr.contracts2.entity.user.User;
 import ru.pfr.contracts2.service.it.ContractAxoService;
@@ -94,7 +95,10 @@ public class ContractAxoControllerRest {
             ContractAxo dto = contractAxoMapper
                     .fromDto(contractAxoDto);
 
-            ContractAxo contractAxo = contractAxoService.findById(dto.getId());
+            ContractAxo contractAxo = contractAxoService.findById(dto.getId()).orElseThrow(
+                    () -> new NotFoundException("Contract with id = " + dto.getId() + " not found")
+            );
+
             contractAxo.setNomGK(dto.getNomGK());
             contractAxo.setKontragent(dto.getKontragent());
             contractAxo.setDateGK(dto.getDateGK());
@@ -135,8 +139,13 @@ public class ContractAxoControllerRest {
             @PathVariable Long id
     ) {
         try {
+
             return new ResponseEntity<>(
-                    contractAxoMapper.toDto(contractAxoService.findById(id)),
+                    contractAxoMapper.toDto(
+                            contractAxoService.findById(id).orElseThrow(
+                                    () -> new NotFoundException("Contract with id = " + id + " not found")
+                            )
+                    ),
                     HttpStatus.OK
             );
         } catch (Exception e) {

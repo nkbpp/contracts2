@@ -44,7 +44,7 @@ public class ContractItController {
         return "fragment/it/add :: addviev";
     }
 
-    @GetMapping("/updateViev/{id}")
+    @GetMapping("/updateViev")
     public String updateViev() {
         return "fragment/it/add :: addviev";
     }

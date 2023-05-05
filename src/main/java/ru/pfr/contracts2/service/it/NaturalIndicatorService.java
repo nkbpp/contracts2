@@ -11,6 +11,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class NaturalIndicatorService {
+
     private final NaturalIndicatorRepository naturalIndicatorRepository;
 
     @Transactional
@@ -31,7 +32,4 @@ public class NaturalIndicatorService {
         return naturalIndicatorRepository.findById(id).orElse(null);
     }
 
-    public List<NaturalIndicator> findByContractIT(int id) {
-        return naturalIndicatorRepository.findByContractIT(id);
-    }
 }

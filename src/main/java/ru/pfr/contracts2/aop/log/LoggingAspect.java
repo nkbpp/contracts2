@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
-import ru.pfr.contracts2.entity.log.Logi;
+import ru.pfr.contracts2.entity.log.entity.Logi;
 import ru.pfr.contracts2.entity.user.User;
 import ru.pfr.contracts2.service.log.LogiService;
 

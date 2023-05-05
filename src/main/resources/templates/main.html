@@ -104,6 +104,8 @@
     <script sec:authorize="hasRole('ROLE_UPDATE')" type="text/javascript" th:src="@{/js/stat.js}"></script>
     <script sec:authorize="hasAnyRole('ROLE_UPDATEIT','ROLE_READIT')"
             type="text/javascript" th:src="@{/js/it.js}"></script>
+    <script sec:authorize="hasRole('ROLE_ADMIN')"
+            type="text/javascript" th:src="@{/js/admin/juraudit.js}"></script>
     <!--<script sec:authorize="hasAnyRole('ROLE_UPDATEIT','ROLE_UPDATERSP')" type="text/javascript"
             th:src="@{/js/budgetClassification.js}"></script>-->
     <script sec:authorize="hasAnyRole('ROLE_UPDATEAXO','ROLE_READAXO')" type="text/javascript"

@@ -25,7 +25,7 @@ public class RayonMapper {
 
     public Rayon fromDto(RayonDto dto) {
         if (dto.getId() != null) {
-            return rayonService.findById(dto.getId());
+            return rayonService.findById(dto.getId()).orElse(null);
         }
         return Rayon.builder()
                 .id(dto.getId())

@@ -14,7 +14,7 @@ import ru.pfr.contracts2.entity.contracts.contractRsp.entity.ContractRsp;
 import ru.pfr.contracts2.entity.contracts.contractRsp.entity.ContractRspSpecification;
 import ru.pfr.contracts2.entity.contracts.contractRsp.entity.ContractRsp_;
 import ru.pfr.contracts2.entity.contracts.parent.entity.Notification;
-import ru.pfr.contracts2.entity.log.Logi;
+import ru.pfr.contracts2.entity.log.entity.Logi;
 import ru.pfr.contracts2.repository.contracts.ContractRspRepository;
 import ru.pfr.contracts2.service.log.LogiService;
 import ru.pfr.contracts2.service.mail.MailSender;
@@ -27,7 +27,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @EnableAsync
-//@EnableScheduling
 @Transactional
 public class ContractRspService {
 
@@ -46,11 +45,9 @@ public class ContractRspService {
     }
 
     public List<ContractRsp> findAll(int page) {
-
         //для обрезки
         PageRequest pageRequest = PageRequest.of(page, SIZE, Sort.by(ContractRsp_.ID).descending());
         return contractRspRepository.findAll(pageRequest).getContent();
-
     }
 
     public List<ContractRsp> findAll(Specification<ContractRsp> specification) {

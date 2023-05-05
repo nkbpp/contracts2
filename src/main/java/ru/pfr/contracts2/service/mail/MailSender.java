@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import ru.pfr.contracts2.entity.log.Logi;
+import ru.pfr.contracts2.entity.log.entity.Logi;
 import ru.pfr.contracts2.service.log.LogiService;
 
 @Service
@@ -19,9 +19,9 @@ public class MailSender {
 
     private final JavaMailSender javaMailSender;
 
-    public void send(String emailTo, String subject, String message){
+    public void send(String emailTo, String subject, String message) {
 
-        try{
+        try {
             SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
 
             simpleMailMessage.setFrom(username);
@@ -31,11 +31,11 @@ public class MailSender {
 
             javaMailSender.send(simpleMailMessage);
 
-            logiService.save(new Logi("this","Mail","Почта отправлена пользователю " + username +
+            logiService.save(new Logi("this", "Mail", "Почта отправлена пользователю " + username +
                     " на email: " + emailTo +
                     " с текстом: " + message));
-        }catch(Exception e){
-            logiService.save(new Logi("this","MailError","Отправить письмо не удалось " + username +
+        } catch (Exception e) {
+            logiService.save(new Logi("this", "MailError", "Отправить письмо не удалось " + username +
                     " на email: " + emailTo +
                     " с текстом: " + message +
                     " ошибка " + e));

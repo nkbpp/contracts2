@@ -1,12 +1,13 @@
 package ru.pfr.contracts2.entity.contracts.parent.entity;
 
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Type;
 import ru.pfr.contracts2.entity.AuditEntity;
-import ru.pfr.contracts2.entity.contracts.contractDK.entity.Kontragent;
-import ru.pfr.contracts2.entity.contracts.contractDK.entity.VidObesp;
 import ru.pfr.contracts2.entity.user.User;
 import ru.pfr.contracts2.global.MyNumbers;
 

@@ -7,6 +7,7 @@ import ru.pfr.contracts2.repository.it.ItDocumentsRepository;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,12 +28,8 @@ public class ItDocumentsService {
         return itDocumentsRepository.findAll();
     }
 
-    public DopDocuments findById(Long id) {
-        return itDocumentsRepository.findById(id).orElse(null);
+    public Optional<DopDocuments> findById(Long id) {
+        return itDocumentsRepository.findById(id);
     }
 
-
-    public List<DopDocuments> findByContractIT(int id) {
-        return itDocumentsRepository.myFindByContractIT(id);
-    }
 }

@@ -24,6 +24,7 @@ import ru.pfr.contracts2.service.it.ContractItService;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Optional;
 
 import static org.apache.http.entity.ContentType.DEFAULT_BINARY;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -139,7 +140,7 @@ class ContractItControllerRestUnitTest {
 
 
         Mockito.when(contractItService.findById(Mockito.any()))
-                .thenReturn(oldContractIT);
+                .thenReturn(Optional.ofNullable(oldContractIT));
 
         MockMultipartHttpServletRequestBuilder builder =
                 MockMvcRequestBuilders.multipart("/contract/dop");

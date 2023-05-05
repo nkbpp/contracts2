@@ -87,17 +87,26 @@ public class ContractParentMapper {
     public ContractParent fromDto(ContractParentDto dto) {
 
         List<Notification> notifications = new ArrayList<>();
-        for (var n :
-                dto.getNotifications().stream()
+        for (var n : dto.getNotifications()
+                /*dto.getNotifications().stream()
                         .map(notificationMapper::fromDto)
-                        .toList()
+                        .toList()*/
         ) {
-            notifications.add(
-                    new Notification(
-                            n.getId_user(),
-                            zirServise.getNameUserById(n.getId_user().intValue())
-                    )
-            );
+            String name = null;
+            try {
+                name = zirServise.getNameUserById(n.getId_user().intValue());
+            } catch (ArrayIndexOutOfBoundsException e) {
+                System.out.println(e);
+            }
+            if (name != null) {
+                notifications.add(
+                        new Notification(
+                                n.getId_user(),
+                                name
+                        )
+                );
+            }
+
         }
 
         return ContractParent.builder()

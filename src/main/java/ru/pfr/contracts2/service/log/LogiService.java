@@ -1,13 +1,19 @@
 package ru.pfr.contracts2.service.log;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.pfr.contracts2.entity.log.Logi;
+import ru.pfr.contracts2.entity.log.dto.ParamLog;
+import ru.pfr.contracts2.entity.log.entity.Logi;
+import ru.pfr.contracts2.entity.log.entity.LogiSpecification;
+import ru.pfr.contracts2.entity.log.entity.Logi_;
 import ru.pfr.contracts2.repository.log.LogiRepository;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,15 +35,28 @@ public class LogiService {
         return logiRepository.findAll();
     }
 
-    public List<Logi> findByDateBetween(Date d1, Date d2, String user, Long l, String text) {
-        return logiRepository.findByDateParam(d1, d2, user, l, text);
+    public List<Logi> findAll(Pageable pageable) {
+        return logiRepository.findAll(pageable).getContent();
     }
 
-    public List<Logi> findByDateBetween(String user, Long l, String text) {
-        return logiRepository.findByUser(user, l, text);
+    public List<Logi> findByUser(String user, String type, String text) {
+        return logiRepository.findAll(LogiSpecification.findByUser(user, type, text));
+        //return logiRepository.findByUser(user, type, text);
     }
 
-    public Logi findByUser(String login) {
-        return logiRepository.findByUser(login).orElse(null);
+    public Optional<Logi> findByUser(String login) {
+        return logiRepository.findOne(
+                Specification.where(
+                        (root, query, criteriaBuilder) ->
+                                criteriaBuilder.equal(root.get(Logi_.USER), login)
+                )
+        );
     }
+
+    public List<Logi> findByDateBetween(ParamLog paramLog) {
+        return logiRepository.findAll(
+                LogiSpecification.findByDateParam(paramLog)
+        );
+    }
+
 }

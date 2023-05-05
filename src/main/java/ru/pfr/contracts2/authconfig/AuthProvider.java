@@ -22,9 +22,8 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import ru.pfr.contracts2.entity.admin.Adminparam;
-import ru.pfr.contracts2.entity.log.Logi;
+import ru.pfr.contracts2.entity.log.entity.Logi;
 import ru.pfr.contracts2.entity.user.ROLE_ENUM;
-import ru.pfr.contracts2.entity.user.Rayon;
 import ru.pfr.contracts2.entity.user.User;
 import ru.pfr.contracts2.service.admin.AdminparamService;
 import ru.pfr.contracts2.service.log.LogiService;
@@ -75,12 +74,15 @@ public class AuthProvider implements AuthenticationProvider {
 
         User logerr;
         try {
-            logerr = userService.findByLoginuser(username); //пользователь существует
+            logerr = userService.findByLoginUser(username).orElse(
+                    new User(
+                            username,
+                            rayonService.findByKod("999").orElse(
+                                    rayonService.findByKod("1000").orElse(null)
+                            )
+                    )
+            ); //пользователь существует
 
-            if (logerr == null) {
-                Rayon r = rayonService.findByKod("999"); //пользователя небыло
-                logerr = new User(username, r);
-            }
             //для количества попыток-----------------------------
             Adminparam adminparam = adminparamService.findByAdminparam();
 
@@ -180,7 +182,9 @@ public class AuthProvider implements AuthenticationProvider {
                     upfrCode.insert(0, "0");
                 }
 
-                User user = userService.findByLoginuser(username);
+                User user = userService.findByLoginUser(username).orElseThrow(
+                        () -> new RuntimeException("user not found")
+                );
 
                 user.setActive(1L);
 
@@ -188,7 +192,7 @@ public class AuthProvider implements AuthenticationProvider {
                 user.setId_ondel_zir(Long.parseLong(idpod));
                 user.setName_ondel_zir(namepod);
                 user.setEmail(email);
-                user.setRayon(rayonService.findByKod(upfrCode.toString()));
+                user.setRayon(rayonService.findByKod(upfrCode.toString()).orElse(null));
                 user.setUserRoles(roleList);
                 userService.save(user);
 
@@ -202,8 +206,6 @@ public class AuthProvider implements AuthenticationProvider {
             System.out.println("MES=" + e.getMessage());
             throw new BadCredentialsException(e.getMessage());
         }
-
-
         return a;
     }
 
@@ -237,4 +239,5 @@ public class AuthProvider implements AuthenticationProvider {
             return null;
         }
     }
+
 }

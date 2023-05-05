@@ -61,7 +61,8 @@ public class ZirServise {
                 "e.EMAIL_EM, e.FAM_EM, e.NAM_EM, e.OTCH_EM, p.ID_POD ID_POD,  p.NAME_POD NAME_POD " +
                 "FROM DB2ADMIN.EMPLOYEES e, DB2ADMIN.PODRAZD p, POSTS po " +
                 "WHERE e.ID_POD_EM = p.ID_POD " +
-                "AND po.ID_POST = e.ID_POST_EM  AND e.ID_POD_EM = (SELECT ID_POD_EM FROM EMPLOYEES WHERE ID_EM=" + id_zir + ")");
+                "AND po.ID_POST = e.ID_POST_EM  AND " +
+                "e.ID_POD_EM = (SELECT ID_POD_EM FROM EMPLOYEES WHERE ID_EM=" + id_zir + ")");
         List<User> users = new ArrayList<>();
         for (String[] strings : S) {
             User user = new User();
@@ -73,58 +74,52 @@ public class ZirServise {
     }
 
     public String getEmailUserById(int id_zir) {
-        String[][] S = GetSelect("SELECT e.ID_EM, " +
-                "CONCAT(CONCAT(CONCAT(e.FAM_EM, CONCAT(' ', SUBSTR(e.NAM_EM, 1, 1))),'.'), CONCAT(SUBSTR(e.OTCH_EM, 1, 1),'.')) as NAME, " +
-                "e.EMAIL_EM, e.FAM_EM, e.NAM_EM, e.OTCH_EM, p.ID_POD ID_POD,  p.NAME_POD NAME_POD " +
-                "FROM DB2ADMIN.EMPLOYEES e, DB2ADMIN.PODRAZD p, POSTS po " +
-                "WHERE e.ID_POD_EM = p.ID_POD " +
-                "AND po.ID_POST = e.ID_POST_EM  AND e.ID_EM=" + id_zir + "");
-        return S[0][2];
+        String[][] S = GetSelect("SELECT " +
+                "e.EMAIL_EM " +
+                "FROM DB2ADMIN.EMPLOYEES e " +
+                "WHERE e.ID_EM=" + id_zir);
+        return S[0][0];
     }
 
     public String getNameUserById(int id_zir) {
-        String[][] S = GetSelect("SELECT e.ID_EM, " +
-                "CONCAT(CONCAT(CONCAT(e.FAM_EM, CONCAT(' ', SUBSTR(e.NAM_EM, 1, 1))),'.'), CONCAT(SUBSTR(e.OTCH_EM, 1, 1),'.')) as NAME, " +
-                "e.EMAIL_EM, e.FAM_EM, e.NAM_EM, e.OTCH_EM, p.ID_POD ID_POD,  p.NAME_POD NAME_POD " +
-                "FROM DB2ADMIN.EMPLOYEES e, DB2ADMIN.PODRAZD p, POSTS po " +
-                "WHERE e.ID_POD_EM = p.ID_POD " +
-                "AND po.ID_POST = e.ID_POST_EM  AND e.ID_EM=" + id_zir + "");
-        return S[0][1];
+        String[][] S = GetSelect("SELECT " +
+                "CONCAT(CONCAT(CONCAT(e.FAM_EM, CONCAT(' ', SUBSTR(e.NAM_EM, 1, 1))),'.'), CONCAT(SUBSTR(e.OTCH_EM, 1, 1),'.')) as NAME " +
+                "FROM DB2ADMIN.EMPLOYEES e " +
+                "WHERE e.ID_EM=" + id_zir);
+        return S[0][0];
     }
 
     public String getIdBossByIdUser(int id_zir) {
-        String[][] S = GetSelect("SELECT e.ID_EM, " +
-                "CONCAT(CONCAT(CONCAT(e.FAM_EM, CONCAT(' ', SUBSTR(e.NAM_EM, 1, 1))),'.'), CONCAT(SUBSTR(e.OTCH_EM, 1, 1),'.')) as NAME, " +
-                "e.EMAIL_EM, e.FAM_EM, e.NAM_EM, e.OTCH_EM, p.ID_POD ID_POD,  p.NAME_POD NAME_POD " +
+        String[][] S = GetSelect("SELECT " +
+                "e.ID_EM " +
                 "FROM DB2ADMIN.EMPLOYEES e, DB2ADMIN.PODRAZD p, POSTS po " +
                 "WHERE e.ID_POD_EM = p.ID_POD " +
-                "AND po.ID_POST = e.ID_POST_EM  AND e.ID_POD_EM = (SELECT ID_POD_EM FROM EMPLOYEES WHERE ID_EM=" + id_zir + ") AND po.head=1");
+                "AND po.ID_POST = e.ID_POST_EM " +
+                "AND e.ID_POD_EM = (SELECT ID_POD_EM FROM EMPLOYEES WHERE ID_EM=" + id_zir + ") " +
+                "AND po.head=1");
         return S[0][0];
     }
 
     public String getEmailBossById(int id_zir) {
-        String[][] S = GetSelect("SELECT e.ID_EM, " +
-                "CONCAT(CONCAT(CONCAT(e.FAM_EM, CONCAT(' ', SUBSTR(e.NAM_EM, 1, 1))),'.'), CONCAT(SUBSTR(e.OTCH_EM, 1, 1),'.')) as NAME, " +
-                "e.EMAIL_EM, e.FAM_EM, e.NAM_EM, e.OTCH_EM, p.ID_POD ID_POD,  p.NAME_POD NAME_POD " +
+        String[][] S = GetSelect("SELECT " +
+                "e.EMAIL_EM " +
                 "FROM DB2ADMIN.EMPLOYEES e, DB2ADMIN.PODRAZD p, POSTS po " +
                 "WHERE e.ID_POD_EM = p.ID_POD " +
-                "AND po.ID_POST = e.ID_POST_EM  AND e.ID_POD_EM = (SELECT ID_POD_EM FROM EMPLOYEES WHERE ID_EM=" + id_zir + ") AND po.head=1");
-        return S[0][2];
+                "AND po.ID_POST = e.ID_POST_EM " +
+                "AND e.ID_POD_EM = (SELECT ID_POD_EM FROM EMPLOYEES WHERE ID_EM=" + id_zir + ") " +
+                "AND po.head=1");
+        return S[0][0];
     }
 
     public String getNameBossById(int id_zir) {
-        String[][] S;
-
-        S = GetSelect("SELECT e.ID_EM, " +
-                "CONCAT(CONCAT(CONCAT(e.FAM_EM, CONCAT(' ', SUBSTR(e.NAM_EM, 1, 1))),'.'), CONCAT(SUBSTR(e.OTCH_EM, 1, 1),'.')) as NAME, " +
-                "e.EMAIL_EM, e.FAM_EM, e.NAM_EM, e.OTCH_EM, p.ID_POD ID_POD,  p.NAME_POD NAME_POD " +
+        String[][] S = GetSelect("SELECT " +
+                "CONCAT(CONCAT(CONCAT(e.FAM_EM, CONCAT(' ', SUBSTR(e.NAM_EM, 1, 1))),'.'), CONCAT(SUBSTR(e.OTCH_EM, 1, 1),'.')) as NAME " +
                 "FROM DB2ADMIN.EMPLOYEES e, DB2ADMIN.PODRAZD p, POSTS po " +
                 "WHERE e.ID_POD_EM = p.ID_POD " +
-                "AND po.ID_POST = e.ID_POST_EM  " +
+                "AND po.ID_POST = e.ID_POST_EM " +
                 "AND e.ID_POD_EM = (SELECT ID_POD_EM FROM EMPLOYEES WHERE ID_EM=" + id_zir + ") " +
                 "AND po.head=1");
-
-        return S[0][1] + " (Начальник отдела)";
+        return S[0][0] + " (Начальник отдела)";
     }
 
     private String readToString(InputStream is, String charset) throws IOException {
@@ -163,6 +158,7 @@ public class ZirServise {
                 System.out.println("Error GetSelect try1" + e);
             }
             try {
+                assert response2 != null;
                 HttpEntity entity = response2.getEntity();
 
                 String S = readToString(entity.getContent(), "UTF8");

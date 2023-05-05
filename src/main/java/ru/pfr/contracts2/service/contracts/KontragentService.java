@@ -3,6 +3,7 @@ package ru.pfr.contracts2.service.contracts;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import ru.pfr.contracts2.entity.contracts.contractDK.entity.Kontragent;
 import ru.pfr.contracts2.entity.contracts.contractDK.entity.Kontragent_;
@@ -27,12 +28,24 @@ public class KontragentService {
         return kontragentRepository.findAll(PageRequest.of(page, 12)).getContent();
     }
 
-
     public List<Kontragent> findByNameAndInn(String name, String inn) {
         if ((name == null || name.equals("")) && (inn == null || inn.equals(""))) {
             return findAll();
         }
-        return kontragentRepository.findByNameAndInn(name, inn);
+
+        return kontragentRepository.findAll(
+                Specification.where(
+                        (root, query, criteriaBuilder) ->
+                                criteriaBuilder.and(
+                                        criteriaBuilder.like(
+                                                root.get(Kontragent_.NAME), "%" + name + "%"
+                                        ),
+                                        criteriaBuilder.like(
+                                                root.get(Kontragent_.INN), "%" + inn + "%"
+                                        )
+                                )
+                )
+        );
     }
 
     public List<Kontragent> findAllwithPusto() {
@@ -46,13 +59,12 @@ public class KontragentService {
         return kontragentRepository.findById(id).orElse(null);
     }
 
-
     public void save(Kontragent kontragent) {
         kontragentRepository.save(kontragent);
     }
 
-
     public void delete(Long id) {
         kontragentRepository.deleteById(id);
     }
+
 }

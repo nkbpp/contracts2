@@ -33,11 +33,9 @@ public class VidObespService {
         return vidObespRepository.findById(id).orElse(null);
     }
 
-
     public void save(VidObesp vidObesp) {
         vidObespRepository.save(vidObesp);
     }
-
 
     public void delete(Long id) {
         vidObespRepository.deleteById(id);

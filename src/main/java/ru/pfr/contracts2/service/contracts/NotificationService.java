@@ -20,19 +20,12 @@ public class NotificationService {
         return notificationRepository.findAll();
     }
 
-
     public void delete(Long id) {
         notificationRepository.deleteById(id);
     }
 
-/*    @Transactional
-    public void deleteAll(List<Notification> notifications) {
-        for (int i = 0; i < notifications.size(); i++) {
-            delete(notifications.get(i).getId());
-        }
-    }*/
-
     public Notification findById(Long id) {
         return notificationRepository.findById(id).orElse(null);
     }
+
 }

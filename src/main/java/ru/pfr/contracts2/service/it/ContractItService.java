@@ -18,6 +18,7 @@ import ru.pfr.contracts2.service.zir.ZirServise;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,8 +32,8 @@ public class ContractItService {
 
     private final MailSender mailSender;
 
-    public ContractIT findById(Long id) {
-        return contractItRepository.findById(id).orElse(null);
+    public Optional<ContractIT> findById(Long id) {
+        return contractItRepository.findById(id);
     }
 
     public List<ContractIT> findAll() {

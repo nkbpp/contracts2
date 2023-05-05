@@ -28,7 +28,6 @@ public class ContractRspSpecification {
         } else if (poleFindByIspolneno) {
             return ispolnenoEquals(true);
         }
-
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.isTrue(criteriaBuilder.literal(false));
     }
@@ -61,7 +60,6 @@ public class ContractRspSpecification {
                     criteriaBuilder.isTrue(criteriaBuilder.literal(true)); //всегда истинно criteriaBuilder.and()
             //criteriaBuilder.isFalse(criteriaBuilder.literal(true)); //всегда ложно criteriaBuilder.or()
         }
-
         return innLike(inn);
     }
 
