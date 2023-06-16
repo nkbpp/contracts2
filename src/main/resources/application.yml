@@ -1,0 +1,20 @@
+server:
+  port: 8097
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  datasource:
+    #url: jdbc:mysql://10.41.0.247:3306/contracts?useLegacyDatetimeCode=false&amp&serverTimezone=UTC
+    url: jdbc:mysql://10.41.0.247:3306/contracts?serverTimezone=Europe/Moscow&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false
+    username: root
+    password: 654321
+  mail:
+    host: s041a.0041.pfr.ru
+    username: contract@041.pfr.ru
+    password:
+    port: 25
+    protocol: smtp
+mail:
+  debug: true

@@ -38,8 +38,11 @@
                 <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
                     <a class="nav-link" th:href="@{/contract/admin/admin}">Админка</a>
                 </li>
+                <!--th:href="@{/contract/admin/juraudit}"-->
                 <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
-                    <a class="nav-link" th:href="@{/contract/admin/juraudit}">Журнал аудита</a>
+                    <a class="nav-link"
+                       href="#" id="menujuraudit" name="menujuraudit"
+                    >Журнал аудита</a>
                 </li>
 
                 <li sec:authorize="hasAnyRole('ROLE_UPDATEIT','ROLE_READIT')" class="nav-item">

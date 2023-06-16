@@ -46,6 +46,9 @@ public class ContractDkSpecification {
                 criteriaBuilder.like(root.get(ContractDk_.NOM_GK), "%" + nomGK + "%");
     }
 
+    /**
+     * Many To One
+     */
     public static Specification<ContractDk> innLike(String inn) {
         return (root, query, criteriaBuilder) -> {
             Join<ContractDk, Kontragent> groupJoin = root.join(ContractDk_.kontragent);

@@ -43,17 +43,20 @@ public class MyAdminControllerRest {
     @ValidError
     @PostMapping("/juraudit/tables")
     public ResponseEntity<?> table(
-            @RequestParam(defaultValue = "1") Integer param,
+            @RequestParam(defaultValue = "0") Integer param,
             @RequestParam(defaultValue = "30") Integer col,
             @Valid @RequestBody ParamLog paramLog,
             @AuthenticationPrincipal User user,
             Errors errors) {
 
+        if (errors.hasErrors()) {
+            System.out.println("sdf");
+        }
 
         try {
             Iterable<Logi> logi = logiService.findAll(
                     PageRequest.of(
-                            0, 30,
+                            param, col,
                             Sort.by(Logi_.DATE).descending()
                     )
             );

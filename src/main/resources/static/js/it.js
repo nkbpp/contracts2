@@ -57,7 +57,7 @@ $(document).ready(function () {
         if ($(this).attr('id') === "updateItContract") { //перейти на вкладку изменения ItContract
             let param = $(this).attr('name');
 
-            $("#mainContainer").load("/contract/it/updateViev/" + param, "", function () {
+            $("#mainContainer").load("/contract/it/updateViev", "", function () {
 
                 let token = $('#_csrf').attr('content');
                 let header = $('#_csrf_header').attr('content');

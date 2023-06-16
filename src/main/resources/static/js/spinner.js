@@ -14,14 +14,6 @@ function getSpinnerTable(idTable) { // передать id таблицу
     $('#' + idTable + ' tbody').html('<tr><th>' + getSpinner() + '</th>' + ths + '</tr>');//спинер
 }
 
-/*function getSpinnerTable(idTable) { // передать id таблицу
-    let ths = "";
-    for (let i = 0; i < $('#' + idTable + ' thead tr th').length - 1; i++) {
-        ths += "<th></th>"
-    }
-    $('#' + idTable + ' tbody').html('<tr><th>' + getSpinner() + '</th>' + ths + '</tr>');//спинер
-}*/
-
 function getSpinnerButton() {
     return '<span class="spinner-border spinner-border-sm mx-2" role="status" aria-hidden="true"></span>';
 }

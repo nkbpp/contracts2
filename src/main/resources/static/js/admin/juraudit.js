@@ -1,5 +1,21 @@
 $(document).ready(function () {
 
+    if ($(this).attr('name') === "menujuraudit") { //Кнопка ИТ контракты
+        SORTK = 0;
+        SORTD = 0;
+        let mainContainer = $("#mainContainer");
+        mainContainer.html(getSpinner());
+        mainContainer.load("/contract/it/vievTable", "", function () {
+            ajaxContractIt(getContractItJson(), "");
+            $('.datepicker').datepicker({
+                format: 'dd.mm.yyyy',
+                language: "ru"
+            });
+        });
+        return false;
+    }
+
+    console.log(getJurauditJson())
     ajaxJurauditTable(getJurauditJson(), "");
 
     $("body").on('click', 'a', function () {
