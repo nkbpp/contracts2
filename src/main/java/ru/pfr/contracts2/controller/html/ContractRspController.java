@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ru.pfr.contracts2.entity.contracts.contractRsp.entity.KontragentRsp;
 import ru.pfr.contracts2.entity.contracts.contractRsp.entity.VidObespRsp;
 import ru.pfr.contracts2.entity.user.User;
-import ru.pfr.contracts2.service.contracts.*;
-import ru.pfr.contracts2.service.zir.ZirServise;
+import ru.pfr.contracts2.services.contracts.*;
+import ru.pfr.contracts2.services.zir.ZirServise;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,5 @@
 package ru.pfr.contracts2.controller.rest;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -9,17 +8,15 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import ru.pfr.contracts2.aop.log.valid.ValidError;
-import ru.pfr.contracts2.entity.annotations.date.CustomLocalDateTimeDeserializerRuAndEnOrNull;
 import ru.pfr.contracts2.entity.log.dto.ParamLog;
 import ru.pfr.contracts2.entity.log.entity.Logi;
 import ru.pfr.contracts2.entity.log.entity.Logi_;
 import ru.pfr.contracts2.entity.user.User;
-import ru.pfr.contracts2.service.admin.AdminparamService;
-import ru.pfr.contracts2.service.log.LogiService;
-import ru.pfr.contracts2.service.user.UserService;
+import ru.pfr.contracts2.services.admin.AdminparamService;
+import ru.pfr.contracts2.services.log.LogiService;
+import ru.pfr.contracts2.services.user.UserService;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
 
 
 @RestController

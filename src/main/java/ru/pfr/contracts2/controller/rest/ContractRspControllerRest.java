@@ -20,7 +20,7 @@ import ru.pfr.contracts2.entity.contracts.parent.dto.StatDto;
 import ru.pfr.contracts2.entity.contracts.parent.entity.MyDocuments;
 import ru.pfr.contracts2.entity.contracts.parent.mapper.MyDocumentsMapper;
 import ru.pfr.contracts2.entity.user.User;
-import ru.pfr.contracts2.service.contracts.ContractRspService;
+import ru.pfr.contracts2.services.contracts.ContractRspService;
 
 import javax.validation.Valid;
 import java.util.List;

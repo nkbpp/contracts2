@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ru.pfr.contracts2.entity.contracts.contractDK.entity.Kontragent;
 import ru.pfr.contracts2.entity.contracts.contractDK.entity.VidObesp;
 import ru.pfr.contracts2.entity.user.User;
-import ru.pfr.contracts2.service.contracts.ContractDkService;
-import ru.pfr.contracts2.service.contracts.KontragentService;
-import ru.pfr.contracts2.service.contracts.VidObespService;
-import ru.pfr.contracts2.service.zir.ZirServise;
+import ru.pfr.contracts2.services.contracts.ContractDkService;
+import ru.pfr.contracts2.services.contracts.KontragentService;
+import ru.pfr.contracts2.services.contracts.VidObespService;
+import ru.pfr.contracts2.services.zir.ZirServise;
 
 import java.util.ArrayList;
 import java.util.List;

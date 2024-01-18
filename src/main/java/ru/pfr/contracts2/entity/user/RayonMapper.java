@@ -2,7 +2,7 @@ package ru.pfr.contracts2.entity.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.pfr.contracts2.service.user.RayonService;
+import ru.pfr.contracts2.services.user.RayonService;
 
 @Component
 @RequiredArgsConstructor

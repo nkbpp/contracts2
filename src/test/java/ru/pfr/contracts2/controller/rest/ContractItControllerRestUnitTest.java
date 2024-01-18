@@ -19,7 +19,7 @@ import ru.pfr.contracts2.entity.contractOtdel.contractIT.entity.ContractIT;
 import ru.pfr.contracts2.entity.contractOtdel.contractDop.entity.Months;
 import ru.pfr.contracts2.entity.contractOtdel.contractIT.mapper.ContractItMapper;
 import ru.pfr.contracts2.entity.contractOtdel.contractDop.mapper.DopDocumentsMapper;
-import ru.pfr.contracts2.service.it.ContractItService;
+import ru.pfr.contracts2.services.it.ContractItService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

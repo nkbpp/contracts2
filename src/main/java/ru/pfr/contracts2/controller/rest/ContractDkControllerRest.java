@@ -21,8 +21,8 @@ import ru.pfr.contracts2.entity.contracts.parent.entity.MyDocuments;
 import ru.pfr.contracts2.entity.contracts.parent.entity.Notification;
 import ru.pfr.contracts2.entity.contracts.parent.mapper.MyDocumentsMapper;
 import ru.pfr.contracts2.entity.user.User;
-import ru.pfr.contracts2.service.contracts.ContractDkService;
-import ru.pfr.contracts2.service.zir.ZirServise;
+import ru.pfr.contracts2.services.contracts.ContractDkService;
+import ru.pfr.contracts2.services.zir.ZirServise;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -257,6 +257,10 @@ public class ContractDkControllerRest {
                             Sort.by(ContractDk_.ID).descending()
                     )
             );
+
+            var r = contracts.stream()
+                    .map(contractDkMapper::toDto)
+                    .toList();
 
             return new ResponseEntity<>(
                     contracts.stream()

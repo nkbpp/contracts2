@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.pfr.contracts2.config.sec.WithMockCustomUser;
-import ru.pfr.contracts2.service.contracts.VidObespService;
+import ru.pfr.contracts2.services.contracts.VidObespService;
 
 import java.util.List;
 

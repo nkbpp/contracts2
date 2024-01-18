@@ -5,8 +5,8 @@ import org.springframework.stereotype.Component;
 import ru.pfr.contracts2.entity.contracts.contractDK.dto.ContractDkDto;
 import ru.pfr.contracts2.entity.contracts.contractDK.entity.ContractDk;
 import ru.pfr.contracts2.entity.contracts.parent.mapper.*;
-import ru.pfr.contracts2.service.contracts.KontragentService;
-import ru.pfr.contracts2.service.contracts.VidObespService;
+import ru.pfr.contracts2.services.contracts.KontragentService;
+import ru.pfr.contracts2.services.contracts.VidObespService;
 
 
 @Component

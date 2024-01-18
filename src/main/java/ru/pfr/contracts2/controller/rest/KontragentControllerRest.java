@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.pfr.contracts2.entity.contracts.contractDK.entity.Kontragent;
-import ru.pfr.contracts2.service.contracts.KontragentService;
+import ru.pfr.contracts2.services.contracts.KontragentService;
 
 @RestController
 @RequiredArgsConstructor

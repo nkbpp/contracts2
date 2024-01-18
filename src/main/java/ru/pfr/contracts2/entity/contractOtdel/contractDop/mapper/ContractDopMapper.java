@@ -2,8 +2,8 @@ package ru.pfr.contracts2.entity.contractOtdel.contractDop.mapper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.pfr.contracts2.service.it.ContractItService;
-import ru.pfr.contracts2.service.zir.ZirServise;
+import ru.pfr.contracts2.services.it.ContractItService;
+import ru.pfr.contracts2.services.zir.ZirServise;
 
 
 @Component

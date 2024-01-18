@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
 public class OkrugSerializer extends StdSerializer<Double> {
@@ -19,6 +20,10 @@ public class OkrugSerializer extends StdSerializer<Double> {
 
     @Override
     public void serialize(Double aDouble, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-        jsonGenerator.writeString(aDouble != null ? new DecimalFormat("#0.00").format(aDouble).replace(",", ".") : "");
+        DecimalFormat df = new DecimalFormat("#0.00");
+        df.setRoundingMode(RoundingMode.DOWN);
+        jsonGenerator.writeString(aDouble != null ?
+                df.format(aDouble).replace(",", ".") : "");
     }
+
 }

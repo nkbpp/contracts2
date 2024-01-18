@@ -5,8 +5,8 @@ import org.springframework.stereotype.Component;
 import ru.pfr.contracts2.entity.contracts.contractRsp.dto.ContractRspDto;
 import ru.pfr.contracts2.entity.contracts.contractRsp.entity.ContractRsp;
 import ru.pfr.contracts2.entity.contracts.parent.mapper.ContractParentMapper;
-import ru.pfr.contracts2.service.contracts.KontragentRspService;
-import ru.pfr.contracts2.service.contracts.VidObespRspService;
+import ru.pfr.contracts2.services.contracts.KontragentRspService;
+import ru.pfr.contracts2.services.contracts.VidObespRspService;
 
 
 @Component
@@ -14,7 +14,6 @@ import ru.pfr.contracts2.service.contracts.VidObespRspService;
 public class ContractRspMapper {
 
     private final ContractParentMapper contractParentMapper;
-
     private final KontragentRspService kontragentService;
     private final KontragentRspMapper kontragentMapper;
     private final VidObespRspMapper vidObespMapper;

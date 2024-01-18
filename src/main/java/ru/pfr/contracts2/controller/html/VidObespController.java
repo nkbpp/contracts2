@@ -5,7 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ru.pfr.contracts2.service.contracts.VidObespService;
+import ru.pfr.contracts2.services.contracts.VidObespService;
 
 @Controller
 @RequiredArgsConstructor

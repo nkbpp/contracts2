@@ -256,8 +256,8 @@ $(document).ready(function () {
             if (
                 !$("#receipt_date").val().trim() ||
                 !$("#plat_post").val().trim() ||
-                vidObesp === 0 ||
-                kontragent === 0 ||
+                !vidObesp === '0' ||
+                !kontragent === '0' ||
                 !$("#sum").val().trim()
             ) {
                 alert("Не все обязательные поля (отмеченные *) заполнены!")

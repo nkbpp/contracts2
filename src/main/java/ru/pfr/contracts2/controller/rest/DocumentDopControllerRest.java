@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.webjars.NotFoundException;
 import ru.pfr.contracts2.entity.contractOtdel.contractDop.entity.DopDocuments;
 import ru.pfr.contracts2.global.Translit;
-import ru.pfr.contracts2.service.it.ItDocumentsService;
+import ru.pfr.contracts2.services.it.ItDocumentsService;
 
 @RestController
 @RequiredArgsConstructor

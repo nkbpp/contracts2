@@ -8,7 +8,7 @@ import ru.pfr.contracts2.entity.contractOtdel.contractDop.mapper.DopDocumentsMap
 import ru.pfr.contracts2.entity.contractOtdel.contractDop.mapper.MonthsMapper;
 import ru.pfr.contracts2.entity.contractOtdel.contractIT.dto.ContractITDto;
 import ru.pfr.contracts2.entity.contractOtdel.contractIT.entity.ContractIT;
-import ru.pfr.contracts2.service.zir.ZirServise;
+import ru.pfr.contracts2.services.zir.ZirServise;
 
 import javax.validation.Valid;
 import java.util.stream.Collectors;

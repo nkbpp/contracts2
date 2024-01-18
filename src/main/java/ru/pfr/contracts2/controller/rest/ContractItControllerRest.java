@@ -23,7 +23,7 @@ import ru.pfr.contracts2.entity.contractOtdel.contractIT.entity.ContractITSpecif
 import ru.pfr.contracts2.entity.contractOtdel.contractIT.entity.ContractIT_;
 import ru.pfr.contracts2.entity.contractOtdel.contractIT.mapper.ContractItMapper;
 import ru.pfr.contracts2.entity.user.User;
-import ru.pfr.contracts2.service.it.ContractItService;
+import ru.pfr.contracts2.services.it.ContractItService;
 
 import javax.validation.Valid;
 import java.util.List;

@@ -25,10 +25,10 @@ import ru.pfr.contracts2.entity.admin.Adminparam;
 import ru.pfr.contracts2.entity.log.entity.Logi;
 import ru.pfr.contracts2.entity.user.ROLE_ENUM;
 import ru.pfr.contracts2.entity.user.User;
-import ru.pfr.contracts2.service.admin.AdminparamService;
-import ru.pfr.contracts2.service.log.LogiService;
-import ru.pfr.contracts2.service.user.RayonService;
-import ru.pfr.contracts2.service.user.UserService;
+import ru.pfr.contracts2.services.admin.AdminparamService;
+import ru.pfr.contracts2.services.log.LogiService;
+import ru.pfr.contracts2.services.user.RayonService;
+import ru.pfr.contracts2.services.user.UserService;
 
 import java.io.IOException;
 import java.net.URI;

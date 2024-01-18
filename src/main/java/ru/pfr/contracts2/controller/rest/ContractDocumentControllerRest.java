@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.pfr.contracts2.entity.contracts.parent.entity.MyDocuments;
 import ru.pfr.contracts2.global.Translit;
-import ru.pfr.contracts2.service.contracts.MyDocumentsService;
+import ru.pfr.contracts2.services.contracts.MyDocumentsService;
 
 @RestController
 @RequiredArgsConstructor

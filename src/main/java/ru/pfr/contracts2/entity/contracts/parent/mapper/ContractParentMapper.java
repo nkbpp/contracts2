@@ -9,9 +9,9 @@ import ru.pfr.contracts2.entity.contracts.parent.dto.ContractParentDto;
 import ru.pfr.contracts2.entity.contracts.parent.entity.ContractParent;
 import ru.pfr.contracts2.entity.contracts.parent.entity.Notification;
 import ru.pfr.contracts2.entity.user.UserMapper;
-import ru.pfr.contracts2.service.contracts.KontragentService;
-import ru.pfr.contracts2.service.contracts.VidObespService;
-import ru.pfr.contracts2.service.zir.ZirServise;
+import ru.pfr.contracts2.services.contracts.KontragentService;
+import ru.pfr.contracts2.services.contracts.VidObespService;
+import ru.pfr.contracts2.services.zir.ZirServise;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;

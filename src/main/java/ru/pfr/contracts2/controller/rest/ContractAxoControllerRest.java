@@ -19,7 +19,7 @@ import ru.pfr.contracts2.entity.contractOtdel.contractAxo.mapper.ContractAxoMapp
 import ru.pfr.contracts2.entity.contractOtdel.contractDop.entity.DopDocuments;
 import ru.pfr.contracts2.entity.contractOtdel.contractDop.mapper.DopDocumentsMapper;
 import ru.pfr.contracts2.entity.user.User;
-import ru.pfr.contracts2.service.it.ContractAxoService;
+import ru.pfr.contracts2.services.it.ContractAxoService;
 
 import javax.validation.Valid;
 import java.util.List;

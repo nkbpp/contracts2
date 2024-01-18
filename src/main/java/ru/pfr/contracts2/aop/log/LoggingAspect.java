@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 import ru.pfr.contracts2.entity.log.entity.Logi;
 import ru.pfr.contracts2.entity.user.User;
-import ru.pfr.contracts2.service.log.LogiService;
+import ru.pfr.contracts2.services.log.LogiService;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -64,21 +64,23 @@ public class LoggingAspect {
             case DELETE -> "Запрос на удаление данных по адресу - " + url + " в методе";
             default -> "Был вызван метод";
         };
+        if (!nameMethod.contains("viewBadge")) {
+            service.save(
+                    Logi.builder()
+                            .type("Info")
+                            .text(String.format(
+                                    "%s - %s, класса- %s, сигнатура- %s, аргументы- %s",
+                                    beginStr,
+                                    nameMethod,
+                                    nameClass,
+                                    joinPoint.getSignature().toString(),
+                                    args
+                            ))
+                            .user(userInfo.getLogin())
+                            .build()
+            );
+        }
 
-        service.save(
-                Logi.builder()
-                        .type("Info")
-                        .text(String.format(
-                                "%s - %s, класса- %s, сигнатура- %s, аргументы- %s",
-                                beginStr,
-                                nameMethod,
-                                nameClass,
-                                joinPoint.getSignature().toString(),
-                                args
-                        ))
-                        .user(userInfo.getLogin())
-                        .build()
-        );
     }
 
     @AfterReturning(value = "controller()", returning = "returningValue")
@@ -115,13 +117,15 @@ public class LoggingAspect {
                     joinPoint.getSourceLocation().getWithinType().getName()
             );
         }
-        service.save(
-                Logi.builder()
-                        .type("Success")
-                        .text(text)
-                        .user(userInfo.getLogin())
-                        .build()
-        );
+        if (!text.contains("viewBadge")) {
+            service.save(
+                    Logi.builder()
+                            .type("Success")
+                            .text(text)
+                            .user(userInfo.getLogin())
+                            .build()
+            );
+        }
     }
 
     @AfterReturning(value = "controllerRest()", returning = "returningValue")
